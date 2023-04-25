@@ -1,12 +1,12 @@
 import { BitmapLayer } from '@deck.gl/layers';
 
-import fragmentShader from './grayscale16bpp-bitmaplayer-fragment';
+import fragmentShader from './simple-packing-bitmaplayer-fragment';
 
-// Grayscale 16bpp のビットマップにレベル補正とガンマ補正を行い表示する。
-// lower: シャドウ 0〜65535
-// upper: ハイライト 0〜65535
-// gamma: ガンマ 
-export default class Grayscale16bppBitmapLayer extends BitmapLayer {
+// Simple packing データのレンダリング
+// R: Reference value
+// E: Binary Scale Factor
+// D: Decimal Scale Factor
+export default class SimplePackingBitmapLayer extends BitmapLayer {
   getShaders() {
     const shaders = super.getShaders();
     shaders.fs = fragmentShader;

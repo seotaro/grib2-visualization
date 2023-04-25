@@ -14,7 +14,7 @@ import ViewListIcon from '@mui/icons-material/ViewList';
 
 import { Grib2List } from './Components/Grib2List';
 import { latlonlineGeoJson } from './utils'
-import Grayscale16bppBitmapLayer from './Grayscale16bppBitmapLayer'
+import SimplePackingBitmapLayer from './SimplePackingBitmapLayer'
 import init, * as wasm from './wasm/rust';
 
 const MAX_COLORMAP = 100; // GLSL の for ループのインデックスは定数値しか比較できないので固定サイズにする。
@@ -208,7 +208,7 @@ function App() {
           const a = image.simple_packing_attributes();
           const b = a.bounds();
           layers.push(
-            new Grayscale16bppBitmapLayer({
+            new SimplePackingBitmapLayer({
               id: "grayscale16bpp-bitmap-layer",
               bounds: [b.left, b.bottom, b.right, b.top].map(x => x / 1000000),
               _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,

@@ -86,6 +86,11 @@ impl Grib2Wrapper {
         }
     }
 
+    pub fn clear(&mut self) {
+        self.buf.clear();
+        self.items.clear();
+    }
+
     pub fn load(&mut self, src: &[u8]) {
         self.buf.extend_from_slice(src);
         let slice =

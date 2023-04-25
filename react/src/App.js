@@ -121,6 +121,7 @@ function App() {
         const arrayBuffer = await file.arrayBuffer();
         const byteArray = new Uint8Array(arrayBuffer);
 
+        grib2.clear();
         grib2.load(byteArray);
 
         const image = grib2.parse_simple_packing_image(itemIndex);

@@ -1,1 +1,1 @@
-# grib2-rust
+# GRIB2 parser by Rust

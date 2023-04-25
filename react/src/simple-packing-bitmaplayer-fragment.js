@@ -27,8 +27,8 @@ const float WORLD_SCALE = TILE_SIZE / PI / 2.0;
 uniform float r;
 uniform int e;
 uniform int d;
-const int MAX_COLORMAPS = 100;  // loop index cannot be compared with non-constant expression
-uniform vec4 colormap[MAX_COLORMAPS];  // vec4(threshold, r, g, b)
+const int MAX_COLORMAP_STEP = 100;  // loop index cannot be compared with non-constant expression
+uniform vec4 colormap[MAX_COLORMAP_STEP];  // vec4(threshold, r, g, b)
 
 // from degrees to Web Mercator
 vec2 lnglat_to_mercator(vec2 lnglat) {
@@ -117,7 +117,7 @@ void main(void) {
     float value = (r + fullByte *  pow(2.0, float(e))) /  pow(10.0, float(d));
 
     bitmapColor = vec4(colormap[0].yzw, 1.0);
-    for(int i = 0; i < MAX_COLORMAPS; i++) {
+    for(int i = 0; i < MAX_COLORMAP_STEP; i++) {
       float threshold = colormap[i].x;
       vec3 color = colormap[i].yzw;
       

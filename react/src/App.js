@@ -13,22 +13,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import ViewListIcon from '@mui/icons-material/ViewList';
 
 import { Grib2List } from './Components/Grib2List';
-import { latlonlineGeoJson } from './utils'
+import { latlonlineGeoJson, colormaps } from './utils'
 import SimplePackingBitmapLayer from './SimplePackingBitmapLayer'
 import init, * as wasm from './wasm/rust';
-
-const MAX_COLORMAP = 100; // GLSL の for ループのインデックスは定数値しか比較できないので固定サイズにする。
-
-const colormaps = [];
-{
-  const colormap = new Float32Array(MAX_COLORMAP * 4);
-  for (let i = 0; i < MAX_COLORMAP; i++) {
-    const threshold = i;
-    const c = i / MAX_COLORMAP;
-    colormap.set([threshold, c, c, c], i * 4);
-  }
-  colormaps.push(colormap);
-}
 
 const SETTINGS = {
   initialViewState: {
@@ -202,6 +189,9 @@ function App() {
   ]);
 
   if (image) {
+    const item = items[itemIndex];
+    const colormap = colormaps(item.parameter_category, item.parameter_number);
+
     switch (image.packing_type()) {
       case 'simple':
         {
@@ -217,7 +207,7 @@ function App() {
               r: a.r,
               e: a.e,
               d: a.d,
-              colormap: colormaps[0]
+              colormap,
             }),
           );
           break;

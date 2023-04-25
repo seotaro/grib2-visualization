@@ -24,30 +24,73 @@ extern "C" {
     #[wasm_bindgen(js_namespace = console)]
     fn log(s: &str);
 }
+
 #[wasm_bindgen]
-pub struct RawSimplePackingImage {
+#[derive(Clone)]
+pub struct SimplePackingAttributes {
     pub width: usize,
     pub height: usize,
+    bounds: Bounds,
     pub r: f32,
     pub e: isize,
     pub d: isize,
     pub bits: usize,
-    bounds: Bounds,
     pixels: Vec<u16>,
 }
-
 #[wasm_bindgen]
-impl RawSimplePackingImage {
-    pub fn packing_type(&self) -> String {
-        "simple".to_string()
+impl SimplePackingAttributes {
+    pub fn bounds(&self) -> JsValue {
+        serde_wasm_bindgen::to_value(&self.bounds).unwrap()
     }
-
     pub fn pixels(&self) -> Vec<u16> {
         self.pixels.clone()
     }
+}
 
+#[wasm_bindgen]
+#[derive(Clone)]
+pub struct RunLengthPackingAttributes {
+    pub width: usize,
+    pub height: usize,
+    bounds: Bounds,
+    pub bits: usize,
+    pub factor: isize,
+    levels: Vec<u16>,
+    pixels: Vec<u8>,
+}
+#[wasm_bindgen]
+impl RunLengthPackingAttributes {
     pub fn bounds(&self) -> JsValue {
         serde_wasm_bindgen::to_value(&self.bounds).unwrap()
+    }
+    pub fn pixels(&self) -> Vec<u8> {
+        self.pixels.clone()
+    }
+    pub fn levels(&self) -> Vec<u16> {
+        self.levels.clone()
+    }
+}
+
+#[wasm_bindgen]
+pub struct PackingImage {
+    packing_type: PackingType,
+    simple_packing_attributes: Option<SimplePackingAttributes>,
+    run_length_packing_attributes: Option<RunLengthPackingAttributes>,
+}
+#[wasm_bindgen]
+impl PackingImage {
+    pub fn packing_type(&self) -> String {
+        match self.packing_type {
+            PackingType::Simple => String::from("simple"),
+            PackingType::RunLength => String::from("run-length"),
+        }
+    }
+
+    pub fn simple_packing_attributes(&self) -> Option<SimplePackingAttributes> {
+        self.simple_packing_attributes.clone()
+    }
+    pub fn run_length_packing_attributes(&self) -> Option<RunLengthPackingAttributes> {
+        self.run_length_packing_attributes.clone()
     }
 }
 
@@ -153,25 +196,51 @@ impl Grib2Wrapper {
         serde_wasm_bindgen::to_value(&self.items).unwrap()
     }
 
-    pub fn parse_simple_packing_image(&self, index: usize) -> RawSimplePackingImage {
+    pub fn unpack_image(&self, index: usize) -> Option<PackingImage> {
         let sectionsets = self.grib2.sectionsets();
 
-        log(&format!("parse_simple_packing_image {}", sectionsets.len()));
+        log(&format!("unpack_image {}", sectionsets.len()));
 
         let sectionset = sectionsets.get(index);
-        let packing_type = sectionset.packing_type();
+        let bounds = sectionset.bounds()?;
+        let packing_type = sectionset.packing_type()?;
 
-        let bounds = sectionset.bounds().unwrap();
-        let image = sectionset.unpack().unwrap();
-        RawSimplePackingImage {
-            width: image.width,
-            height: image.height,
-            r: image.r,
-            e: image.e,
-            d: image.d,
-            bits: image.bits,
-            bounds: bounds,
-            pixels: image.pixels,
+        match packing_type {
+            PackingType::Simple => {
+                let image = sectionset.unpack().ok()?;
+
+                Some(PackingImage {
+                    packing_type,
+                    simple_packing_attributes: Some(SimplePackingAttributes {
+                        width: image.width,
+                        height: image.height,
+                        bounds,
+                        r: image.r,
+                        e: image.e,
+                        d: image.d,
+                        bits: image.bits,
+                        pixels: image.pixels,
+                    }),
+                    run_length_packing_attributes: None,
+                })
+            }
+            PackingType::RunLength => {
+                let image = sectionset.unpack_run_length().ok()?;
+
+                Some(PackingImage {
+                    packing_type,
+                    simple_packing_attributes: None,
+                    run_length_packing_attributes: Some(RunLengthPackingAttributes {
+                        width: image.width,
+                        height: image.height,
+                        bounds,
+                        bits: image.bits,
+                        factor: image.factor,
+                        levels: image.levels,
+                        pixels: image.pixels,
+                    }),
+                })
+            }
         }
     }
 }

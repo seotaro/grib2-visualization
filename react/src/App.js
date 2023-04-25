@@ -67,13 +67,11 @@ const DEFAULT_TEXTURE_PARAMETERS = {
 };
 
 // Grayscale 16bpp のテクスチャを生成する
-const createGrayscale16bppTexture = (gl, image) => {
-  const src = image.pixels();
-
+const createGrayscale16bppTexture = (gl, pixels, width, height) => {
   // Uint16Array から Uint8Array にキャストする。
-  const dataView = new DataView(src.buffer);
-  const dest = new Uint8Array(src.length * 2);
-  for (let i = 0; i < src.length; i++) {
+  const dataView = new DataView(pixels.buffer);
+  const dest = new Uint8Array(pixels.length * 2);
+  for (let i = 0; i < pixels.length; i++) {
     const offset = i * 2;
     dest[offset + 0] = dataView.getUint8(offset + 0);
     dest[offset + 1] = dataView.getUint8(offset + 1);
@@ -83,8 +81,8 @@ const createGrayscale16bppTexture = (gl, image) => {
     data: dest,
     format: GL.LUMINANCE_ALPHA,
     type: GL.UNSIGNED_BYTE,
-    width: image.width,
-    height: image.height,
+    width: width,
+    height: height,
     parameters: { ...DEFAULT_TEXTURE_PARAMETERS },
     pixelStore: { [GL.UNPACK_ALIGNMENT]: 2 },
     mipmaps: true,
@@ -124,10 +122,25 @@ function App() {
         grib2.clear();
         grib2.load(byteArray);
 
-        const image = grib2.parse_simple_packing_image(itemIndex);
-        setTexture({
-          'grayscale16bpp': createGrayscale16bppTexture(gl, image)
-        });
+        const image = grib2.unpack_image(itemIndex);
+        console.log('image', image
+          , image.packing_type()
+          , image.simple_packing_attributes()
+          , image.run_length_packing_attributes());
+
+        switch (image.packing_type()) {
+          case 'simple':
+            {
+              const attributes = image.simple_packing_attributes();
+              setTexture({
+                'grayscale16bpp': createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height)
+              });
+              break;
+            }
+
+          case 'run-length':
+            break;
+        }
         setImage(image);
 
         const items = grib2.items();
@@ -143,10 +156,25 @@ function App() {
     if ((gl != null) && rustWasm) {
       setImage(null);
       if (0 < grib2.items().length) {
-        const image = grib2.parse_simple_packing_image(itemIndex);
-        setTexture({
-          'grayscale16bpp': createGrayscale16bppTexture(gl, image)
-        });
+        const image = grib2.unpack_image(itemIndex);
+        console.log('image', image
+          , image.packing_type()
+          , image.simple_packing_attributes()
+          , image.run_length_packing_attributes());
+
+        switch (image.packing_type()) {
+          case 'simple':
+            {
+              const attributes = image.simple_packing_attributes();
+              setTexture({
+                'grayscale16bpp': createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height)
+              });
+              break;
+            }
+
+          case 'run-length':
+            break;
+        }
         setImage(image);
       }
     }
@@ -174,21 +202,30 @@ function App() {
   ]);
 
   if (image) {
-    const b = image.bounds();
+    switch (image.packing_type()) {
+      case 'simple':
+        {
+          const a = image.simple_packing_attributes();
+          const b = a.bounds();
+          layers.push(
+            new Grayscale16bppBitmapLayer({
+              id: "grayscale16bpp-bitmap-layer",
+              bounds: [b.left, b.bottom, b.right, b.top].map(x => x / 1000000),
+              _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+              image: texture['grayscale16bpp'],
+              opacity: 0.75,
+              r: a.r,
+              e: a.e,
+              d: a.d,
+              colormap: colormaps[0]
+            }),
+          );
+          break;
+        }
 
-    layers.push(
-      new Grayscale16bppBitmapLayer({
-        id: "grayscale16bpp-bitmap-layer",
-        bounds: [b.left, b.bottom, b.right, b.top].map(x => x / 1000000),
-        _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
-        image: texture['grayscale16bpp'],
-        opacity: 0.75,
-        r: image ? image.r : 0.0,
-        e: image ? image.e : 0,
-        d: image ? image.d : 0,
-        colormap: colormaps[0]
-      }),
-    );
+      case 'run-length':
+        break;
+    }
   }
 
   layers.push(

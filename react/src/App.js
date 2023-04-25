@@ -174,10 +174,12 @@ function App() {
   ]);
 
   if (image) {
+    const bounds = image.bounds();
+
     layers.push(
       new Grayscale16bppBitmapLayer({
         id: "grayscale16bpp-bitmap-layer",
-        bounds: [0.0, -90.0, 360.0, 90.0],
+        bounds: [bounds.left, bounds.bottom, bounds.right, bounds.top].map(x => x / 1000000),
         _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
         image: texture['grayscale16bpp'],
         opacity: 0.75,

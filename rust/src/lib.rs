@@ -46,9 +46,9 @@ impl RawSimplePackingImage {
         self.pixels.clone()
     }
 
-    // pub fn bounds(&self) -> Bounds {
-    //     self.bounds.clone()
-    // }
+    pub fn bounds(&self) -> JsValue {
+        serde_wasm_bindgen::to_value(&self.bounds).unwrap()
+    }
 }
 
 // JSValue は u32, i32 まで

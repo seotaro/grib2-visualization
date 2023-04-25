@@ -36,6 +36,7 @@ pub struct RawRunLengthPackingImage {
     pub pixels: Vec<u8>,
 }
 
+#[derive(Serialize)]
 pub struct Bounds {
     pub left: isize,
     pub bottom: isize,

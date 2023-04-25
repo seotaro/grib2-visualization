@@ -15,19 +15,8 @@ where
     for j in 0..height {
         for i in 0..width {
             let index = width * j + i;
-
             let bit_pos = index % 8;
-            let mask = match bit_pos {
-                0 => 0x80,
-                1 => 0x40,
-                2 => 0x20,
-                3 => 0x10,
-                4 => 0x08,
-                5 => 0x04,
-                6 => 0x02,
-                7 => 0x01,
-                _ => 0x00,
-            };
+            let mask = 0x80 >> bit_pos;
 
             let byte = bit_map[index / 8];
             if 0 < (byte & mask) {

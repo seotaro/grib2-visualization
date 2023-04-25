@@ -112,20 +112,23 @@ void main(void) {
   // 0 <= fullByte <= 65535
   float fullByte = lowerByte * 255.0 + upperByte * 65280.0;  // 255 = 0xff, 65280 = 0xff00
   
-  float value = (r + fullByte *  pow(2.0, float(e))) /  pow(10.0, float(d));
+  vec4 bitmapColor = vec4(0.0);
+  if(fullByte < 65535.0){
+    float value = (r + fullByte *  pow(2.0, float(e))) /  pow(10.0, float(d));
 
-  vec4 bitmapColor = vec4(colormap[0].yzw, 1.0);
-  for(int i = 0; i < MAX_COLORMAPS; i++) {
-    float threshold = colormap[i].x;
-    vec3 color = colormap[i].yzw;
-
-    if(value < threshold){
-      break;
+    bitmapColor = vec4(colormap[0].yzw, 1.0);
+    for(int i = 0; i < MAX_COLORMAPS; i++) {
+      float threshold = colormap[i].x;
+      vec3 color = colormap[i].yzw;
+      
+      if(value < threshold){
+        break;
+      }
+      
+      bitmapColor = vec4(color, 1.0);
     }
-    
-    bitmapColor = vec4(color, 1.0);
   }
-
+    
   gl_FragColor = apply_opacity(color_tint(color_desaturate(bitmapColor.rgb)), bitmapColor.a * opacity);
 
   geometry.uv = uv;

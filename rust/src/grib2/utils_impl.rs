@@ -103,10 +103,9 @@ pub(crate) fn parameter_name(category: usize, number: usize) -> Option<String> {
         1 => match number {
             1 => Some(String::from("Relative Humidity [%]")),
             8 => Some(String::from("Total Precipitation [kg m-2]")),
-            203 => Some(String::from("Rime Factor []")),
-            214 => Some(String::from(
-                "Shallow Convective Moistening Rate [kg kg-1 s-1]",
-            )),
+            201 => Some(String::from("10分間降水強度（1時間換算値）レベル値")),
+            203 => Some(String::from("降水強度レベル値(解析、予報）")),
+            214 => Some(String::from("降水強度の誤差の要因")),
             _ => None,
         },
         2 => match number {

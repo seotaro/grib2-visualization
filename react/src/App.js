@@ -15,6 +15,7 @@ import ViewListIcon from '@mui/icons-material/ViewList';
 import { Grib2List } from './Components/Grib2List';
 import { latlonlineGeoJson, colormaps } from './utils'
 import SimplePackingBitmapLayer from './SimplePackingBitmapLayer'
+import RunLengthPackingBitmapLayer from './RunLengthPackingBitmapLayer'
 import init, * as wasm from './wasm/rust';
 
 const SETTINGS = {
@@ -53,6 +54,22 @@ const DEFAULT_TEXTURE_PARAMETERS = {
   [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
 };
 
+// Grayscale 8bpp のテクスチャを生成する
+const createGrayscale8bppTexture = (gl, pixels, width, height) => {
+  const texture = new Texture2D(gl, {
+    data: pixels,
+    format: GL.LUMINANCE,
+    type: GL.UNSIGNED_BYTE,
+    width,
+    height,
+    parameters: { ...DEFAULT_TEXTURE_PARAMETERS },
+    pixelStore: { [GL.UNPACK_ALIGNMENT]: 1 },
+    mipmaps: true,
+  });
+
+  return texture;
+}
+
 // Grayscale 16bpp のテクスチャを生成する
 const createGrayscale16bppTexture = (gl, pixels, width, height) => {
   // Uint16Array から Uint8Array にキャストする。
@@ -68,8 +85,8 @@ const createGrayscale16bppTexture = (gl, pixels, width, height) => {
     data: dest,
     format: GL.LUMINANCE_ALPHA,
     type: GL.UNSIGNED_BYTE,
-    width: width,
-    height: height,
+    width,
+    height,
     parameters: { ...DEFAULT_TEXTURE_PARAMETERS },
     pixelStore: { [GL.UNPACK_ALIGNMENT]: 2 },
     mipmaps: true,
@@ -85,6 +102,7 @@ function App() {
   const [grib2, setGrib2] = useState(null);
   const [gl, setGl] = useState(null);
   const [texture, setTexture] = useState({
+    'grayscale8bpp': null,
     'grayscale16bpp': null
   });
   const [rustWasm, setWasm] = useState(null);
@@ -126,7 +144,13 @@ function App() {
             }
 
           case 'run-length':
-            break;
+            {
+              const attributes = image.run_length_packing_attributes();
+              setTexture({
+                'grayscale8bpp': createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height)
+              });
+              break;
+            }
         }
         setImage(image);
 
@@ -160,7 +184,13 @@ function App() {
             }
 
           case 'run-length':
-            break;
+            {
+              const attributes = image.run_length_packing_attributes();
+              setTexture({
+                'grayscale8bpp': createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height)
+              });
+              break;
+            }
         }
         setImage(image);
       }
@@ -195,25 +225,41 @@ function App() {
     switch (image.packing_type()) {
       case 'simple':
         {
-          const a = image.simple_packing_attributes();
-          const b = a.bounds();
+          const attributes = image.simple_packing_attributes();
+          const bounds = attributes.bounds();
           layers.push(
             new SimplePackingBitmapLayer({
-              id: "grayscale16bpp-bitmap-layer",
-              bounds: [b.left, b.bottom, b.right, b.top].map(x => x / 1000000),
+              id: "simple-packing-bitmap-layer",
+              bounds: [bounds.left, bounds.bottom, bounds.right, bounds.top].map(x => x / 1000000),
               _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
               image: texture['grayscale16bpp'],
               opacity: 0.75,
-              r: a.r,
-              e: a.e,
-              d: a.d,
+              r: attributes.r,
+              e: attributes.e,
+              d: attributes.d,
               colormap,
             }),
           );
-          break;
         }
+        break;
 
       case 'run-length':
+        {
+          const attributes = image.run_length_packing_attributes();
+          const bounds = attributes.bounds();
+          layers.push(
+            new RunLengthPackingBitmapLayer({
+              id: "run-length-packing-bitmap-layer",
+              bounds: [bounds.left, bounds.bottom, bounds.right, bounds.top].map(x => x / 1000000),
+              _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+              image: texture['grayscale8bpp'],
+              opacity: 0.75,
+              factor: attributes.factor,
+              levels: attributes.levels(),
+              colormap,
+            }),
+          );
+        }
         break;
     }
   }

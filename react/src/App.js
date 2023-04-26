@@ -101,10 +101,7 @@ function App() {
   const [itemIndex, setItemIndex] = useState(0);
   const [grib2, setGrib2] = useState(null);
   const [gl, setGl] = useState(null);
-  const [texture, setTexture] = useState({
-    'grayscale8bpp': null,
-    'grayscale16bpp': null
-  });
+  const [texture, setTexture] = useState(null);
   const [rustWasm, setWasm] = useState(null);
   const [isDrawerState, setDrawerState] = useState('close');
 
@@ -125,37 +122,11 @@ function App() {
         const byteArray = new Uint8Array(arrayBuffer);
 
         grib2.clear();
+        setImage(null);
+
         grib2.load(byteArray);
-
-        const image = grib2.unpack_image(itemIndex);
-        console.log('image', image
-          , image.packing_type()
-          , image.simple_packing_attributes()
-          , image.run_length_packing_attributes());
-
-        switch (image.packing_type()) {
-          case 'simple':
-            {
-              const attributes = image.simple_packing_attributes();
-              setTexture({
-                'grayscale16bpp': createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height)
-              });
-              break;
-            }
-
-          case 'run-length':
-            {
-              const attributes = image.run_length_packing_attributes();
-              setTexture({
-                'grayscale8bpp': createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height)
-              });
-              break;
-            }
-        }
-        setImage(image);
-
-        const items = grib2.items();
-        setItems(items);
+        setItems(grib2.items());
+        setImage(grib2.unpack_image(itemIndex));
       });
 
       const grib2 = new wasm.Grib2Wrapper();
@@ -167,7 +138,16 @@ function App() {
     if ((gl != null) && rustWasm) {
       setImage(null);
       if (0 < grib2.items().length) {
-        const image = grib2.unpack_image(itemIndex);
+        setImage(grib2.unpack_image(itemIndex));
+      }
+    }
+  }, [itemIndex]);
+
+  useEffect(() => {
+    if ((gl != null)) {
+      setTexture(null);
+      if (image != null) {
+
         console.log('image', image
           , image.packing_type()
           , image.simple_packing_attributes()
@@ -177,25 +157,20 @@ function App() {
           case 'simple':
             {
               const attributes = image.simple_packing_attributes();
-              setTexture({
-                'grayscale16bpp': createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height)
-              });
-              break;
+              setTexture(createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height));
             }
+            break;
 
           case 'run-length':
             {
               const attributes = image.run_length_packing_attributes();
-              setTexture({
-                'grayscale8bpp': createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height)
-              });
-              break;
+              setTexture(createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height));
             }
+            break;
         }
-        setImage(image);
       }
     }
-  }, [itemIndex]);
+  }, [image]);
 
   const onChangeSelection = (selection) => {
     setItemIndex(selection);
@@ -232,7 +207,7 @@ function App() {
               id: "simple-packing-bitmap-layer",
               bounds: [bounds.left, bounds.bottom, bounds.right, bounds.top].map(x => x / 1000000),
               _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
-              image: texture['grayscale16bpp'],
+              image: texture,
               opacity: 0.75,
               r: attributes.r,
               e: attributes.e,
@@ -252,7 +227,7 @@ function App() {
               id: "run-length-packing-bitmap-layer",
               bounds: [bounds.left, bounds.bottom, bounds.right, bounds.top].map(x => x / 1000000),
               _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
-              image: texture['grayscale8bpp'],
+              image: texture,
               opacity: 0.75,
               factor: attributes.factor,
               levels: attributes.levels(),

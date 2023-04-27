@@ -79,7 +79,11 @@ pub(crate) fn parse(buf: &[u8]) -> SectionSets {
                     _ => (),
                 }
             }
-            7 => sectionset.section7 = Some(Section7::create(section_buf)),
+            7 => {
+                sectionset.section7 = (|| -> Option<Section7> {
+                    Some(Section7::create(section_buf, sectionset.section5?))
+                })()
+            }
             _ => (),
         }
 
@@ -89,7 +93,6 @@ pub(crate) fn parse(buf: &[u8]) -> SectionSets {
 
         pos = pos + length_of_section;
     }
-    // assert!(grib2_length == pos);
 
     sectionsets
 }

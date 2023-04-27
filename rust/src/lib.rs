@@ -87,6 +87,9 @@ impl PackingImage {
         match self.packing_type {
             PackingType::Simple => String::from("simple"),
             PackingType::RunLength => String::from("run-length"),
+            PackingType::ComplexPackingAndSpatialDifferencing => {
+                String::from("complex-packing-and-spatial-differencing")
+            }
         }
     }
 
@@ -213,7 +216,7 @@ impl Grib2Wrapper {
 
         match packing_type {
             PackingType::Simple => {
-                let image = sectionset.unpack().ok()?;
+                let image = sectionset.unpack_simple().ok()?;
 
                 Some(PackingImage {
                     packing_type,
@@ -249,6 +252,28 @@ impl Grib2Wrapper {
                         levels: image.levels,
                         pixels: image.pixels,
                     }),
+                })
+            }
+            PackingType::ComplexPackingAndSpatialDifferencing => {
+                let image = sectionset
+                    .unpack_complex_packing_and_spatial_differencing()
+                    .ok()?;
+
+                Some(PackingImage {
+                    packing_type,
+                    simple_packing_attributes: Some(SimplePackingAttributes {
+                        width: image.width,
+                        height: image.height,
+                        di,
+                        dj,
+                        bounds,
+                        r: image.r,
+                        e: image.e,
+                        d: image.d,
+                        bits: image.bits,
+                        pixels: image.pixels,
+                    }),
+                    run_length_packing_attributes: None,
                 })
             }
         }

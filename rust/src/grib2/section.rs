@@ -9,6 +9,7 @@ pub mod section5_impl;
 pub mod section5_template;
 pub mod section6_impl;
 pub mod section7_impl;
+pub mod section7_template;
 pub mod section_impl;
 pub mod sectionset_impl;
 
@@ -77,6 +78,7 @@ pub(crate) struct Section6<'a> {
 #[derive(Copy, Clone)]
 pub(crate) struct Section7<'a> {
     buf: &'a [u8],
+    section5: Section5<'a>,
 }
 
 pub(crate) trait Section {
@@ -112,4 +114,5 @@ pub struct SectionSetsIter<'a> {
 pub enum PackingType {
     Simple,
     RunLength,
+    ComplexPackingAndSpatialDifferencing,
 }

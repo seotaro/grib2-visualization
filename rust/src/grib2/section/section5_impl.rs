@@ -80,3 +80,12 @@ point count: {}\n\
         }
     }
 }
+
+impl fmt::Debug for Section5<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self.template() {
+            Some(template) => write!(f, "template5.{} {:?}", self.template_number(), template),
+            None => write!(f, "None"),
+        }
+    }
+}

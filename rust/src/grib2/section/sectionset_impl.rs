@@ -4,9 +4,11 @@ use chrono::{DateTime, Utc};
 use std::fmt;
 
 use super::super::bit_map_utils_impl::apply_bit_map;
+use super::super::decode_utils_impl::unpack;
+use super::super::decode_utils_impl::unpack_complex_packing_and_spatial_differencing;
 use super::super::decode_utils_impl::unpack_run_length_packing;
-use super::super::decode_utils_impl::unpack_simple_packing;
 use super::section5_template::TemplateNumber as Section5TemplateNumber;
+use super::section7_template::TemplateNumber as Section7TemplateNumber;
 use super::Bounds;
 use super::PackingType;
 use super::RawRunLengthPackingImage;
@@ -84,136 +86,116 @@ impl<'a> SectionSet<'a> {
         Some(self.section3?.dj())
     }
 
-    pub fn unpack(&self) -> Result<RawSimplePackingImage, String> {
-        let mut width = 0;
-        let mut height = 0;
-        match self.section3 {
-            Some(sec3) => {
-                width = sec3.ni();
-                height = sec3.nj();
-            }
-            _ => {}
-        };
+    pub fn unpack_simple(&self) -> Result<RawSimplePackingImage, String> {
+        let sec3 = self.section3.ok_or("Invalid section 3");
+        let width = sec3?.ni();
+        let height = sec3?.nj();
 
-        return match self.section5 {
-            Some(sec5) => match self.section6 {
-                Some(sec6) => match self.section7 {
-                    Some(sec7) => match sec5.template() {
-                        Some(Section5TemplateNumber::T0(t)) => {
-                            let pixels = unpack_simple_packing(&sec7.buf[5..], t.bits());
-                            match sec6.bit_map_indicator() {
-                                0 => Ok(RawSimplePackingImage {
-                                    width,
-                                    height,
-                                    r: t.r(),
-                                    e: t.e(),
-                                    d: t.d(),
-                                    bits: t.bits(),
-                                    pixels: apply_bit_map(&pixels, sec6.bit_map(), width, height),
-                                }),
-                                _ => Ok(RawSimplePackingImage {
-                                    width,
-                                    height,
-                                    r: t.r(),
-                                    e: t.e(),
-                                    d: t.d(),
-                                    bits: t.bits(),
-                                    pixels,
-                                }),
-                            }
-                        }
-                        Some(Section5TemplateNumber::T3(t)) => {
-                            Err(format!("Template 5.3 は未実装"))
-                        }
-                        Some(Section5TemplateNumber::T200(t)) => {
-                            Err(format!("Template 5.200 は未実装"))
-                        }
-                        _ => Err(format!("Invalid template 5")),
-                    },
-                    _ => Err(format!("Invalid section 7")),
-                },
-                _ => Err(format!("Invalid section 6")),
-            },
-            _ => Err(format!("Invalid section 5")),
+        let sec5 = self.section5.ok_or("Invalid section 5");
+        let sec6 = self.section6.ok_or("Invalid section 6");
+        let sec7 = self.section7.ok_or("Invalid section 7");
+
+        return match sec5?.template() {
+            Some(Section5TemplateNumber::T0(t)) => {
+                let pixels = unpack(&sec7?.buf[5..], t.bits());
+                match sec6?.bit_map_indicator() {
+                    0 => Ok(RawSimplePackingImage {
+                        width,
+                        height,
+                        r: t.r(),
+                        e: t.e(),
+                        d: t.d(),
+                        bits: t.bits(),
+                        pixels: apply_bit_map(&pixels, sec6?.bit_map(), width, height),
+                    }),
+                    _ => Ok(RawSimplePackingImage {
+                        width,
+                        height,
+                        r: t.r(),
+                        e: t.e(),
+                        d: t.d(),
+                        bits: t.bits(),
+                        pixels,
+                    }),
+                }
+            }
+            _ => Err(format!("Invalid template 5")),
         };
     }
 
     pub fn unpack_run_length(&self) -> Result<RawRunLengthPackingImage, String> {
-        let mut width = 0;
-        let mut height = 0;
-        match self.section3 {
-            Some(sec3) => {
-                width = sec3.ni();
-                height = sec3.nj();
-            }
-            _ => {}
-        };
+        let sec3 = self.section3.ok_or("Invalid section 3");
+        let width = sec3?.ni();
+        let height = sec3?.nj();
 
-        return match self.section5 {
-            Some(sec5) => match self.section6 {
-                Some(sec6) => match self.section7 {
-                    Some(sec7) => match sec5.template() {
-                        Some(Section5TemplateNumber::T0(t)) => {
-                            Err(format!("Template 5.0 は未実装"))
-                        }
-                        Some(Section5TemplateNumber::T3(t)) => {
-                            Err(format!("Template 5.3 は未実装"))
-                        }
-                        Some(Section5TemplateNumber::T200(t)) => {
-                            let pixels = unpack_run_length_packing(&sec7.buf[5..], t.bits(), t.v());
-                            match sec6.bit_map_indicator() {
-                                0 => Ok(RawRunLengthPackingImage {
-                                    width,
-                                    height,
-                                    bits: t.bits(),
-                                    factor: t.factor(),
-                                    levels: t.scaled_representative_values(),
-                                    pixels: apply_bit_map(&pixels, sec6.bit_map(), width, height),
-                                }),
-                                _ => Ok(RawRunLengthPackingImage {
-                                    width,
-                                    height,
-                                    bits: t.bits(),
-                                    factor: t.factor(),
-                                    levels: t.scaled_representative_values(),
-                                    pixels,
-                                }),
-                            }
-                        }
-                        _ => Err(format!("Invalid template 5")),
-                    },
-                    _ => Err(format!("Invalid section 7")),
-                },
-                _ => Err(format!("Invalid section 6")),
-            },
-            _ => Err(format!("Invalid section 5")),
+        let sec5 = self.section5.ok_or("Invalid section 5");
+        let sec6 = self.section6.ok_or("Invalid section 6");
+        let sec7 = self.section7.ok_or("Invalid section 7");
+
+        return match sec5?.template() {
+            Some(Section5TemplateNumber::T200(t)) => {
+                let pixels = unpack_run_length_packing(&sec7?.buf[5..], t.bits(), t.v());
+                match sec6?.bit_map_indicator() {
+                    0 => Ok(RawRunLengthPackingImage {
+                        width,
+                        height,
+                        bits: t.bits(),
+                        factor: t.factor(),
+                        levels: t.levels(),
+                        pixels: apply_bit_map(&pixels, sec6?.bit_map(), width, height),
+                    }),
+                    _ => Ok(RawRunLengthPackingImage {
+                        width,
+                        height,
+                        bits: t.bits(),
+                        factor: t.factor(),
+                        levels: t.levels(),
+                        pixels,
+                    }),
+                }
+            }
+            _ => Err(format!("Invalid template 5")),
         };
     }
 
-    // pub(crate)  fn decode(&self) -> Result<Vec<f32>, String> {
-    //     match self.unpack() {
-    //         Ok(values) => match self.sections[5] {
-    //             Some(buf) => {
-    //                 let sec5 = section5::Section { buf: buf };
-    //                 match sec5.template() {
-    //                     Ok(template) => match template {
-    //                         section5::TemplateNumber::T0(t) => {
-    //                             Ok(decode_packed_scale_value(
-    //                                 &values,
-    //                                 t.r() as f32,
-    //                                 t.e() as i32,
-    //                                 t.d() as i32,
-    //                             ))
-    //                         }
-    //                     },
-    //                     Err(msg) => Err(msg),
-    //                 }
-    //             }
-    //             _ => Err(format!("Invalid section 5")),
-    //         },
-    //         Err(msg) => Err(msg),
-    //     }
-    // }
+    pub fn unpack_complex_packing_and_spatial_differencing(
+        &self,
+    ) -> Result<RawSimplePackingImage, String> {
+        let sec3 = self.section3.ok_or("Invalid section 3");
+        let width = sec3?.ni();
+        let height = sec3?.nj();
+
+        let sec5 = self.section5.ok_or("Invalid section 5");
+        let sec6 = self.section6.ok_or("Invalid section 6");
+        let sec7 = self.section7.ok_or("Invalid section 7");
+
+        return match sec5?.template() {
+            Some(Section5TemplateNumber::T3(t)) => {
+                let pixels = unpack_complex_packing_and_spatial_differencing(&sec7?.buf[5..], t);
+                match sec6?.bit_map_indicator() {
+                    0 => Ok(RawSimplePackingImage {
+                        width,
+                        height,
+                        r: t.r(),
+                        e: t.e(),
+                        d: t.d(),
+                        bits: t.bits(),
+                        pixels: apply_bit_map(&pixels, sec6?.bit_map(), width, height),
+                    }),
+                    _ => Ok(RawSimplePackingImage {
+                        width,
+                        height,
+                        r: t.r(),
+                        e: t.e(),
+                        d: t.d(),
+                        bits: t.bits(),
+                        pixels,
+                    }),
+                }
+            }
+            _ => Err(format!("Invalid template 5")),
+        };
+    }
 }
 
 impl fmt::Display for SectionSet<'_> {

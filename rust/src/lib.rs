@@ -30,6 +30,8 @@ extern "C" {
 pub struct SimplePackingAttributes {
     pub width: usize,
     pub height: usize,
+    pub di: usize,
+    pub dj: usize,
     bounds: Bounds,
     pub r: f32,
     pub e: isize,
@@ -52,6 +54,8 @@ impl SimplePackingAttributes {
 pub struct RunLengthPackingAttributes {
     pub width: usize,
     pub height: usize,
+    pub di: usize,
+    pub dj: usize,
     bounds: Bounds,
     pub bits: usize,
     pub factor: isize,
@@ -203,6 +207,8 @@ impl Grib2Wrapper {
 
         let sectionset = sectionsets.get(index);
         let bounds = sectionset.bounds()?;
+        let di = sectionset.di()?;
+        let dj = sectionset.dj()?;
         let packing_type = sectionset.packing_type()?;
 
         match packing_type {
@@ -214,6 +220,8 @@ impl Grib2Wrapper {
                     simple_packing_attributes: Some(SimplePackingAttributes {
                         width: image.width,
                         height: image.height,
+                        di,
+                        dj,
                         bounds,
                         r: image.r,
                         e: image.e,
@@ -233,6 +241,8 @@ impl Grib2Wrapper {
                     run_length_packing_attributes: Some(RunLengthPackingAttributes {
                         width: image.width,
                         height: image.height,
+                        di,
+                        dj,
                         bounds,
                         bits: image.bits,
                         factor: image.factor,

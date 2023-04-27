@@ -74,6 +74,16 @@ impl<'a> SectionSet<'a> {
         })
     }
 
+    // Di – i direction increment (see Notes 1 and 5)
+    pub fn di(&self) -> Option<usize> {
+        Some(self.section3?.di())
+    }
+
+    // Dj – j direction increment (see Notes 1 and 5)
+    pub fn dj(&self) -> Option<usize> {
+        Some(self.section3?.dj())
+    }
+
     pub fn unpack(&self) -> Result<RawSimplePackingImage, String> {
         let mut width = 0;
         let mut height = 0;

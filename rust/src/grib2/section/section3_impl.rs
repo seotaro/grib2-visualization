@@ -49,12 +49,12 @@ impl<'a> Section3<'a> {
     }
 
     // Di – i direction increment (see Notes 1 and 5)
-    fn di(&self) -> usize {
+    pub(crate) fn di(&self) -> usize {
         u32_be(&self.buf[63..67]) as usize
     }
 
     // Dj – j direction increment (see Notes 1 and 5)
-    fn dj(&self) -> usize {
+    pub(crate) fn dj(&self) -> usize {
         u32_be(&self.buf[67..71]) as usize
     }
 }

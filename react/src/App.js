@@ -274,8 +274,8 @@ function App() {
 
         <Box sx={{ width: '50%', bgcolor: '#ffffff', }}
         >
-          <Box sx={{}} >
-            <input type='file' id='file-input' />
+          <Box sx={{ m: 1 }} >
+            <input type='file' id='file-input' accept='.bin' />
           </Box>
 
           <Grib2List

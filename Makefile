@@ -3,8 +3,8 @@ initialize:
 
 build:
 	cd rust && wasm-pack build --target web
-	cp -r rust/pkg/ react/src/wasm/
-	cp -r rust/pkg/ react/public/wasm/
+	mkdir -p react/src/wasm
+	cp rust/pkg/rust.js rust/pkg/rust_bg.wasm react/src/wasm/
 
 run:
 	cd react && yarn start

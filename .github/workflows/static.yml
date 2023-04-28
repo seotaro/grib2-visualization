@@ -32,18 +32,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: install wasm-pack
+      - name: Setup Rust
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
         working-directory: ./rust
-      - name: build rust webassembly
+      - name: Build rust webassembly
         run: wasm-pack build --target web
         working-directory: ./rust
-      - name: check rust
-        run: ls -l
-        working-directory: ./rust
-
-      - name: cp
-        run: cp -r ./rust/pkg/ ./react/src/wasm/ && cp -r ./rust/pkg/ ./react/public/wasm/
+      - name: Copy webassembly module to react
+        run: |
+          mkdir -p ./react/src/wasm
+          cp ./rust/pkg/rust.js ./rust/pkg/rust_bg.wasm ./react/src/wasm/
 
       - name: Setup node
         uses: actions/setup-node@v3
@@ -54,11 +52,7 @@ jobs:
       - name: Install dependency
         run: yarn
         working-directory: ./react
-      - name: check a
-        run: ls -l
-        working-directory: ./react
-
-      - name: Build
+      - name: Build react app
         run: GENERATE_SOURCEMAP=false REACT_APP_ROUTE_BASENAME='grib2-rust' yarn react-scripts build
         working-directory: ./react
         env:

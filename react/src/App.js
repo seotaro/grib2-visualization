@@ -181,7 +181,7 @@ function App() {
         setImage(image);
       }
     }
-  }, [itemIndex, items]);
+  }, [itemIndex, items, viewMode]);
 
   useEffect(() => {
     if ((gl != null) && image) {
@@ -220,6 +220,10 @@ function App() {
   };
 
   const onChangeViewMode = (mode) => {
+    // テクスチャ作り直さないと壊れるっぽい
+    setImage(null);
+    setTexture(null);
+
     setViewMode(mode);
   };
 

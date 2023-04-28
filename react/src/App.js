@@ -119,6 +119,7 @@ function App() {
         const byteArray = new Uint8Array(arrayBuffer);
 
         setImage(null);
+        setItemIndex(0)
         grib2.clear();
 
         grib2.load(byteArray);

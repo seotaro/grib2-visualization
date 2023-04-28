@@ -162,6 +162,21 @@ function App() {
           , image.simple_packing_attributes()
           , image.run_length_packing_attributes());
 
+        switch (image.packing_type()) {
+          case 'simple':
+            {
+              const attributes = image.simple_packing_attributes();
+              setTexture(createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
+            }
+            break;
+
+          case 'run-length':
+            {
+              const attributes = image.run_length_packing_attributes();
+              setTexture(createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
+            }
+            break;
+        }
 
         setImage(image);
       }
@@ -186,12 +201,11 @@ function App() {
           break;
       }
     }
-  }, [image, textureFilter]);
+  }, [textureFilter]);
 
   const onChangeSelection = (selection) => {
     setItemIndex(selection);
   }
-
 
   const onChangeOpacity = (opacity) => {
     setOpacity(opacity);

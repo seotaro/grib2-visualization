@@ -17,7 +17,7 @@ const columns = [
       params.row.first_plane_type,
       params.row.first_plane_value,
       params.row.first_plane_factor],
-    renderCell: ({ value }) => (<Tooltip title={`type:${value[1]}, value:${value[2]}, factor:${value[3]}`} ><span>{value[0]}</span></Tooltip>),
+    renderCell: ({ value }) => (<Tooltip title={`${value[0]}, type:${value[1]}, value:${value[2]}, factor:${value[3]}`} ><span>{value[0]}</span></Tooltip>),
   },
   {
     field: 'parameter_name', headerName: 'parameter_name', width: 250, sortable: true,
@@ -25,7 +25,7 @@ const columns = [
       params.row.parameter_name,
       params.row.parameter_category,
       params.row.parameter_number],
-    renderCell: ({ value }) => (<Tooltip title={`category:${value[1]}, number:${value[2]}`} ><span>{value[0]}</span></Tooltip>),
+    renderCell: ({ value }) => (<Tooltip title={`${value[0]}, category:${value[1]}, number:${value[2]}`} ><span>{value[0]}</span></Tooltip>),
   },
 ];
 
@@ -33,16 +33,19 @@ export const Grib2List = (props) => {
   const { initial, onChangeSelection } = props;
 
   return (<>
-    <Box sx={{ m: 1 }}>
+    <Box sx={{}}>
       <Grid container spacing={2} alignItems="center">
         <Grid item>
           <DataGrid
+            autoHeight
+            density={'compact'}
+            sx={{ m: 1, }}
             rows={initial?.items ? initial.items.map((x, i) => { return { id: i, ...x } }) : []}
             columns={columns}
             disableColumnMenu={true}
             initialState={{
               pagination: {
-                paginationModel: { pageSize: 10, page: 0 },
+                paginationModel: { pageSize: 25, page: 0 },
               },
             }}
             pageSizeOptions={[5, 10, 25, 50, 100]}

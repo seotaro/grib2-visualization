@@ -196,6 +196,7 @@ function App() {
           layers.push(
             new SimplePackingBitmapLayer({
               id: "simple-packing-bitmap-layer",
+              getPolygonOffset: ({ layerIndex }) => [0, -layerIndex * 1000],
               bounds: [bounds.left, bounds.bottom, bounds.right, bounds.top].map(x => x / 1000000),
               _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
               image: texture,
@@ -216,6 +217,7 @@ function App() {
           layers.push(
             new RunLengthPackingBitmapLayer({
               id: "run-length-packing-bitmap-layer",
+              getPolygonOffset: ({ layerIndex }) => [0, -layerIndex * 1000],
               bounds: [bounds.left, bounds.bottom, bounds.right, bounds.top].map(x => x / 1000000),
               _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
               image: texture,
@@ -233,6 +235,7 @@ function App() {
   layers.push(
     new GeoJsonLayer({
       id: "latlon-line-layer",
+      getPolygonOffset: ({ layerIndex }) => [0, -layerIndex * 1000],
       data: latlonlineGeoJson,
       stroked: true,
       getLineColor: SETTINGS.latlonLineLayer.color,

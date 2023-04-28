@@ -11,7 +11,7 @@ const columns = [
   { field: 'reference_datetime', headerName: 'reference_datetime', valueFormatter: ({ value }) => moment(value).format('YYYY-MM-DD HH:mm'), width: 150, sortable: true, },
   { field: 'datetime', headerName: 'datetime', valueFormatter: ({ value }) => moment(value).format('YYYY-MM-DD HH:mm'), width: 150, sortable: true, },
   {
-    field: 'first_plane_name', headerName: 'first_plane_name', width: 300, sortable: true,
+    field: 'first_plane_name', headerName: 'first_plane_name', width: 250, sortable: true,
     valueGetter: (params) => [
       params.row.first_plane_name,
       params.row.first_plane_type,
@@ -20,16 +20,12 @@ const columns = [
     renderCell: ({ value }) => (<Tooltip title={`type:${value[1]}, value:${value[2]}, factor:${value[3]}`} ><span>{value[0]}</span></Tooltip>),
   },
   {
-    field: 'parameter_name', headerName: 'parameter_name', width: 300, sortable: true,
+    field: 'parameter_name', headerName: 'parameter_name', width: 250, sortable: true,
     valueGetter: (params) => [
       params.row.parameter_name,
       params.row.parameter_category,
       params.row.parameter_number],
     renderCell: ({ value }) => (<Tooltip title={`category:${value[1]}, number:${value[2]}`} ><span>{value[0]}</span></Tooltip>),
-  },
-  {
-    field: 'packing_type', headerName: 'packing_type', width: 100, sortable: true,
-    renderCell: (params) => (<Tooltip title={params.value} ><span>{params.value}</span></Tooltip>),
   },
 ];
 
@@ -46,7 +42,7 @@ export const Grib2List = (props) => {
             disableColumnMenu={true}
             initialState={{
               pagination: {
-                paginationModel: { pageSize: 25, page: 0 },
+                paginationModel: { pageSize: 10, page: 0 },
               },
             }}
             pageSizeOptions={[5, 10, 25, 50, 100]}
@@ -54,7 +50,7 @@ export const Grib2List = (props) => {
             rowHeight={30}
             hideFooterSelectedRowCount={true}
             rowSelection={true}
-            rowSelectionModel={[initial.selection]}
+            rowSelectionModel={initial?.items ? [initial.selection] : []}
             onRowSelectionModelChange={(selectionModel) => onChangeSelection(selectionModel[0])}
           />
         </Grid >

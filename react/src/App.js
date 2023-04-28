@@ -5,7 +5,6 @@ import { BitmapLayer, GeoJsonLayer, SolidPolygonLayer } from '@deck.gl/layers';
 import { COORDINATE_SYSTEM, MapView, _GlobeView as GlobeView } from '@deck.gl/core';
 import GL from '@luma.gl/constants';
 import { Texture2D } from '@luma.gl/webgl'
-import Drawer from '@mui/material/Drawer';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -103,11 +102,9 @@ function App() {
   const [gl, setGl] = useState(null);
   const [texture, setTexture] = useState(null);
   const [rustWasm, setWasm] = useState(null);
-  const [isDrawerState, setDrawerState] = useState('close');
 
   useEffect(() => {
     (async () => {
-      setDrawerState('close');  // ドロワーを初期状態にしたいので一旦、閉じる
       const rustWasm = await init();
       setWasm(rustWasm);
     })();
@@ -121,12 +118,11 @@ function App() {
         const arrayBuffer = await file.arrayBuffer();
         const byteArray = new Uint8Array(arrayBuffer);
 
-        grib2.clear();
         setImage(null);
+        grib2.clear();
 
         grib2.load(byteArray);
         setItems(grib2.items());
-        setImage(grib2.unpack_image(itemIndex));
       });
 
       const grib2 = new wasm.Grib2Wrapper();
@@ -137,16 +133,9 @@ function App() {
   useEffect(() => {
     if ((gl != null) && rustWasm) {
       setImage(null);
-      if (0 < grib2.items().length) {
-        setImage(grib2.unpack_image(itemIndex));
-      }
-    }
-  }, [itemIndex]);
-
-  useEffect(() => {
-    if ((gl != null)) {
       setTexture(null);
-      if (image != null) {
+      if (0 < grib2.items().length) {
+        const image = grib2.unpack_image(itemIndex);
 
         console.log('image', image
           , image.packing_type()
@@ -168,9 +157,11 @@ function App() {
             }
             break;
         }
+
+        setImage(image);
       }
     }
-  }, [image]);
+  }, [itemIndex, items]);
 
   const onChangeSelection = (selection) => {
     setItemIndex(selection);
@@ -253,63 +244,43 @@ function App() {
 
   return (
     <>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 10,
-          left: 10,
-          zIndex: 10,
-        }}
-      >
-        <IconButton aria-label="list" size="large" color="primary" onClick={() => setDrawerState('open')}        >
-          <ViewListIcon />
-        </IconButton>
+      <Box sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
 
-        <input type='file' id='file-input' />
-      </Box>
-
-      <DeckGL
-        initialViewState={SETTINGS.initialViewState}
-        controller={true}
-        layers={layers}
-        onWebGLInitialized={gl => {
-          console.log(gl)
-          setGl(gl);
-        }}
-      >
-        <GlobeView id="map" width="100%" controller={true} resolution={1} />
-        {/* <MapView id="map" width="100%" controller={true} /> */}
-      </DeckGL>
-
-      <Drawer
-        anchor={'bottom'}
-        open={isDrawerState === 'open'}
-        onClick={(e) => setDrawerState('close')}
-        onClose={(e) => setDrawerState('close')}
-        hideBackdrop={true}
-      >
-        <Box
-          sx={{ width: '100%', height: 300 }}
-          onKeyDown={(event) => {
-            if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-              return;
-            }
-            setDrawerState('close');
-          }}
-          onClick={(e) => e.stopPropagation()}  // クリックでドロワーを閉じさせない
-        >
-          <IconButton aria-label="settings" size="large" color="primary"
-            onClick={() => setDrawerState('close')}
+        display: 'flex',
+        flexDirection: 'row',
+      }}>
+        <Box sx={{ position: 'relative', width: '50%', }}>
+          <DeckGL
+            initialViewState={SETTINGS.initialViewState}
+            controller={true}
+            layers={layers}
+            onWebGLInitialized={gl => {
+              console.log(gl)
+              setGl(gl);
+            }}
           >
-            <CloseIcon />
-          </IconButton>
+            <GlobeView id="map" controller={true} resolution={1} />
+            {/* <MapView id="map" width="100%" controller={true} /> */}
+          </DeckGL>
+        </Box>
+
+        <Box sx={{ width: '50%', bgcolor: '#ffffff', }}
+        >
+          <Box sx={{}} >
+            <input type='file' id='file-input' />
+          </Box>
 
           <Grib2List
             initial={{ items, selection: [itemIndex] }}
             onChangeSelection={onChangeSelection}
           />
         </Box>
-      </Drawer>
+      </Box >
     </>
   );
 }

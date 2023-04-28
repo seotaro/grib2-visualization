@@ -5,6 +5,7 @@ import { BitmapLayer, GeoJsonLayer, SolidPolygonLayer } from '@deck.gl/layers';
 import { COORDINATE_SYSTEM, MapView, _GlobeView as GlobeView } from '@deck.gl/core';
 import GL from '@luma.gl/constants';
 import { Texture2D } from '@luma.gl/webgl'
+import Typography from '@mui/material/Typography';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -276,6 +277,9 @@ function App() {
         <Box sx={{ width: '50%', bgcolor: '#ffffff', }}
         >
           <Box sx={{ m: 1 }} >
+            <Typography variant='h4' gutterBottom>
+              GRIB2 Viewer
+            </Typography>
             <input type='file' id='file-input' accept='.bin' />
           </Box>
 

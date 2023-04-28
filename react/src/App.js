@@ -6,11 +6,19 @@ import { COORDINATE_SYSTEM, MapView, _GlobeView as GlobeView } from '@deck.gl/co
 import GL from '@luma.gl/constants';
 import { Texture2D } from '@luma.gl/webgl'
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Slider from '@mui/material/Slider';
+import TextField from '@mui/material/TextField';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import ViewListIcon from '@mui/icons-material/ViewList';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 
 import { Grib2List } from './Components/Grib2List';
 import { latlonlineGeoJson, colormaps } from './utils'
@@ -42,27 +50,38 @@ const SETTINGS = {
   },
 };
 
-const WIDTH = 256;
-const HEIGHT = 256;
 
-const DEFAULT_TEXTURE_PARAMETERS = {
-  [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
-  [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
-  // [GL.TEXTURE_MIN_FILTER]: GL.LINEAR,
-  // [GL.TEXTURE_MAG_FILTER]: GL.LINEAR,
-  [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
-  [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
+const textureParameters = (filter) => {
+  const parameters = {
+    [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
+    [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
+  };
+
+  switch (filter) {
+    case 'linear':
+      parameters[GL.TEXTURE_MIN_FILTER] = GL.LINEAR;
+      parameters[GL.TEXTURE_MAG_FILTER] = GL.LINEAR;
+      break;
+
+    case 'nearest':
+    default:
+      parameters[GL.TEXTURE_MIN_FILTER] = GL.NEAREST;
+      parameters[GL.TEXTURE_MAG_FILTER] = GL.NEAREST;
+      break;
+  }
+
+  return parameters;
 };
 
 // Grayscale 8bpp のテクスチャを生成する
-const createGrayscale8bppTexture = (gl, pixels, width, height) => {
+const createGrayscale8bppTexture = (gl, pixels, width, height, filter) => {
   const texture = new Texture2D(gl, {
     data: pixels,
     format: GL.LUMINANCE,
     type: GL.UNSIGNED_BYTE,
     width,
     height,
-    parameters: { ...DEFAULT_TEXTURE_PARAMETERS },
+    parameters: { ...textureParameters(filter) },
     pixelStore: { [GL.UNPACK_ALIGNMENT]: 1 },
     mipmaps: true,
   });
@@ -71,7 +90,7 @@ const createGrayscale8bppTexture = (gl, pixels, width, height) => {
 }
 
 // Grayscale 16bpp のテクスチャを生成する
-const createGrayscale16bppTexture = (gl, pixels, width, height) => {
+const createGrayscale16bppTexture = (gl, pixels, width, height, filter) => {
   // Uint16Array から Uint8Array にキャストする。
   const dataView = new DataView(pixels.buffer);
   const dest = new Uint8Array(pixels.length * 2);
@@ -87,7 +106,7 @@ const createGrayscale16bppTexture = (gl, pixels, width, height) => {
     type: GL.UNSIGNED_BYTE,
     width,
     height,
-    parameters: { ...DEFAULT_TEXTURE_PARAMETERS },
+    parameters: { ...textureParameters(filter) },
     pixelStore: { [GL.UNPACK_ALIGNMENT]: 2 },
     mipmaps: true,
   });
@@ -103,6 +122,16 @@ function App() {
   const [gl, setGl] = useState(null);
   const [texture, setTexture] = useState(null);
   const [rustWasm, setWasm] = useState(null);
+  const [blend, setBlend] = useState('normal');
+  const [textureFilter, setTextureFilter] = useState('nearest');
+  const [viewMode, setViewMode] = useState('globe');
+  const [opacity, setOpacity] = useState(1.0);
+
+  // 画面更新
+  const [update, setUpdate] = useState(0);
+  const redraw = () => {
+    setUpdate((c) => c + 1);
+  }
 
   useEffect(() => {
     (async () => {
@@ -144,30 +173,52 @@ function App() {
           , image.simple_packing_attributes()
           , image.run_length_packing_attributes());
 
-        switch (image.packing_type()) {
-          case 'simple':
-            {
-              const attributes = image.simple_packing_attributes();
-              setTexture(createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height));
-            }
-            break;
-
-          case 'run-length':
-            {
-              const attributes = image.run_length_packing_attributes();
-              setTexture(createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height));
-            }
-            break;
-        }
 
         setImage(image);
       }
     }
   }, [itemIndex, items]);
 
+  useEffect(() => {
+    if ((gl != null) && image) {
+      switch (image.packing_type()) {
+        case 'simple':
+          {
+            const attributes = image.simple_packing_attributes();
+            setTexture(createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
+          }
+          break;
+
+        case 'run-length':
+          {
+            const attributes = image.run_length_packing_attributes();
+            setTexture(createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
+          }
+          break;
+      }
+    }
+  }, [image, textureFilter]);
+
   const onChangeSelection = (selection) => {
     setItemIndex(selection);
   }
+
+
+  const onChangeOpacity = (opacity) => {
+    setOpacity(opacity);
+  };
+
+  const onChangeBlend = (blend) => {
+    setBlend(blend);
+  };
+
+  const onChangeTextureFilter = (filter) => {
+    setTextureFilter(filter);
+  };
+
+  const onChangeViewMode = (mode) => {
+    setViewMode(mode);
+  };
 
   const layers = [];
   layers.push([
@@ -190,6 +241,29 @@ function App() {
     const item = items[itemIndex];
     const colormap = colormaps(item.parameter_category, item.parameter_number);
 
+    const parameters = ((blend) => {
+      switch (blend) {
+        case 'screen':
+          return {
+            [GL.BLEND]: true,
+            [GL.BLEND_SRC_RGB]: GL.ONE,
+            [GL.BLEND_DST_RGB]: GL.ONE_MINUS_SRC_COLOR,
+            [GL.BLEND_SRC_ALPHA]: GL.ONE,
+            [GL.BLEND_DST_ALPHA]: GL.ONE_MINUS_SRC_ALPHA,
+          }
+
+        case 'normal':
+        default:
+          return {
+            [GL.BLEND]: true,
+            [GL.BLEND_SRC_RGB]: GL.SRC_ALPHA,
+            [GL.BLEND_DST_RGB]: GL.ONE_MINUS_SRC_ALPHA,
+            [GL.BLEND_SRC_ALPHA]: GL.ONE,
+            [GL.BLEND_DST_ALPHA]: GL.ONE_MINUS_SRC_ALPHA,
+          }
+      }
+    })(blend);
+
     switch (image.packing_type()) {
       case 'simple':
         {
@@ -202,11 +276,12 @@ function App() {
               bounds: [bounds.left, bounds.bottom, bounds.right, bounds.top].map(x => x / 1000000),
               _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
               image: texture,
-              opacity: 0.75,
+              opacity,
               r: attributes.r,
               e: attributes.e,
               d: attributes.d,
               colormap,
+              parameters,
             }),
           );
         }
@@ -223,10 +298,11 @@ function App() {
               bounds: [bounds.left, bounds.bottom, bounds.right, bounds.top].map(x => x / 1000000),
               _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
               image: texture,
-              opacity: 0.75,
+              opacity,
               factor: attributes.factor,
               levels: attributes.levels(),
               colormap,
+              parameters,
             }),
           );
         }
@@ -269,8 +345,10 @@ function App() {
               setGl(gl);
             }}
           >
-            <GlobeView id="map" controller={true} resolution={1} />
-            {/* <MapView id="map" width="100%" controller={true} /> */}
+            {(viewMode === 'globe')
+              ? <GlobeView id="globe" controller={true} resolution={1} />
+              : <MapView id="map" controller={true} />
+            }
           </DeckGL>
         </Box>
 
@@ -281,6 +359,11 @@ function App() {
               GRIB2 Viewer
             </Typography>
             <input type='file' id='file-input' accept='.bin' />
+
+            <Blend initial={blend} onChange={onChangeBlend} />
+            <TextureFilter initial={textureFilter} onChange={onChangeTextureFilter} />
+            <ViewMode initial={viewMode} onChange={onChangeViewMode} />
+            <Opacity initial={opacity} onChange={onChangeOpacity} />
           </Box>
 
           <Grib2List
@@ -291,6 +374,173 @@ function App() {
       </Box >
     </>
   );
+}
+
+const toOpacityValue = (index) => {
+  return index / 100.0;
+}
+
+const toOpacityIndex = (value) => {
+  return Math.floor(value * 100.0);
+}
+
+const Opacity = ({ initial, onChange }) => {
+  const [opacityIndex, setOpacityIndex] = useState(toOpacityIndex(initial));  // 0<= opacityIndex <= 100
+
+  const labelFormat = (index) => {
+    return `${toOpacityValue(index)}`;
+  }
+
+  const _onChange = (event, newValue) => {
+    const index = newValue;
+    setOpacityIndex(index);
+    onChange(toOpacityValue(index));
+  };
+
+  return (<>
+    <Box sx={{ margin: 1, marginTop: 2 }}>
+
+      <Grid container spacing={2} alignItems="center">
+        <Grid item xs='auto'>
+          <Typography id="opacity-input-slider" variant="subtitle1"  >
+            Opacity
+          </Typography>
+
+        </Grid>
+        <Grid item xs={7}>
+          <Box sx={{ marginLeft: 1, marginRight: 1 }}>
+            <Slider
+              value={opacityIndex}
+              onChange={_onChange}
+              valueLabelDisplay="auto"
+              min={0}
+              max={100}
+              valueLabelFormat={labelFormat}
+              aria-labelledby="opacity-input-slider"
+            />
+          </Box>
+        </Grid>
+
+        <Grid item xs='auto'>
+          <TextField
+            id="opacity-input"
+            value={toOpacityValue(opacityIndex)}
+            variant="standard"
+            InputProps={{
+              readOnly: true,
+              inputProps: {
+                style: {
+                  width: 50,
+                  paddingRight: 10,
+                  textAlign: 'right',
+                  backgroundColor: 'lightgray',
+                },
+              }
+            }}
+          />
+        </Grid>
+      </Grid>
+    </Box>
+  </>);
+}
+
+const Blend = ({ initial, onChange }) => {
+  const [type, setType] = useState(initial);
+
+  const _onChange = (event) => {
+    const type = event.target.value;
+    setType(type);
+    onChange(type);
+  };
+
+  return (<>
+    <FormControl>
+      <Grid container direction="row" justifyContent='flex-start' alignItems="center" spacing={1}>
+        <Grid item>
+          <FormLabel id="blend-radio-buttons-group-label">Blend</FormLabel>
+        </Grid >
+
+        <Grid item>
+          <RadioGroup
+            row
+            aria-labelledby="blend-radio-buttons-group-label"
+            name="blend-radio-buttons-group"
+            value={type}
+            onChange={_onChange}
+          >
+            <FormControlLabel value="normal" control={<Radio />} label="通常" />
+            <FormControlLabel value="screen" control={<Radio />} label="スクリーン" />
+          </RadioGroup>
+        </Grid >
+      </Grid >
+    </FormControl>
+  </>)
+}
+
+const TextureFilter = ({ initial, onChange }) => {
+  const [type, setType] = useState(initial);
+
+  const _onChange = (event) => {
+    const type = event.target.value;
+    setType(type);
+    onChange(type);
+  };
+
+  return (<>
+    <FormControl>
+      <Grid container direction="row" justifyContent='flex-start' alignItems="center" spacing={1}>
+        <Grid item>
+          <FormLabel id="texture-filter-radio-buttons-group-label">TextureFilter</FormLabel>
+        </Grid >
+
+        <Grid item>
+          <RadioGroup
+            row
+            aria-labelledby="texture-filter-radio-buttons-group-label"
+            name="texture-filter-radio-buttons-group"
+            value={type}
+            onChange={_onChange}
+          >
+            <FormControlLabel value="nearest" control={<Radio />} label="nearest" />
+            <FormControlLabel value="linear" control={<Radio />} label="linear" />
+          </RadioGroup>
+        </Grid >
+      </Grid >
+    </FormControl>
+  </>)
+}
+
+const ViewMode = ({ initial, onChange }) => {
+  const [type, setType] = useState(initial);
+
+  const _onChange = (event) => {
+    const type = event.target.value;
+    setType(type);
+    onChange(type);
+  };
+
+  return (<>
+    <FormControl>
+      <Grid container direction="row" justifyContent='flex-start' alignItems="center" spacing={1}>
+        <Grid item>
+          <FormLabel id="view-mode-radio-buttons-group-label">ViewMode</FormLabel>
+        </Grid >
+
+        <Grid item>
+          <RadioGroup
+            row
+            aria-labelledby="view-mode-radio-buttons-group-label"
+            name="view-mode-radio-buttons-group"
+            value={type}
+            onChange={_onChange}
+          >
+            <FormControlLabel value="globe" control={<Radio />} label="globe" />
+            <FormControlLabel value="map" control={<Radio />} label="map" />
+          </RadioGroup>
+        </Grid >
+      </Grid >
+    </FormControl>
+  </>)
 }
 
 export default App;

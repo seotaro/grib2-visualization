@@ -1,5 +1,15 @@
 # GRIB2 parser by Rust
 
+## メモ
+
+|  TH  |  Template3.  |  Template4.  |  Template5.  |  Bit map  | Template7.  | Packing  |
+| ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+|  GSM（全球域）  |  0  |  0/8  |  0  |  -   | 0  | simple  |
+|  GSM（日本域）  |  0  |  0/8  |  3  |  -   | 3  | complex packing and spatial differencing  |
+|  LFM  |  0  |  0/8  |  0  |  applied   | 0  | simple  |
+|  5分毎1kmメッシュ全国合成レーダー  |  0  |  50008  |  200  |  -  | 200  | run length  |
+|  高解像度降水ナウキャスト  |  0  |  50011  |  200  |  -  | 200  | run length  |
+
 ## 参考
 
 - ドキュメント

@@ -1,9 +1,7 @@
 export default `
-#define SHADER_NAME bitmap-layer-fragment-shader
+#define SHADER_NAME simple-packing-bitmaplayer-fragment-shader
 
-#ifdef GL_ES
 precision highp float;
-#endif
 
 uniform sampler2D bitmapTexture;
 

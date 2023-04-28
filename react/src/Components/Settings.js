@@ -24,9 +24,9 @@ export const Settings = (props) => {
       <Box sx={{}}>
         <Blend initial={initial.blend} onChange={onChangeBlend} />
       </Box >
-      <Box sx={{}}>
+      {/* <Box sx={{}}>
         <TextureFilter initial={initial.textureFilter} onChange={onChangeTextureFilter} />
-      </Box >
+      </Box > */}
       <Box sx={{}}>
         <ViewMode initial={initial.viewMode} onChange={onChangeViewMode} />
       </Box >

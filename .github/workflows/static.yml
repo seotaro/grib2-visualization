@@ -32,11 +32,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+        working-directory: ./rust
       - name: build rust webassembly
         run: wasm-pack build --target web
         working-directory: ./rust
       - name: check rust
         run: ls -l
+        working-directory: ./rust
+
+      - name: cp
+        run: cp -r ./rust/pkg/ ./react/src/wasm/ && cp -r ./rust/pkg/ ./react/public/wasm/
         working-directory: ./rust
 
       - name: Setup node
@@ -51,3 +58,19 @@ jobs:
       - name: check a
         run: ls -l
         working-directory: ./react
+
+      - name: Build
+        run: GENERATE_SOURCEMAP=false REACT_APP_ROUTE_BASENAME='grib2-rust' yarn react-scripts build
+        working-directory: ./react
+        env:
+          CI: false
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: "./build"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1

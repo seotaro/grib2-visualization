@@ -87,9 +87,7 @@ impl PackingImage {
         match self.packing_type {
             PackingType::Simple => String::from("simple"),
             PackingType::RunLength => String::from("run-length"),
-            PackingType::ComplexPackingAndSpatialDifferencing => {
-                String::from("complex-packing-and-spatial-differencing")
-            }
+            PackingType::ComplexPackingAndSpatialDifferencing => String::from("simple"),
         }
     }
 

@@ -6,21 +6,10 @@ import { COORDINATE_SYSTEM, MapView, _GlobeView as GlobeView } from '@deck.gl/co
 import GL from '@luma.gl/constants';
 import { Texture2D } from '@luma.gl/webgl'
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import Slider from '@mui/material/Slider';
-import TextField from '@mui/material/TextField';
-import SettingsIcon from '@mui/icons-material/Settings';
 import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import ViewListIcon from '@mui/icons-material/ViewList';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormLabel from '@mui/material/FormLabel';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
 
 import { Grib2List } from './Components/Grib2List';
+import { Settings } from './Components/Settings';
 import { latlonlineGeoJson, colormaps } from './utils'
 import SimplePackingBitmapLayer from './SimplePackingBitmapLayer'
 import RunLengthPackingBitmapLayer from './RunLengthPackingBitmapLayer'
@@ -358,12 +347,21 @@ function App() {
             <Typography variant='h4' gutterBottom>
               GRIB2 Viewer
             </Typography>
-            <input type='file' id='file-input' accept='.bin' />
-
-            <Blend initial={blend} onChange={onChangeBlend} />
-            <TextureFilter initial={textureFilter} onChange={onChangeTextureFilter} />
-            <ViewMode initial={viewMode} onChange={onChangeViewMode} />
-            <Opacity initial={opacity} onChange={onChangeOpacity} />
+            <Box sx={{ m: 1 }} >
+              <input type='file' id='file-input' accept='.bin' />
+            </Box>
+            <Settings
+              initial={{
+                blend,
+                textureFilter,
+                viewMode,
+                opacity,
+              }}
+              onChangeBlend={onChangeBlend}
+              onChangeTextureFilter={onChangeTextureFilter}
+              onChangeViewMode={onChangeViewMode}
+              onChangeOpacity={onChangeOpacity}
+            />
           </Box>
 
           <Grib2List
@@ -374,173 +372,6 @@ function App() {
       </Box >
     </>
   );
-}
-
-const toOpacityValue = (index) => {
-  return index / 100.0;
-}
-
-const toOpacityIndex = (value) => {
-  return Math.floor(value * 100.0);
-}
-
-const Opacity = ({ initial, onChange }) => {
-  const [opacityIndex, setOpacityIndex] = useState(toOpacityIndex(initial));  // 0<= opacityIndex <= 100
-
-  const labelFormat = (index) => {
-    return `${toOpacityValue(index)}`;
-  }
-
-  const _onChange = (event, newValue) => {
-    const index = newValue;
-    setOpacityIndex(index);
-    onChange(toOpacityValue(index));
-  };
-
-  return (<>
-    <Box sx={{ margin: 1, marginTop: 2 }}>
-
-      <Grid container spacing={2} alignItems="center">
-        <Grid item xs='auto'>
-          <Typography id="opacity-input-slider" variant="subtitle1"  >
-            Opacity
-          </Typography>
-
-        </Grid>
-        <Grid item xs={7}>
-          <Box sx={{ marginLeft: 1, marginRight: 1 }}>
-            <Slider
-              value={opacityIndex}
-              onChange={_onChange}
-              valueLabelDisplay="auto"
-              min={0}
-              max={100}
-              valueLabelFormat={labelFormat}
-              aria-labelledby="opacity-input-slider"
-            />
-          </Box>
-        </Grid>
-
-        <Grid item xs='auto'>
-          <TextField
-            id="opacity-input"
-            value={toOpacityValue(opacityIndex)}
-            variant="standard"
-            InputProps={{
-              readOnly: true,
-              inputProps: {
-                style: {
-                  width: 50,
-                  paddingRight: 10,
-                  textAlign: 'right',
-                  backgroundColor: 'lightgray',
-                },
-              }
-            }}
-          />
-        </Grid>
-      </Grid>
-    </Box>
-  </>);
-}
-
-const Blend = ({ initial, onChange }) => {
-  const [type, setType] = useState(initial);
-
-  const _onChange = (event) => {
-    const type = event.target.value;
-    setType(type);
-    onChange(type);
-  };
-
-  return (<>
-    <FormControl>
-      <Grid container direction="row" justifyContent='flex-start' alignItems="center" spacing={1}>
-        <Grid item>
-          <FormLabel id="blend-radio-buttons-group-label">Blend</FormLabel>
-        </Grid >
-
-        <Grid item>
-          <RadioGroup
-            row
-            aria-labelledby="blend-radio-buttons-group-label"
-            name="blend-radio-buttons-group"
-            value={type}
-            onChange={_onChange}
-          >
-            <FormControlLabel value="normal" control={<Radio />} label="通常" />
-            <FormControlLabel value="screen" control={<Radio />} label="スクリーン" />
-          </RadioGroup>
-        </Grid >
-      </Grid >
-    </FormControl>
-  </>)
-}
-
-const TextureFilter = ({ initial, onChange }) => {
-  const [type, setType] = useState(initial);
-
-  const _onChange = (event) => {
-    const type = event.target.value;
-    setType(type);
-    onChange(type);
-  };
-
-  return (<>
-    <FormControl>
-      <Grid container direction="row" justifyContent='flex-start' alignItems="center" spacing={1}>
-        <Grid item>
-          <FormLabel id="texture-filter-radio-buttons-group-label">TextureFilter</FormLabel>
-        </Grid >
-
-        <Grid item>
-          <RadioGroup
-            row
-            aria-labelledby="texture-filter-radio-buttons-group-label"
-            name="texture-filter-radio-buttons-group"
-            value={type}
-            onChange={_onChange}
-          >
-            <FormControlLabel value="nearest" control={<Radio />} label="nearest" />
-            <FormControlLabel value="linear" control={<Radio />} label="linear" />
-          </RadioGroup>
-        </Grid >
-      </Grid >
-    </FormControl>
-  </>)
-}
-
-const ViewMode = ({ initial, onChange }) => {
-  const [type, setType] = useState(initial);
-
-  const _onChange = (event) => {
-    const type = event.target.value;
-    setType(type);
-    onChange(type);
-  };
-
-  return (<>
-    <FormControl>
-      <Grid container direction="row" justifyContent='flex-start' alignItems="center" spacing={1}>
-        <Grid item>
-          <FormLabel id="view-mode-radio-buttons-group-label">ViewMode</FormLabel>
-        </Grid >
-
-        <Grid item>
-          <RadioGroup
-            row
-            aria-labelledby="view-mode-radio-buttons-group-label"
-            name="view-mode-radio-buttons-group"
-            value={type}
-            onChange={_onChange}
-          >
-            <FormControlLabel value="globe" control={<Radio />} label="globe" />
-            <FormControlLabel value="map" control={<Radio />} label="map" />
-          </RadioGroup>
-        </Grid >
-      </Grid >
-    </FormControl>
-  </>)
 }
 
 export default App;

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import { DataGrid } from '@mui/x-data-grid';
 import moment from 'moment-timezone';
 import Tooltip from '@mui/material/Tooltip';
@@ -34,30 +33,26 @@ export const Grib2List = (props) => {
 
   return (<>
     <Box sx={{}}>
-      <Grid container spacing={2} alignItems="center">
-        <Grid item>
-          <DataGrid
-            autoHeight
-            density={'compact'}
-            sx={{ m: 1, }}
-            rows={initial?.items ? initial.items.map((x, i) => { return { id: i, ...x } }) : []}
-            columns={columns}
-            disableColumnMenu={true}
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 25, page: 0 },
-              },
-            }}
-            pageSizeOptions={[5, 10, 25, 50, 100]}
-            headerHeight={30}
-            rowHeight={30}
-            hideFooterSelectedRowCount={true}
-            rowSelection={true}
-            rowSelectionModel={initial?.items ? [initial.selection] : []}
-            onRowSelectionModelChange={(selectionModel) => onChangeSelection(selectionModel[0])}
-          />
-        </Grid >
-      </Grid >
+      <DataGrid
+        autoHeight
+        density={'compact'}
+        sx={{ m: 1, }}
+        rows={initial?.items ? initial.items.map((x, i) => { return { id: i, ...x } }) : []}
+        columns={columns}
+        disableColumnMenu={true}
+        initialState={{
+          pagination: {
+            paginationModel: { pageSize: 25, page: 0 },
+          },
+        }}
+        pageSizeOptions={[5, 10, 25, 50, 100]}
+        headerHeight={30}
+        rowHeight={30}
+        hideFooterSelectedRowCount={true}
+        rowSelection={true}
+        rowSelectionModel={initial?.items ? [initial.selection] : []}
+        onRowSelectionModelChange={(selectionModel) => onChangeSelection(selectionModel[0])}
+      />
     </Box>
   </>)
 }

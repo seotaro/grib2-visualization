@@ -203,9 +203,6 @@ impl Grib2Wrapper {
 
     pub fn unpack_image(&self, index: usize) -> Option<PackingImage> {
         let sectionsets = self.grib2.sectionsets();
-
-        log(&format!("unpack_image {}", sectionsets.len()));
-
         let sectionset = sectionsets.get(index);
         let bounds = sectionset.bounds()?;
         let di = sectionset.di()?;

@@ -5,14 +5,11 @@ import { BitmapLayer, GeoJsonLayer, SolidPolygonLayer } from '@deck.gl/layers';
 import { COORDINATE_SYSTEM, MapView, _GlobeView as GlobeView } from '@deck.gl/core';
 import GL from '@luma.gl/constants';
 import { Texture2D } from '@luma.gl/webgl'
-import Drawer from '@mui/material/Drawer';
-import SettingsIcon from '@mui/icons-material/Settings';
+import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import ViewListIcon from '@mui/icons-material/ViewList';
 
 import { Grib2List } from './Components/Grib2List';
+import { Settings } from './Components/Settings';
 import { latlonlineGeoJson, colormaps } from './utils'
 import SimplePackingBitmapLayer from './SimplePackingBitmapLayer'
 import RunLengthPackingBitmapLayer from './RunLengthPackingBitmapLayer'
@@ -42,27 +39,38 @@ const SETTINGS = {
   },
 };
 
-const WIDTH = 256;
-const HEIGHT = 256;
 
-const DEFAULT_TEXTURE_PARAMETERS = {
-  [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
-  [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
-  // [GL.TEXTURE_MIN_FILTER]: GL.LINEAR,
-  // [GL.TEXTURE_MAG_FILTER]: GL.LINEAR,
-  [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
-  [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
+const textureParameters = (filter) => {
+  const parameters = {
+    [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
+    [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
+  };
+
+  switch (filter) {
+    case 'linear':
+      parameters[GL.TEXTURE_MIN_FILTER] = GL.LINEAR;
+      parameters[GL.TEXTURE_MAG_FILTER] = GL.LINEAR;
+      break;
+
+    case 'nearest':
+    default:
+      parameters[GL.TEXTURE_MIN_FILTER] = GL.NEAREST;
+      parameters[GL.TEXTURE_MAG_FILTER] = GL.NEAREST;
+      break;
+  }
+
+  return parameters;
 };
 
 // Grayscale 8bpp のテクスチャを生成する
-const createGrayscale8bppTexture = (gl, pixels, width, height) => {
+const createGrayscale8bppTexture = (gl, pixels, width, height, filter) => {
   const texture = new Texture2D(gl, {
     data: pixels,
     format: GL.LUMINANCE,
     type: GL.UNSIGNED_BYTE,
     width,
     height,
-    parameters: { ...DEFAULT_TEXTURE_PARAMETERS },
+    parameters: { ...textureParameters(filter) },
     pixelStore: { [GL.UNPACK_ALIGNMENT]: 1 },
     mipmaps: true,
   });
@@ -71,7 +79,7 @@ const createGrayscale8bppTexture = (gl, pixels, width, height) => {
 }
 
 // Grayscale 16bpp のテクスチャを生成する
-const createGrayscale16bppTexture = (gl, pixels, width, height) => {
+const createGrayscale16bppTexture = (gl, pixels, width, height, filter) => {
   // Uint16Array から Uint8Array にキャストする。
   const dataView = new DataView(pixels.buffer);
   const dest = new Uint8Array(pixels.length * 2);
@@ -87,7 +95,7 @@ const createGrayscale16bppTexture = (gl, pixels, width, height) => {
     type: GL.UNSIGNED_BYTE,
     width,
     height,
-    parameters: { ...DEFAULT_TEXTURE_PARAMETERS },
+    parameters: { ...textureParameters(filter) },
     pixelStore: { [GL.UNPACK_ALIGNMENT]: 2 },
     mipmaps: true,
   });
@@ -103,11 +111,19 @@ function App() {
   const [gl, setGl] = useState(null);
   const [texture, setTexture] = useState(null);
   const [rustWasm, setWasm] = useState(null);
-  const [isDrawerState, setDrawerState] = useState('close');
+  const [blend, setBlend] = useState('normal');
+  const [textureFilter, setTextureFilter] = useState('nearest');
+  const [viewMode, setViewMode] = useState('globe');
+  const [opacity, setOpacity] = useState(1.0);
+
+  // 画面更新
+  const [update, setUpdate] = useState(0);
+  const redraw = () => {
+    setUpdate((c) => c + 1);
+  }
 
   useEffect(() => {
     (async () => {
-      setDrawerState('close');  // ドロワーを初期状態にしたいので一旦、閉じる
       const rustWasm = await init();
       setWasm(rustWasm);
     })();
@@ -121,12 +137,12 @@ function App() {
         const arrayBuffer = await file.arrayBuffer();
         const byteArray = new Uint8Array(arrayBuffer);
 
-        grib2.clear();
         setImage(null);
+        setItemIndex(0)
+        grib2.clear();
 
         grib2.load(byteArray);
         setItems(grib2.items());
-        setImage(grib2.unpack_image(itemIndex));
       });
 
       const grib2 = new wasm.Grib2Wrapper();
@@ -137,16 +153,9 @@ function App() {
   useEffect(() => {
     if ((gl != null) && rustWasm) {
       setImage(null);
-      if (0 < grib2.items().length) {
-        setImage(grib2.unpack_image(itemIndex));
-      }
-    }
-  }, [itemIndex]);
-
-  useEffect(() => {
-    if ((gl != null)) {
       setTexture(null);
-      if (image != null) {
+      if (0 < grib2.items().length) {
+        const image = grib2.unpack_image(itemIndex);
 
         console.log('image', image
           , image.packing_type()
@@ -157,24 +166,62 @@ function App() {
           case 'simple':
             {
               const attributes = image.simple_packing_attributes();
-              setTexture(createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height));
+              setTexture(createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
             }
             break;
 
           case 'run-length':
             {
               const attributes = image.run_length_packing_attributes();
-              setTexture(createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height));
+              setTexture(createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
             }
             break;
         }
+
+        setImage(image);
       }
     }
-  }, [image]);
+  }, [itemIndex, items]);
+
+  useEffect(() => {
+    if ((gl != null) && image) {
+      switch (image.packing_type()) {
+        case 'simple':
+          {
+            const attributes = image.simple_packing_attributes();
+            setTexture(createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
+          }
+          break;
+
+        case 'run-length':
+          {
+            const attributes = image.run_length_packing_attributes();
+            setTexture(createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
+          }
+          break;
+      }
+    }
+  }, [textureFilter]);
 
   const onChangeSelection = (selection) => {
     setItemIndex(selection);
   }
+
+  const onChangeOpacity = (opacity) => {
+    setOpacity(opacity);
+  };
+
+  const onChangeBlend = (blend) => {
+    setBlend(blend);
+  };
+
+  const onChangeTextureFilter = (filter) => {
+    setTextureFilter(filter);
+  };
+
+  const onChangeViewMode = (mode) => {
+    setViewMode(mode);
+  };
 
   const layers = [];
   layers.push([
@@ -197,6 +244,29 @@ function App() {
     const item = items[itemIndex];
     const colormap = colormaps(item.parameter_category, item.parameter_number);
 
+    const parameters = ((blend) => {
+      switch (blend) {
+        case 'screen':
+          return {
+            [GL.BLEND]: true,
+            [GL.BLEND_SRC_RGB]: GL.ONE,
+            [GL.BLEND_DST_RGB]: GL.ONE_MINUS_SRC_COLOR,
+            [GL.BLEND_SRC_ALPHA]: GL.ONE,
+            [GL.BLEND_DST_ALPHA]: GL.ONE_MINUS_SRC_ALPHA,
+          }
+
+        case 'normal':
+        default:
+          return {
+            [GL.BLEND]: true,
+            [GL.BLEND_SRC_RGB]: GL.SRC_ALPHA,
+            [GL.BLEND_DST_RGB]: GL.ONE_MINUS_SRC_ALPHA,
+            [GL.BLEND_SRC_ALPHA]: GL.ONE,
+            [GL.BLEND_DST_ALPHA]: GL.ONE_MINUS_SRC_ALPHA,
+          }
+      }
+    })(blend);
+
     switch (image.packing_type()) {
       case 'simple':
         {
@@ -205,14 +275,16 @@ function App() {
           layers.push(
             new SimplePackingBitmapLayer({
               id: "simple-packing-bitmap-layer",
+              getPolygonOffset: ({ layerIndex }) => [0, -layerIndex * 1000],
               bounds: [bounds.left, bounds.bottom, bounds.right, bounds.top].map(x => x / 1000000),
               _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
               image: texture,
-              opacity: 0.75,
+              opacity,
               r: attributes.r,
               e: attributes.e,
               d: attributes.d,
               colormap,
+              parameters,
             }),
           );
         }
@@ -225,13 +297,15 @@ function App() {
           layers.push(
             new RunLengthPackingBitmapLayer({
               id: "run-length-packing-bitmap-layer",
+              getPolygonOffset: ({ layerIndex }) => [0, -layerIndex * 1000],
               bounds: [bounds.left, bounds.bottom, bounds.right, bounds.top].map(x => x / 1000000),
               _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
               image: texture,
-              opacity: 0.75,
+              opacity,
               factor: attributes.factor,
               levels: attributes.levels(),
               colormap,
+              parameters,
             }),
           );
         }
@@ -242,6 +316,7 @@ function App() {
   layers.push(
     new GeoJsonLayer({
       id: "latlon-line-layer",
+      getPolygonOffset: ({ layerIndex }) => [0, -layerIndex * 1000],
       data: latlonlineGeoJson,
       stroked: true,
       getLineColor: SETTINGS.latlonLineLayer.color,
@@ -253,63 +328,62 @@ function App() {
 
   return (
     <>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 10,
-          left: 10,
-          zIndex: 10,
-        }}
-      >
-        <IconButton aria-label="list" size="large" color="primary" onClick={() => setDrawerState('open')}        >
-          <ViewListIcon />
-        </IconButton>
+      <Box sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
 
-        <input type='file' id='file-input' />
-      </Box>
-
-      <DeckGL
-        initialViewState={SETTINGS.initialViewState}
-        controller={true}
-        layers={layers}
-        onWebGLInitialized={gl => {
-          console.log(gl)
-          setGl(gl);
-        }}
-      >
-        <GlobeView id="map" width="100%" controller={true} resolution={1} />
-        {/* <MapView id="map" width="100%" controller={true} /> */}
-      </DeckGL>
-
-      <Drawer
-        anchor={'bottom'}
-        open={isDrawerState === 'open'}
-        onClick={(e) => setDrawerState('close')}
-        onClose={(e) => setDrawerState('close')}
-        hideBackdrop={true}
-      >
-        <Box
-          sx={{ width: '100%', height: 300 }}
-          onKeyDown={(event) => {
-            if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-              return;
-            }
-            setDrawerState('close');
-          }}
-          onClick={(e) => e.stopPropagation()}  // クリックでドロワーを閉じさせない
-        >
-          <IconButton aria-label="settings" size="large" color="primary"
-            onClick={() => setDrawerState('close')}
+        display: 'flex',
+        flexDirection: 'row',
+      }}>
+        <Box sx={{ position: 'relative', width: '50%', }}>
+          <DeckGL
+            initialViewState={SETTINGS.initialViewState}
+            controller={true}
+            layers={layers}
+            onWebGLInitialized={gl => {
+              console.log(gl)
+              setGl(gl);
+            }}
           >
-            <CloseIcon />
-          </IconButton>
+            {(viewMode === 'globe')
+              ? <GlobeView id="globe" controller={true} resolution={1} />
+              : <MapView id="map" controller={true} />
+            }
+          </DeckGL>
+        </Box>
+
+        <Box sx={{ width: '50%', bgcolor: '#ffffff', }}
+        >
+          <Box sx={{ m: 1 }} >
+            <Typography variant='h4' gutterBottom>
+              GRIB2 Viewer
+            </Typography>
+            <Box sx={{ m: 1 }} >
+              <input type='file' id='file-input' accept='.bin' />
+            </Box>
+            <Settings
+              initial={{
+                blend,
+                textureFilter,
+                viewMode,
+                opacity,
+              }}
+              onChangeBlend={onChangeBlend}
+              onChangeTextureFilter={onChangeTextureFilter}
+              onChangeViewMode={onChangeViewMode}
+              onChangeOpacity={onChangeOpacity}
+            />
+          </Box>
 
           <Grib2List
             initial={{ items, selection: [itemIndex] }}
             onChangeSelection={onChangeSelection}
           />
         </Box>
-      </Drawer>
+      </Box >
     </>
   );
 }

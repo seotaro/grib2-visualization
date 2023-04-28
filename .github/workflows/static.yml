@@ -39,6 +39,6 @@ jobs:
       - name: Install dependency
         run: yarn
         working-directory: ./react
-      - name: check
+      - name: check a
         run: ls -l
         working-directory: ./react

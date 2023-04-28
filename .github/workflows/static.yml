@@ -32,9 +32,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: install wasm-pack
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-        working-directory: ./rust
       - name: build rust webassembly
         run: wasm-pack build --target web
         working-directory: ./rust

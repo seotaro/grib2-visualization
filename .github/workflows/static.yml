@@ -44,7 +44,6 @@ jobs:
 
       - name: cp
         run: cp -r ./rust/pkg/ ./react/src/wasm/ && cp -r ./rust/pkg/ ./react/public/wasm/
-        working-directory: ./rust
 
       - name: Setup node
         uses: actions/setup-node@v3

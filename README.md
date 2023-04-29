@@ -6,7 +6,7 @@
 
 ![image](https://user-images.githubusercontent.com/46148606/235303415-89b75629-29dc-4148-b560-3098636c0624.png)
 
-## メモ
+## Notes
 
 |  product  |  version |  template3.  |  template4.  |  template5.  |  Bit map  | template7.  | Packing  |
 | ---- | ----  | ---- | ---- | ---- | ---- | ---- | ---- |
@@ -16,13 +16,13 @@
 |  5分毎1kmメッシュ全国合成レーダー  |      |  0  |  50008  |  200  |  -  | 200  | run length  |
 |  高解像度降水ナウキャスト  |      |  0  |  50011  |  200  |  -  | 200  | run length  |
 
-## 参考
+## References
 
 - ドキュメント
   - [WMO](https://public.wmo.int/) >> [Manual on Codes](https://library.wmo.int/index.php?lvl=notice_display&id=10684#.ZEsjTOxBz0p)
   - [気象庁](https://www.jma.go.jp/jma/index.html) >> [気象通報式](https://www.jma.go.jp/jma/kishou/books/tsuhoshiki/tsuhoshiki.html)
   - [気象庁](https://www.jma.go.jp/jma/index.html) >> [気象庁情報カタログ](https://www.data.jma.go.jp/add/suishin/catalogue/catalogue.html)
-  - [気象庁](https://www.jma.go.jp/jma/index.html) >> [配信資料に関する技術情報](htt<https://www.data.jma.go.jp/add/suishin/cgi-bin/jyouhou/jyouhou.cgi)>
+  - [気象庁](https://www.jma.go.jp/jma/index.html) >> [配信資料に関する技術情報](https://www.data.jma.go.jp/add/suishin/cgi-bin/jyouhou/jyouhou.cgi)
 
 - データ
   - [（一財）気象業務支援センター](http://www.jmbsc.or.jp/jp/index.html) >> [オンライン気象情報](http://www.jmbsc.or.jp/jp/index.html#gaiyou-online) >> [ファイル形式データ](http://www.jmbsc.or.jp/jp/online/f-online0.html)

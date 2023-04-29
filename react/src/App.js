@@ -369,7 +369,7 @@ function App() {
 
             <Dropzone onDrop={onDropFiles} accept={{ 'application/octet-stream': ['.bin'] }}>
               {({ getRootProps, getInputProps }) => (
-                <Box sx={{ m: 1, height: '100%', overflowY: 'scroll' }}>
+                <Box sx={{ m: 1 }}>
                   <Box sx={{
                     p: 1,
                     bgcolor: '#fafafa',
@@ -386,7 +386,7 @@ function App() {
                       Drop GRIB2（*.bin） files here, or click to select files
                     </Box>
 
-                    <Box sx={{ height: '4em' }} >
+                    <Box sx={{ height: '4em', overflowY: 'scroll' }} >
                       <ol>{files.map(name => <li key={name}>{name}</li>)}</ol>
                     </Box>
                   </Box>

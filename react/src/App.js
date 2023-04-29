@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, } from 'react';
 
 import DeckGL from '@deck.gl/react';
 import { BitmapLayer, GeoJsonLayer, SolidPolygonLayer } from '@deck.gl/layers';
@@ -7,6 +7,7 @@ import GL from '@luma.gl/constants';
 import { Texture2D } from '@luma.gl/webgl'
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Dropzone from 'react-dropzone'
 
 import { Grib2List } from './Components/Grib2List';
 import { Settings } from './Components/Settings';
@@ -104,13 +105,13 @@ const createGrayscale16bppTexture = (gl, pixels, width, height, filter) => {
 }
 
 function App() {
+  const [gl, setGl] = useState(null);
+  const [grib2, setGrib2] = useState(null);
   const [image, setImage] = useState(null);
   const [items, setItems] = useState(null);
   const [itemIndex, setItemIndex] = useState(0);
-  const [grib2, setGrib2] = useState(null);
-  const [gl, setGl] = useState(null);
   const [texture, setTexture] = useState(null);
-  const [rustWasm, setWasm] = useState(null);
+  const [files, setFiles] = useState([]);
   const [blend, setBlend] = useState('normal');
   const [textureFilter, setTextureFilter] = useState('nearest');
   const [viewMode, setViewMode] = useState('globe');
@@ -125,33 +126,14 @@ function App() {
   useEffect(() => {
     (async () => {
       const rustWasm = await init();
-      setWasm(rustWasm);
+      const grib2 = new wasm.Grib2Wrapper();
+      setGrib2(grib2);
     })();
   }, []);
 
-  useEffect(() => {
-    if (rustWasm) {
-      const fileInput = document.getElementById('file-input');
-      fileInput.addEventListener('change', async (event) => {
-        const file = event.target.files[0];
-        const arrayBuffer = await file.arrayBuffer();
-        const byteArray = new Uint8Array(arrayBuffer);
-
-        setImage(null);
-        setItemIndex(0)
-        grib2.clear();
-
-        grib2.load(byteArray);
-        setItems(grib2.items());
-      });
-
-      const grib2 = new wasm.Grib2Wrapper();
-      setGrib2(grib2);
-    }
-  }, [rustWasm]);
 
   useEffect(() => {
-    if ((gl != null) && rustWasm) {
+    if (gl && grib2) {
       setImage(null);
       setTexture(null);
       if (0 < grib2.items().length) {
@@ -226,6 +208,25 @@ function App() {
 
     setViewMode(mode);
   };
+
+  const onDropFiles = async (acceptedFiles) => {
+    if (acceptedFiles == null) return;
+
+    setFiles(acceptedFiles.map(file => file.name));
+
+    setImage(null);
+    setItemIndex(0)
+    grib2.clear();
+
+    for (const file of acceptedFiles) {
+      const arrayBuffer = await file.arrayBuffer();
+      const byteArray = new Uint8Array(arrayBuffer);
+      grib2.load(byteArray);
+    };
+    grib2.dump();
+
+    setItems(grib2.items());
+  }
 
   const layers = [];
   layers.push([
@@ -359,15 +360,39 @@ function App() {
           </DeckGL>
         </Box>
 
-        <Box sx={{ width: '50%', bgcolor: '#ffffff', }}
+        <Box sx={{ width: '50%', height: '100%', bgcolor: '#ffffff', overflow: 'auto' }}
         >
           <Box sx={{ m: 1 }} >
             <Typography variant='h4' gutterBottom>
               GRIB2 Viewer
             </Typography>
-            <Box sx={{ m: 1 }} >
-              <input type='file' id='file-input' accept='.bin' />
-            </Box>
+
+            <Dropzone onDrop={onDropFiles} accept={{ 'application/octet-stream': ['.bin'] }}>
+              {({ getRootProps, getInputProps }) => (
+                <Box sx={{ m: 1, height: '100%', overflowY: 'scroll' }}>
+                  <Box sx={{
+                    p: 1,
+                    bgcolor: '#fafafa',
+                    color: 'darkgray',
+                    borderRadius: 2,
+                    borderWidth: 2,
+                    borderStyle: 'dashed',
+                    borderColor: 'lightgray',
+                  }}
+                    {...getRootProps()}
+                  >
+                    <input {...getInputProps()} />
+                    <Box sx={{ m: 0.5 }}>
+                      Drop GRIB2（*.bin） files here, or click to select files
+                    </Box>
+
+                    <Box sx={{ height: '4em' }} >
+                      <ol>{files.map(name => <li key={name}>{name}</li>)}</ol>
+                    </Box>
+                  </Box>
+                </Box>
+              )}
+            </Dropzone>
             <Settings
               initial={{
                 blend,
@@ -380,12 +405,12 @@ function App() {
               onChangeViewMode={onChangeViewMode}
               onChangeOpacity={onChangeOpacity}
             />
-          </Box>
 
-          <Grib2List
-            initial={{ items, selection: [itemIndex] }}
-            onChangeSelection={onChangeSelection}
-          />
+            <Grib2List
+              initial={{ items, selection: itemIndex }}
+              onChangeSelection={onChangeSelection}
+            />
+          </Box>
         </Box>
       </Box >
     </>

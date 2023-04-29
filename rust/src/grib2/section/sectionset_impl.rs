@@ -202,34 +202,22 @@ impl fmt::Display for SectionSet<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "{}{}{}{}{}{}{}",
-            match self.section1 {
-                Some(sec) => format!("{}", sec),
-                _ => format!("--Section1\n"),
-            },
-            match self.section2 {
-                Some(sec) => format!("{}", sec),
-                _ => format!("--Section2\n"),
-            },
-            match self.section3 {
-                Some(sec) => format!("{}", sec),
-                _ => format!("--Section3\n"),
-            },
+            "{}, {}, {}, {}",
             match self.section4 {
                 Some(sec) => format!("{}", sec),
-                _ => format!("--Section4\n"),
+                _ => format!("template4.?"),
             },
             match self.section5 {
                 Some(sec) => format!("{}", sec),
-                _ => format!("--Section5\n"),
+                _ => format!("template5.?"),
             },
             match self.section6 {
                 Some(sec) => format!("{}", sec),
-                _ => format!("--Section6\n"),
+                _ => format!("template6.?"),
             },
             match self.section7 {
                 Some(sec) => format!("{}", sec),
-                _ => format!("--Section7\n"),
+                _ => format!("template7.?"),
             },
         )
     }
@@ -277,3 +265,21 @@ impl<'a> Iterator for SectionSetsIter<'a> {
         }
     }
 }
+
+// impl fmt::Display for PackingType {
+//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+//         match self {
+//             PackingType::Simple => write!(f, "simple: "),
+//             PackingType::RunLength => write!(f, "run length: "),
+//             PackingType::ComplexPackingAndSpatialDifferencing => {
+//                 write!(f, "complex packing and spatial...")
+//             }
+//         }
+//     }
+// }
+
+// impl fmt::Debug for PackingType {
+//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+//         write!(f, "bit_map: ")
+//     }
+// }

@@ -50,21 +50,7 @@ impl<'a> Section for Section4<'a> {
 
 impl fmt::Display for Section4<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.template() {
-            Some(template) => write!(
-                f,
-                "--Section4\nlength: {}\n----template4.{}\n{}",
-                self.length(),
-                self.template_number(),
-                template
-            ),
-            None => write!(
-                f,
-                "--Section4\nlength: {}\n----template4.{} None\n",
-                self.length(),
-                self.template_number(),
-            ),
-        }
+        write!(f, "template4.{}", self.template_number())
     }
 }
 

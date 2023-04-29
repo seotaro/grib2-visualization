@@ -173,6 +173,26 @@ impl Grib2Wrapper {
         self.items = items;
     }
 
+    pub fn dump(&self) {
+        let sectionsets = self.grib2.sectionsets();
+        for (i, sectionset) in sectionsets.iter().enumerate() {
+            log(&format!(
+                "No.{:03} {:?} {:?} {} ",
+                i,
+                Self::parameter_name(
+                    sectionset.parameter_category(),
+                    sectionset.parameter_number(),
+                ),
+                Self::first_plane_name(
+                    sectionset.first_plane_type(),
+                    sectionset.first_plane_factor(),
+                    sectionset.first_plane_value(),
+                ),
+                sectionset
+            ));
+        }
+    }
+
     pub fn parameter_name(
         parameter_category: Option<usize>,
         parameter_number: Option<usize>,

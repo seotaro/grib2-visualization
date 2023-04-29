@@ -56,7 +56,7 @@ impl<'a> Section for Section7<'a> {
 
 impl fmt::Display for Section7<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "--Section7\nlength: {}\n", self.length(),)
+        write!(f, "template7.{}", self.template_number())
     }
 }
 

@@ -40,17 +40,12 @@ impl<'a> Section for Section6<'a> {
 
 impl fmt::Display for Section6<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "\
---Section6\n\
-length: {}\n\
-bit_map indicator: {}\n\
-bit_map (size): {}\n\
-            ",
-            self.length(),
-            self.bit_map_indicator(),
-            self.bit_map().len(),
-        )
+        write!(f, "bit_map: {}", self.bit_map_indicator())
+    }
+}
+
+impl fmt::Debug for Section6<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "bit_map indicator: {}", self.bit_map_indicator())
     }
 }

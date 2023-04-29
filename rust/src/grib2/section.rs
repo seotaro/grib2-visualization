@@ -110,7 +110,7 @@ pub struct SectionSetsIter<'a> {
     index: usize,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub enum PackingType {
     Simple,
     RunLength,

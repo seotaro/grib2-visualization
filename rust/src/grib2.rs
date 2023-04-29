@@ -31,8 +31,7 @@ impl<'a> Grib2<'a> {
 
     pub fn dump(&self) {
         for (i, sectionset) in self.sectionsets.iter().enumerate() {
-            print!("{:05}\n{} ", i, sectionset);
-            println!("");
+            println!("{:05}\n{} ", i, sectionset);
         }
     }
 }

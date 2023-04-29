@@ -111,6 +111,7 @@ function App() {
   const [image, setImage] = useState(null);
   const [items, setItems] = useState(null);
   const [itemIndex, setItemIndex] = useState(0);
+  const [colormap, setColormap] = useState(null);
   const [texture, setTexture] = useState(null);
   const [files, setFiles] = useState([]);
   const [blend, setBlend] = useState('normal');
@@ -145,6 +146,9 @@ function App() {
           , image.simple_packing_attributes()
           , image.run_length_packing_attributes());
 
+        const item = items[itemIndex];
+        setColormap(colormaps(item.parameter_category, item.parameter_number));
+
         switch (image.packing_type()) {
           case 'simple':
             {
@@ -164,27 +168,7 @@ function App() {
         setImage(image);
       }
     }
-  }, [itemIndex, items, viewMode]);
-
-  useEffect(() => {
-    if ((gl != null) && image) {
-      switch (image.packing_type()) {
-        case 'simple':
-          {
-            const attributes = image.simple_packing_attributes();
-            setTexture(createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
-          }
-          break;
-
-        case 'run-length':
-          {
-            const attributes = image.run_length_packing_attributes();
-            setTexture(createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
-          }
-          break;
-      }
-    }
-  }, [textureFilter]);
+  }, [itemIndex, items, viewMode, textureFilter]);
 
   const onChangeSelection = (selection) => {
     setItemIndex(selection);
@@ -213,11 +197,13 @@ function App() {
   const onDropFiles = async (acceptedFiles) => {
     if (acceptedFiles == null) return;
 
-    setFiles(acceptedFiles.map(file => file.name));
-
     setImage(null);
-    setItemIndex(0)
+    setTexture(null);
+    setItemIndex(0);
+
     grib2.clear();
+
+    setFiles(acceptedFiles.map(file => file.name));
 
     for (const file of acceptedFiles) {
       const arrayBuffer = await file.arrayBuffer();
@@ -247,9 +233,6 @@ function App() {
   ]);
 
   if (image) {
-    const item = items[itemIndex];
-    const colormap = colormaps(item.parameter_category, item.parameter_number);
-
     const parameters = ((blend) => {
       switch (blend) {
         case 'screen':

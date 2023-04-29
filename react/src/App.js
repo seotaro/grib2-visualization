@@ -365,9 +365,9 @@ function App() {
           </DeckGL>
         </Box>
 
-        <Box sx={{ width: '50%', bgcolor: '#ffffff', }}
+        <Box sx={{ width: '50%', height: '100%', bgcolor: '#ffffff', overflow: 'auto' }}
         >
-          <Box sx={{ m: 1, }} >
+          <Box sx={{ m: 1 }} >
             <Typography variant='h4' gutterBottom>
               GRIB2 Viewer
             </Typography>
@@ -389,10 +389,10 @@ function App() {
                   >
                     <input {...getInputProps()} />
                     <Box sx={{ m: 0.5 }}>
-                      Drag 'n' drop some files here, or click to select files
+                      Drop GRIB2（*.bin） files here, or click to select files
                     </Box>
 
-                    <Box sx={{ height: '4em', overflowY: 'scroll' }} >
+                    <Box sx={{ height: '4em' }} >
                       <ol>{files.map(name => <li key={name}>{name}</li>)}</ol>
                     </Box>
                   </Box>

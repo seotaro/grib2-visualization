@@ -62,22 +62,12 @@ impl<'a> Section for Section5<'a> {
 
 impl fmt::Display for Section5<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.template() {
-            Some(template) => write!(
-                f,
-                "\
---Section5\n\
-length: {}\n\
-point count: {}\n\
-----template5.{}\n{}\
-                ",
-                self.length(),
-                self.point_count(),
-                self.template_number(),
-                template
-            ),
-            None => write!(f, "none",),
-        }
+        write!(
+            f,
+            "template5.{} {:?}",
+            self.template_number(),
+            self.packing_type(),
+        )
     }
 }
 

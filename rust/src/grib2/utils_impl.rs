@@ -99,10 +99,13 @@ pub(crate) fn parse(buf: &[u8]) -> SectionSets {
 
 pub(crate) fn parameter_name(category: usize, number: usize) -> Option<String> {
     match category {
+        // Temperature
         0 => match number {
             0 => Some(String::from("Temperature [K]")),
             _ => None,
         },
+
+        // Moisture
         1 => match number {
             1 => Some(String::from("Relative Humidity [%]")),
             8 => Some(String::from("Total Precipitation [kg m-2]")),
@@ -111,18 +114,30 @@ pub(crate) fn parameter_name(category: usize, number: usize) -> Option<String> {
             214 => Some(String::from("降水強度の誤差の要因")),
             _ => None,
         },
+
+        // Momentum
         2 => match number {
             2 => Some(String::from("U-Component of Wind [m s-1]")),
             3 => Some(String::from("V-Component of Wind [m s-1]")),
             8 => Some(String::from("Vertical Velocity (Pressure) [Pa s-1]")),
             _ => None,
         },
+
+        // Mass
         3 => match number {
             0 => Some(String::from("Pressure [Pa]")),
             1 => Some(String::from("Pressure Reduced to MSL [Pa]")),
             5 => Some(String::from("Geopotential Height [gpm]")),
             _ => None,
         },
+
+        // Short-wave radiation
+        4 => match number {
+            7 => Some(String::from("Downward short-wave radiation flux [W m-2]")),
+            _ => None,
+        },
+
+        // Cloud
         6 => match number {
             1 => Some(String::from("Total Cloud Cover [%]")),
             3 => Some(String::from("Low Cloud Cover [%]")),

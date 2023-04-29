@@ -11,7 +11,8 @@ import Dropzone from 'react-dropzone'
 
 import { Grib2List } from './Components/Grib2List';
 import { Settings } from './Components/Settings';
-import { latlonlineGeoJson, colormaps } from './utils'
+import { latlonlineGeoJson } from './utils'
+import { colormaps } from './colormap-utils'
 import SimplePackingBitmapLayer from './SimplePackingBitmapLayer'
 import RunLengthPackingBitmapLayer from './RunLengthPackingBitmapLayer'
 import init, * as wasm from './wasm/rust';

@@ -21,7 +21,7 @@ const SETTINGS = {
   initialViewState: {
     longitude: 140.0,
     latitude: 40.0,
-    zoom: 1.0,
+    zoom: 1.5,
   },
   mapLayer: {
     color: [64, 64, 64],

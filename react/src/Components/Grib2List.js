@@ -53,6 +53,9 @@ export const Grib2List = (props) => {
         rowSelectionModel={initial?.items ? [initial.selection] : []}
         onRowSelectionModelChange={(selectionModel) => onChangeSelection(selectionModel[0])}
       />
+      <Box sx={{ m: 1, color: 'darkgray' }}>
+        ※ Shift + Arrow Up/Down: Select the current row and the row above or below
+      </Box>
     </Box>
   </>)
 }

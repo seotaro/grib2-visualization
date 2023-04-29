@@ -105,18 +105,17 @@ const createGrayscale16bppTexture = (gl, pixels, width, height, filter) => {
 }
 
 function App() {
+  const [gl, setGl] = useState(null);
+  const [grib2, setGrib2] = useState(null);
   const [image, setImage] = useState(null);
   const [items, setItems] = useState(null);
   const [itemIndex, setItemIndex] = useState(0);
-  const [grib2, setGrib2] = useState(null);
-  const [gl, setGl] = useState(null);
   const [texture, setTexture] = useState(null);
-  const [rustWasm, setWasm] = useState(null);
+  const [files, setFiles] = useState([]);
   const [blend, setBlend] = useState('normal');
   const [textureFilter, setTextureFilter] = useState('nearest');
   const [viewMode, setViewMode] = useState('globe');
   const [opacity, setOpacity] = useState(1.0);
-  const [files, setFiles] = useState([]);
 
   // 画面更新
   const [update, setUpdate] = useState(0);
@@ -127,19 +126,14 @@ function App() {
   useEffect(() => {
     (async () => {
       const rustWasm = await init();
-      setWasm(rustWasm);
+      const grib2 = new wasm.Grib2Wrapper();
+      setGrib2(grib2);
     })();
   }, []);
 
-  useEffect(() => {
-    if (rustWasm) {
-      const grib2 = new wasm.Grib2Wrapper();
-      setGrib2(grib2);
-    }
-  }, [rustWasm]);
 
   useEffect(() => {
-    if ((gl != null) && rustWasm) {
+    if (gl && grib2) {
       setImage(null);
       setTexture(null);
       if (0 < grib2.items().length) {
@@ -372,9 +366,8 @@ function App() {
             <Typography variant='h4' gutterBottom>
               GRIB2 Viewer
             </Typography>
-            <Dropzone onDrop={onDropFiles} accept={{
-              'application/octet-stream': ['.bin']
-            }}>
+
+            <Dropzone onDrop={onDropFiles} accept={{ 'application/octet-stream': ['.bin'] }}>
               {({ getRootProps, getInputProps }) => (
                 <Box sx={{ m: 1, height: '100%', overflowY: 'scroll' }}>
                   <Box sx={{
@@ -414,7 +407,7 @@ function App() {
             />
 
             <Grib2List
-              initial={{ items, selection: [itemIndex] }}
+              initial={{ items, selection: itemIndex }}
               onChangeSelection={onChangeSelection}
             />
           </Box>

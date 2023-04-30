@@ -28,5 +28,5 @@
   - [（一財）気象業務支援センター](http://www.jmbsc.or.jp/jp/index.html) >> [オンライン気象情報](http://www.jmbsc.or.jp/jp/index.html#gaiyou-online) >> [ファイル形式データ](http://www.jmbsc.or.jp/jp/online/f-online0.html)
   - [京都大学生存圏研究所](http://database.rish.kyoto-u.ac.jp/) >> [グローバル大気観測データ](http://database.rish.kyoto-u.ac.jp/arch/glob-atmos/) >> [気象庁データ ※](http://database.rish.kyoto-u.ac.jp/arch/jmadata/gpv-original.html)
 
-※ 利用上の注意
+※ 京都大学生存圏研究所がホストされている気象庁データの利用上の注意
 > ここでは教育研究機関向けにデータを提供しています．企業活動等のためにデータを頻繁に必要とされる方は，気象業務支援センターからデータを直接購入し，データ提供スキーム全体の維持発展にご協力ください．

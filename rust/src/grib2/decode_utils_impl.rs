@@ -8,7 +8,7 @@ use super::type_utils_impl::u16_be;
 use super::type_utils_impl::u32_be;
 
 pub(crate) fn unpack(buf: &[u8], bits: usize) -> Vec<u16> {
-    assert!(bits < mem::size_of::<u16>() * 8);
+    assert!(bits <= mem::size_of::<u16>() * 8);
 
     const TEMP_BITS: usize = mem::size_of::<u32>() * 8; // 一時変数のビット数
     const TEMP_FULL_BIT: u32 = !0; // 一時変数で全ビットを立てた状態
@@ -125,7 +125,7 @@ pub(crate) fn unpack_complex_packing_and_spatial_differencing(
     section5_template3: Section5Template3,
 ) -> Vec<u16> {
     let bits = section5_template3.bits();
-    assert!(bits < mem::size_of::<u16>() * 8);
+    assert!(bits <= mem::size_of::<u16>() * 8);
 
     assert!(section5_template3.order() == 2); // 2階空間差分 決め打ち
 

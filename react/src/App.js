@@ -339,7 +339,7 @@ function App() {
           >
             {(viewMode === 'globe')
               ? <GlobeView id="globe" controller={true} resolution={1} />
-              : <MapView id="map" controller={true} />
+              : <MapView id="map" controller={true} repeat={true} />
             }
           </DeckGL>
         </Box>

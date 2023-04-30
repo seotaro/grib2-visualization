@@ -1,4 +1,4 @@
-# GRIB2 Parse and Visualization
+# Parse and visualize GRIB2 data
 
 ## Demo
 

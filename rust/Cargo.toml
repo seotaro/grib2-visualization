@@ -1,8 +1,9 @@
 [package]
 name = "rust"
 version = "0.1.0"
-authors = ["seotaro <mail2017@seotaro.com>"]
+authors = ["Taro Seo"]
 edition = "2018"
+license = "MIT/Apache-2.0"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

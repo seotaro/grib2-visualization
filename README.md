@@ -2,7 +2,7 @@
 
 ## Demo
 
-[Live Demo](https://seotaro.github.io/grib2-rust/)
+[Live Demo](https://seotaro.github.io/grib2-visualization/)
 
 <img width="500" alt="image" src="https://user-images.githubusercontent.com/46148606/235341919-ed067400-c9c6-415c-b926-5534f29b75c3.png">
 

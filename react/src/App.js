@@ -210,7 +210,7 @@ function App() {
       const byteArray = new Uint8Array(arrayBuffer);
       grib2.load(byteArray);
     };
-    grib2.dump();
+    // grib2.dump();
 
     setItems(grib2.items());
   }

@@ -4,7 +4,7 @@
 
 [Live Demo](https://seotaro.github.io/grib2-rust/)
 
-![image](https://user-images.githubusercontent.com/46148606/235303415-89b75629-29dc-4148-b560-3098636c0624.png)
+<img width="500" alt="image" src="https://user-images.githubusercontent.com/46148606/235341919-ed067400-c9c6-415c-b926-5534f29b75c3.png">
 
 ## Install
 

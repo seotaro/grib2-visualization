@@ -7,9 +7,14 @@ use super::super::type_utils_impl::u16_be;
 use super::super::type_utils_impl::u32_be;
 use super::super::type_utils_impl::u8_be;
 use super::section4_template::Template0;
+use super::section4_template::Template1;
+use super::section4_template::Template11;
 use super::section4_template::Template50008;
+use super::section4_template::Template50009;
 use super::section4_template::Template50011;
+use super::section4_template::Template50012;
 use super::section4_template::Template8;
+use super::section4_template::Template9;
 use super::section4_template::TemplateNumber;
 use super::Section;
 use super::Section4;
@@ -28,9 +33,14 @@ impl<'a> Section4<'a> {
     pub(crate) fn template(&self) -> Option<TemplateNumber> {
         match self.template_number() {
             0 => Some(TemplateNumber::T0(Template0 { buf: self.buf })),
+            1 => Some(TemplateNumber::T1(Template1 { buf: self.buf })),
             8 => Some(TemplateNumber::T8(Template8 { buf: self.buf })),
-            50011 => Some(TemplateNumber::T50011(Template50011 { buf: self.buf })),
+            9 => Some(TemplateNumber::T9(Template9 { buf: self.buf })),
+            11 => Some(TemplateNumber::T11(Template11 { buf: self.buf })),
             50008 => Some(TemplateNumber::T50008(Template50008 { buf: self.buf })),
+            50009 => Some(TemplateNumber::T50009(Template50009 { buf: self.buf })),
+            50011 => Some(TemplateNumber::T50011(Template50011 { buf: self.buf })),
+            50012 => Some(TemplateNumber::T50012(Template50012 { buf: self.buf })),
             _ => None,
         }
     }

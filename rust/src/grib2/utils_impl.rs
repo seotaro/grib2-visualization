@@ -109,9 +109,19 @@ pub(crate) fn parameter_name(category: usize, number: usize) -> Option<String> {
         1 => match number {
             1 => Some(String::from("Relative Humidity [%]")),
             8 => Some(String::from("Total Precipitation [kg m-2]")),
+            52 => Some(String::from("Total precipitation rate [kg m-2 s-1]")),
+            57 => Some(String::from("Total snowfall rate [m s-1]")),
+            200 => Some(String::from("1時間降水量レベル値")),
             201 => Some(String::from("10分間降水強度（1時間換算値）レベル値")),
             203 => Some(String::from("降水強度レベル値(解析、予報）")),
+            206 => Some(String::from("土壌雨量タンクレベル値")),
             214 => Some(String::from("降水強度の誤差の要因")),
+            215 => Some(String::from("表面雨量指数値")),
+            216 => Some(String::from("浸水危険度判定値")),
+            217 => Some(String::from("洪水危険度判定値")),
+            218 => Some(String::from("浸水・洪水危険度判定値")),
+            232 => Some(String::from("積雪の深さのレベル値")),
+            233 => Some(String::from("降雪の深さの合計のレベル値")),
             _ => None,
         },
 
@@ -143,8 +153,34 @@ pub(crate) fn parameter_name(category: usize, number: usize) -> Option<String> {
             3 => Some(String::from("Low Cloud Cover [%]")),
             4 => Some(String::from("Medium Cloud Cover [%]")),
             5 => Some(String::from("High Cloud Cover [%]")),
+            8 => Some(String::from("Cloud type")),
+            12 => Some(String::from("Cloud top")),
+            200 => Some(String::from("品質情報")),
+            201 => Some(String::from("雲・ダストの有無")),
+            202 => Some(String::from("雪氷の有無")),
             _ => None,
         },
+
+        // Physical atmospheric properties
+        19 => match number {
+            0 => Some(String::from("Visibility [m]")),
+            2 => Some(String::from("Thunderstorm probability [%]")),
+            _ => None,
+        },
+
+        // Miscellaneous
+        191 => match number {
+            192 => Some(String::from("天気")),
+            _ => None,
+        },
+
+        // ナウキャスト
+        193 => match number {
+            0 => Some(String::from("竜巻発生確度")),
+            1 => Some(String::from("雷活動度")),
+            _ => None,
+        },
+
         _ => None,
     }
 }

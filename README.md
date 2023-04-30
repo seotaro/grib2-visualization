@@ -6,7 +6,25 @@
 
 ![image](https://user-images.githubusercontent.com/46148606/235303415-89b75629-29dc-4148-b560-3098636c0624.png)
 
-## Notes
+## Install
+
+```bash
+make Install
+```
+
+## Build
+
+```bash
+make build-for-wasm
+```
+
+## run
+
+```bash
+make run
+```
+
+## Notes on JWA GIRB2
 
 |  product  |  version |  template3.  |  template4.  |  template5.  |  Bit map  | template7.  | Packing  |
 | ---- | ----  | ---- | ---- | ---- | ---- | ---- | ---- |

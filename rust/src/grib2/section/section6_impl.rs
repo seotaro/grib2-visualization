@@ -40,7 +40,14 @@ impl<'a> Section for Section6<'a> {
 
 impl fmt::Display for Section6<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "bit_map: {}", self.bit_map_indicator())
+        write!(
+            f,
+            "bit_map: {}",
+            match self.bit_map_indicator() {
+                255 => "not apply",
+                _ => "apply",
+            }
+        )
     }
 }
 

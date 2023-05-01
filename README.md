@@ -26,40 +26,82 @@ make run
 
 ## Notes on JWA GIRB2
 
-|                             product                              |  version  | template3. | template4. | template5. | Bit map | template7. |                 Packing                  |
-| ---------------------------------------------------------------- | --------- | ---------- | ---------- | ---------- | ------- | ---------- | ---------------------------------------- |
-| GSM（全球域）                                                    |           | 0          | 0/8        | 0          | -       | 0          | simple                                   |
-| GSM（日本域）                                                    | 2023/03〜 | 0          | 0/8        | 3          | -       | 3          | complex packing and spatial differencing |
-| LFM                                                              |           | 0          | 0/8        | 0          | applied | 0          | simple                                   |
-| 5分毎1kmメッシュ全国合成レーダー                                 |           | 0          | 50008      | 200        | -       | 200        | run length                               |
-| 高解像度降水ナウキャスト                                         |           | 0          | 50011      | 200        | -       | 200        | run length                               |
-| GSMガイダンス (格子形式)                                         |           |            |            |            |         |            |                                          |
-| GSMガイダンス (最大降水量、降雪量)                               |           | 0          | 8          | 0          | applied | 0          | simple                                   |
-| GSMガイダンス (視程)                                             |           | 0          | 8          | 0          | -       | 0          | simple                                   |
-| MSM                                                              |           | 0          | 0/8        | 0          | -       | 0          | simple                                   |
-| MSMガイダンス (格子形式)                                         |           | 0          | 8/9        | 0          | applied | 0          | simple                                   |
-| MSMガイダンス (最大降水量)                                       |           | 0          | 8          | 0          | applied | 0          | simple                                   |
-| MSM大雨発生確率ガイダンス                                        |           | 0          | 9          | 0          | applied | 0          | simple                                   |
-| 週間アンサンブル数値予報モデルGPV (全球域)                       |           | 0          | 1/11       | 3          | -       | 3          | complex packing and spatial differencing |
-| 週間アンサンブル数値予報モデルGPV (日本域)                       |           | 0          | 1/11       | 3          | -       | 3          | complex packing and spatial differencing |
-| 台風アンサンブル数値予報モデルGPV (日本域)                       |           | 0          | 1/11       | 3          | -       | 3          | complex packing and spatial differencing |
-| メソアンサンブル予報システム（ＭＥＰＳ）GPV                      |           | 0          | 1/11       | 3          | -       | 3          | complex packing and spatial differencing |
-| メソアンサンブルガイダンス (格子形式)                            |           | 0          | 11         | 3          | -       | 3          | complex packing and spatial differencing |
-| メソアンサンブルガイダンス (最大降水量、降雪量)                  |           | 0          | 11         | 3          | -       | 3          | complex packing and spatial differencing |
-| MEPS大雨発生確率ガイダンス                                       |           | 0          | 9          | 0          | applied | 0          | simple                                   |
-| 三十分大気解析                                                   |           | 0          | 0          | 3          | applied | 3          | complex packing and spatial differencing |
-| 降水ナウキャスト (５分)                                          |           | 0          | 50008      | 200        | -       | 200        | run length                               |
-| 竜巻発生確度ナウキャスト                                         |           | 0          | 0          | 200        | -       | 200        | run length                               |
-| 雷ナウキャスト                                                   |           | 0          | 0          | 200        | -       | 200        | run length                               |
-| 1kmメッシュ解析雨量                                              |           | 0          | 50008      | 200        | -       | 200        | run length                               |
-| 降水短時間予報GPV                                                |           | 0          | 50009      | 200        | -       | 200        | run length                               |
-| 速報版解析雨量                                                   |           | 0          | 50008      | 200        | -       | 200        | run length                               |
-| 速報版降水短時間予報                                             |           | 0          | 50009      | 200        | -       | 200        | run length                               |
-| 降水15時間予報                                                   |           | 0          | 50012      | 200        | -       | 200        | run length                               |
-| 解析積雪深                                                       |           | 0          | 0          | 200        | -       | 200        | run length                               |
-| 解析降雪量                                                       |           | 0          | 8          | 200        | -       | 200        | run length                               |
-| 土壌雨量指数                                                     |           | 0          | 0          | 200        | -       | 200        | run length                               |
-| 大雨警報（土砂災害）の危険度分布（土砂災害警戒判定メッシュ情報） |           | 0          | 50000      | 200        | -       | 200        | run length                               |
+### Filename
+
+Naming rules
+
+- Region: R{gl|jp}
+- Levels: L{surf|-pall|pLLL}
+- Forecasts: FD{DDhh}
+- Resolution: {n}p{n}deg
+
+### Template, Packing
+
+|                     product                     |  version  | 3.  |    4.     |  5.   |   6.    |  7.   |                 Packing                  |
+| ----------------------------------------------- | --------- | --- | --------- | ----- | ------- | ----- | ---------------------------------------- |
+| GSM（全球域）                                   |           | 3.0 | 4.0, 4.8  | 5.0   | -       | 7.0   | simple                                   |
+| GSM（日本域）                                   | 2023/03〜 | 3.0 | 4.0, 4.8  | 5.3   | -       | 7.3   | complex packing and spatial differencing |
+| GSMガイダンス (格子形式)                        |           | 3.0 | 4.8, 4.9  | 5.0   | Bit map | 7.0   | simple                                   |
+| GSMガイダンス (最大降水量、降雪量)              |           | 3.0 | 4.8       | 5.0   | Bit map | 7.0   | simple                                   |
+| GSMガイダンス (視程)                            |           | 3.0 | 4.8       | 5.0   | -       | 7.0   | simple                                   |
+| MSM                                             |           | 3.0 | 4.0, 4.8  | 5.0   | -       | 7.0   | simple                                   |
+| MSMガイダンス (格子形式)                        |           | 3.0 | 4.8, 4.9  | 5.0   | Bit map | 7.0   | simple                                   |
+| MSMガイダンス (最大降水量)                      |           | 3.0 | 4.8       | 5.0   | Bit map | 7.0   | simple                                   |
+| MSM大雨発生確率ガイダンス                       |           | 3.0 | 4.9       | 5.0   | Bit map | 7.0   | simple                                   |
+| LFM                                             |           | 3.0 | 4.0, 4.8  | 5.0   | Bit map | 7.0   | simple                                   |
+| 週間アンサンブル数値予報モデルGPV (全球域)      |           | 3.0 | 4.1, 4.11 | 5.3   | -       | 7.3   | complex packing and spatial differencing |
+| 週間アンサンブル数値予報モデルGPV (日本域)      |           | 3.0 | 4.1, 4.11 | 5.3   | -       | 7.3   | complex packing and spatial differencing |
+| 台風アンサンブル数値予報モデルGPV (日本域)      |           | 3.0 | 4.1, 4.11 | 5.3   | -       | 7.3   | complex packing and spatial differencing |
+| メソアンサンブル予報システム（ＭＥＰＳ）GPV     |           | 3.0 | 4.1, 4.11 | 5.3   | -       | 7.3   | complex packing and spatial differencing |
+| メソアンサンブルガイダンス (格子形式)           |           | 3.0 | 4.11      | 5.3   | -       | 7.3   | complex packing and spatial differencing |
+| メソアンサンブルガイダンス (最大降水量、降雪量) |           | 3.0 | 4.11      | 5.3   | -       | 7.3   | complex packing and spatial differencing |
+| MEPS大雨発生確率ガイダンス                      |           | 3.0 | 4.9       | 5.0   | Bit map | 7.0   | simple                                   |
+| 三十分大気解析                                  |           | 3.0 | 4.0       | 5.3   | Bit map | 7.3   | complex packing and spatial differencing |
+| 降水ナウキャスト (５分)                         |           | 3.0 | 4.50008   | 5.200 | -       | 7.200 | run length                               |
+| 竜巻発生確度ナウキャスト                        |           | 3.0 | 4.0       | 5.200 | -       | 7.200 | run length                               |
+| 雷ナウキャスト                                  |           | 3.0 | 4.0       | 5.200 | -       | 7.200 | run length                               |
+| 5分毎1kmメッシュ全国合成レーダー                |           | 3.0 | 4.50008   | 5.200 | -       | 7.200 | run length                               |
+| 高解像度降水ナウキャスト                        |           | 3.0 | 4.50011   | 5.200 | -       | 7.200 | run length                               |
+| 1kmメッシュ解析雨量                             |           | 3.0 | 4.50008   | 5.200 | -       | 7.200 | run length                               |
+| 降水短時間予報GPV                               |           | 3.0 | 4.50009   | 5.200 | -       | 7.200 | run length                               |
+| 速報版解析雨量                                  |           | 3.0 | 4.50008   | 5.200 | -       | 7.200 | run length                               |
+| 速報版降水短時間予報                            |           | 3.0 | 4.50009   | 5.200 | -       | 7.200 | run length                               |
+| 降水15時間予報                                  |           | 3.0 | 4.50012   | 5.200 | -       | 7.200 | run length                               |
+| 解析積雪深                                      |           | 3.0 | 4.0       | 5.200 | -       | 7.200 | run length                               |
+| 解析降雪量                                      |           | 3.0 | 4.8       | 5.200 | -       | 7.200 | run length                               |
+| 土壌雨量指数                                    |           | 3.0 | 4.0       | 5.200 | -       | 7.200 | run length                               |
+| 大雨警報（土砂災害）の危険度分布                |           | 3.0 | 4.50000   | 5.200 | -       | 7.200 | run length                               |
+| 表面雨量指数実況値                              |           | 3.0 | 4.0       | 5.200 | -       | 7.200 | run length                               |
+| 表面雨量指数1時間予測値                         |           | 3.0 | 4.0       | 5.200 | -       | 7.200 | run length                               |
+| 表面雨量指数6時間予測値                         |           | 3.0 | 4.0       | 5.200 | -       | 7.200 | run length                               |
+| 大雨警報(浸水害)の危険度分布                    |           | 3.0 | 4.0       | 5.200 | -       | 7.200 | run length                               |
+| 洪水警報の危険度分布                            |           | 3.0 | 4.0       | 5.200 | -       | 7.200 | run length                               |
+| 大雨警報(浸水害)                                |           | 3.0 | 4.0       | 5.200 | -       | 7.200 | run length                               |
+| 洪水警報の危険度分布（統合版）                  |           | 3.0 | 4.0       | 5.200 | -       | 7.200 | run length                               |
+| ２週間アンサンブル数値予報モデルGPV (全球域)    |           | 3.0 | 4.1, 4.11 | 5.0   | -       | 7.0   | simple                                   |
+| ２週間アンサンブル数値予報モデルGPV (日本域)    |           | 3.0 | 4.1, 4.11 | 5.0   | -       | 7.0   | simple                                   |
+| 1か月アンサンブル数値予報モデルGPV (全球域)     |           | 3.0 | 4.1, 4.11 | 5.0   | -       | 7.0   | simple                                   |
+| 1か月アンサンブル数値予報モデルGPV (日本域)     |           | 3.0 | 4.1, 4.11 | 5.0   | -       | 7.0   | simple                                   |
+| ２週間アンサンブル統計GPV (全球域)              |           |     |           |       |         |       |                                          |
+| 1か月アンサンブル統計GPV (全球域)               |           |     |           |       |         |       |                                          |
+| ６か月アンサンブル数値予報モデルGPV             |           |     |           |       |         |       |                                          |
+| 波浪モデルGPV                                   |           |     |           |       |         |       |                                          |
+| 波浪アンサンブル数値予報モデルGPV               |           |     |           |       |         |       |                                          |
+| GWM                       |           | 3.0 | 4.0       | 5.0   | Bit map | 7.0   | simple                                   |
+| CWM                       |           | 3.0 | 4.0       | 5.0   | Bit map | 7.0   | simple                                   |
+| 全球波浪数値予報モデル風浪・うねりGPV           |           | 3.0 | 4.0       | 5.0   | Bit map | 7.0   | simple                                   |
+| 沿岸波浪数値予報モデル風浪・うねりGPV           |           | 3.0 | 4.0       | 5.0   | Bit map | 7.0   | simple                                   |
+| 黄砂予測モデル格子点値                          |           |     |           |       |         |       |                                          |
+| 黄砂解析予測モデル格子点値（予測値）            |           | 3.0 | 4.0       | 5.0   | -       | 7.0   | simple                                   |
+| 黄砂解析予測モデル格子点値（解析値）            |           | 3.0 | 4.0       | 5.0   | -       | 7.0   | simple                                   |
+| 紫外線解析データ                                |           | 3.0 | 4.0       | 5.0   | Bit map | 7.0   | simple                                   |
+| 紫外線予測データ（晴天とした場合の予測）        |           | 3.0 | 4.0       | 5.0   | Bit map | 7.0   | simple                                   |
+| 紫外線予測データ（天気を考慮した場合の予測）    |           | 3.0 | 4.0       | 5.0   | Bit map | 7.0   | simple                                   |
+| オゾン全量データ                                |           | 3.0 | 4.0       | 5.0   | Bit map | 7.0   | simple                                   |
+| 推計気象分布（気温）                            |           | 3.0 | 4.0       | 5.200 | -       | 7.200 | run length                               |
+| 推計気象分布（天気）                            |           | 3.0 | 4.0       | 5.200 | -       | 7.200 | run length                               |
+| 推計気象分布（日照時間）                        |           | 3.0 | 4.0       | 5.200 | -       | 7.200 | run length                               |
+| 高分解能雲情報                                  |           | 3.0 | 4.0       | 5.0   | -       | 7.0   | simple                                   |
 
 ## References
 

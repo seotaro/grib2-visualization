@@ -18,6 +18,11 @@ use super::SectionSets;
 use super::SectionSetsIter;
 
 impl<'a> SectionSet<'a> {
+    // Discipline – GRIB Master table number
+    pub fn gerne(&self) -> Option<usize> {
+        self.genre
+    }
+
     // 有効な1ピクセルあたりのビット数
     pub fn bpp(&self) -> Option<usize> {
         self.section5?.bpp()

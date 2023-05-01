@@ -5,12 +5,12 @@ use chrono::{DateTime, Utc};
 pub(crate) mod section4_template_impl;
 
 pub(crate) enum TemplateNumber<'a> {
-    T0(Template0<'a>),   // 4.0
-    T1(Template1<'a>),   // 4.1
-    T8(Template8<'a>),   // 4.8
-    T9(Template9<'a>),   // 4.9
-    T11(Template11<'a>), // 4.11
-    // 4.50000
+    T0(Template0<'a>),         // 4.0
+    T1(Template1<'a>),         // 4.1
+    T8(Template8<'a>),         // 4.8
+    T9(Template9<'a>),         // 4.9
+    T11(Template11<'a>),       // 4.11
+    T50000(Template50000<'a>), // 4.50000
     T50008(Template50008<'a>), // 4.50008
     T50009(Template50009<'a>), // 4.50009
     T50011(Template50011<'a>), // 4.50011
@@ -56,6 +56,12 @@ pub(crate) struct Template9<'a> {
 // template 4.11
 #[derive(Copy, Clone)]
 pub(crate) struct Template11<'a> {
+    pub(crate) buf: &'a [u8],
+}
+
+// template 4.50000
+#[derive(Copy, Clone)]
+pub(crate) struct Template50000<'a> {
     pub(crate) buf: &'a [u8],
 }
 

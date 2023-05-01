@@ -49,9 +49,10 @@ const columns = [
     sortable: true,
     valueGetter: (params) => [
       params.row.parameter_name,
+      params.row.genre,
       params.row.parameter_category,
       params.row.parameter_number],
-    renderCell: ({ value }) => (<Tooltip title={`${value[0]}, category:${value[1]}, number:${value[2]}`} ><span>{value[0] ? value[0] : '(unknown)'}</span></Tooltip>),
+    renderCell: ({ value }) => (<Tooltip title={`${value[0]}, genre:${value[1]}, category:${value[2]}, number:${value[3]}`} ><span>{value[0] ? value[0] : '(unknown)'}</span></Tooltip>),
     sortComparator: (v1, v2) => v1[0].localeCompare(v2[0]),
   },
 ];

@@ -106,6 +106,7 @@ pub struct Item {
     reference_datetime: Option<DateTime<Utc>>,
     packing_type: Option<PackingType>,
     point_count: Option<u32>,
+    genre: Option<u32>,
     parameter_name: Option<String>,
     parameter_category: Option<u32>,
     parameter_number: Option<u32>,
@@ -154,9 +155,11 @@ impl Grib2Wrapper {
                 packing_type: sectionset.packing_type(),
                 point_count: Self::to_u32(sectionset.point_count()),
                 parameter_name: Self::parameter_name(
+                    sectionset.genre,
                     sectionset.parameter_category(),
                     sectionset.parameter_number(),
                 ),
+                genre: Self::to_u32(sectionset.genre),
                 parameter_category: Self::to_u32(sectionset.parameter_category()),
                 parameter_number: Self::to_u32(sectionset.parameter_number()),
                 datetime: sectionset.datetime(),
@@ -180,6 +183,7 @@ impl Grib2Wrapper {
                 "No.{:03} {:?} {:?} {} ",
                 i,
                 Self::parameter_name(
+                    sectionset.genre,
                     sectionset.parameter_category(),
                     sectionset.parameter_number(),
                 ),
@@ -194,10 +198,11 @@ impl Grib2Wrapper {
     }
 
     pub fn parameter_name(
+        genre: Option<usize>,
         parameter_category: Option<usize>,
         parameter_number: Option<usize>,
     ) -> Option<String> {
-        parameter_name(parameter_category?, parameter_number?)
+        parameter_name(genre?, parameter_category?, parameter_number?)
     }
 
     pub fn first_plane_name(

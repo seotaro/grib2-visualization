@@ -9,6 +9,7 @@ use super::super::type_utils_impl::u8_be;
 use super::section4_template::Template0;
 use super::section4_template::Template1;
 use super::section4_template::Template11;
+use super::section4_template::Template50000;
 use super::section4_template::Template50008;
 use super::section4_template::Template50009;
 use super::section4_template::Template50011;
@@ -37,6 +38,7 @@ impl<'a> Section4<'a> {
             8 => Some(TemplateNumber::T8(Template8 { buf: self.buf })),
             9 => Some(TemplateNumber::T9(Template9 { buf: self.buf })),
             11 => Some(TemplateNumber::T11(Template11 { buf: self.buf })),
+            50000 => Some(TemplateNumber::T50000(Template50000 { buf: self.buf })),
             50008 => Some(TemplateNumber::T50008(Template50008 { buf: self.buf })),
             50009 => Some(TemplateNumber::T50009(Template50009 { buf: self.buf })),
             50011 => Some(TemplateNumber::T50011(Template50011 { buf: self.buf })),

@@ -105,11 +105,10 @@ void main(void) {
   
   // 0 <= level <= 255
   // 0: out of range
-  // 1: No echo
   float level = texture(bitmapTexture, uv).r * 255.0;
   
   vec4 bitmapColor = vec4(0.0);
-  if(1.0 < level){
+  if(0.0 < level){
     // float value = float(levels[int(level) - 1]) / pow(10.0, float(factor));
     float value = float(levels[0]) /  pow(10.0, float(factor));
     for(int i = 1; i <= MAX_LEVELS; i++) {

@@ -91,6 +91,9 @@ pub(crate) trait Section {
 
 #[derive(Copy, Clone)]
 pub struct SectionSet<'a> {
+    // Section0 Discipline – GRIB Master table number
+    pub(crate) genre: Option<usize>,
+
     pub(crate) section1: Option<Section1<'a>>,
     pub(crate) section2: Option<Section2<'a>>,
     pub(crate) section3: Option<Section3<'a>>,

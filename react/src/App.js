@@ -147,7 +147,7 @@ function App() {
           , image.run_length_packing_attributes());
 
         const item = items[itemIndex];
-        setColormap(colormaps(item.parameter_category, item.parameter_number));
+        setColormap(colormaps(item.genre, item.parameter_category, item.parameter_number));
 
         switch (image.packing_type()) {
           case 'simple':

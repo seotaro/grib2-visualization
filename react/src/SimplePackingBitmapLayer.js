@@ -33,7 +33,8 @@ export default class SimplePackingBitmapLayer extends BitmapLayer {
           coordinateConversion,
           bounds,
           r, e, d,
-          colormap,
+          colors: colormap.colors,
+          thresholds: colormap.thresholds,
         })
         .draw();
     }

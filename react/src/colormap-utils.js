@@ -172,7 +172,7 @@ const createColormaps = () => {
         const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
         const thresholds = new Float32Array(MAX_COLORMAP_STEP);
         let i = 0;
-        thresholds[i] = 0.0; colors.set([1.0, 0.0, 1.0, 0.0], i * 4); i++;    // No echo
+        thresholds[i] = 0.0; colors.set([0.0, 0.0, 0.0, 0.0], i * 4); i++;    // No echo
         thresholds[i] = 0.1; colors.set([240 / 255, 240 / 255, 254 / 255, 1.0], i * 4); i++;
         thresholds[i] = 1.0; colors.set([153 / 255, 204 / 255, 253 / 255, 1.0], i * 4); i++;
         thresholds[i] = 5.0; colors.set([44 / 255, 131 / 255, 251 / 255, 1.0], i * 4); i++;

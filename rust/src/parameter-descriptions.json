@@ -1,0 +1,1014 @@
+{
+  "0": {
+    "0": {
+      "0": {
+        "name": "Temperature",
+        "unit": "K"
+      },
+      "1": {
+        "name": "Virtual temperature",
+        "unit": "K"
+      },
+      "2": {
+        "name": "Potential temperature",
+        "unit": "K"
+      },
+      "3": {
+        "name": "Pseudo-adiabatic potential temperature or equivalent potential temperature",
+        "unit": "K"
+      },
+      "4": {
+        "name": "Maximum temperature",
+        "unit": "K"
+      },
+      "5": {
+        "name": "Minimum temperature",
+        "unit": "K"
+      },
+      "6": {
+        "name": "Dewpoint temperature",
+        "unit": "K"
+      },
+      "7": {
+        "name": "Dewpoint depression (or deficit)",
+        "unit": "K"
+      },
+      "8": {
+        "name": "Lapse rate",
+        "unit": "K m-1"
+      },
+      "9": {
+        "name": "Temperature anomaly",
+        "unit": "K"
+      },
+      "10": {
+        "name": "Latent heat net flux",
+        "unit": "W m-2"
+      },
+      "11": {
+        "name": "Sensible heat net flux",
+        "unit": "W m-2"
+      },
+      "12": {
+        "name": "Heat index",
+        "unit": "K"
+      },
+      "13": {
+        "name": "Wind chill factor",
+        "unit": "K"
+      },
+      "14": {
+        "name": "Minimum dewpoint depression",
+        "unit": "K"
+      },
+      "15": {
+        "name": "Virtual potential temperature",
+        "unit": "K"
+      },
+      "16": {
+        "name": "Snow phase change heat flux",
+        "unit": "W m-2"
+      },
+      "17": {
+        "name": "Skin temperature",
+        "unit": "K"
+      },
+      "18": {
+        "name": "Snow temperature (top of snow)",
+        "unit": "K"
+      },
+      "19": {
+        "name": "Turbulent transfer coefficient for heat",
+        "unit": ""
+      },
+      "20": {
+        "name": "Turbulent diffusion coefficient for heat",
+        "unit": "m2 s-1"
+      },
+      "21": {
+        "name": "Apparent temperature",
+        "unit": "K"
+      },
+      "22": {
+        "name": "Temperature tendency due to short-wave radiation",
+        "unit": "K s-1"
+      },
+      "23": {
+        "name": "Temperature tendency due to long-wave radiation",
+        "unit": "K s-1"
+      },
+      "24": {
+        "name": "Temperature tendency due to short-wave radiation, clear sky",
+        "unit": "K s-1"
+      },
+      "25": {
+        "name": "Temperature tendency due to long-wave radiation, clear sky",
+        "unit": "K s-1"
+      },
+      "26": {
+        "name": "Temperature tendency due to parameterization",
+        "unit": "K s-1"
+      },
+      "27": {
+        "name": "Wet-bulb temperature",
+        "unit": "K"
+      },
+      "28": {
+        "name": "Unbalanced component of temperature",
+        "unit": "K"
+      },
+      "29": {
+        "name": "Temperature advection",
+        "unit": "K s-1"
+      },
+      "30": {
+        "name": "Latent heat net flux due to evaporation",
+        "unit": "W m-2"
+      },
+      "31": {
+        "name": "Latent heat net flux due to sublimation",
+        "unit": "W m-2"
+      },
+      "32": {
+        "name": "Wet-bulb potential temperature",
+        "unit": "K"
+      }
+    },
+    "1": {
+      "0": {
+        "name": "Specific humidity",
+        "unit": "kg kg-1"
+      },
+      "1": {
+        "name": "Relative Humidity",
+        "unit": "%"
+      },
+      "2": {
+        "name": "Humidity mixing ratio",
+        "unit": "kg kg-1"
+      },
+      "3": {
+        "name": "Precipitable water",
+        "unit": "kg m-2"
+      },
+      "4": {
+        "name": "Vapour pressure",
+        "unit": "Pa"
+      },
+      "5": {
+        "name": "Saturation deficit",
+        "unit": "Pa"
+      },
+      "6": {
+        "name": "Evaporation",
+        "unit": "kg m-2"
+      },
+      "7": {
+        "name": "Precipitation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "8": {
+        "name": "Total Precipitation",
+        "unit": "kg m-2"
+      },
+      "9": {
+        "name": "Large-scale precipitation (non-convective)",
+        "unit": "kg m-2"
+      },
+      "10": {
+        "name": "Convective precipitation",
+        "unit": "kg m-2"
+      },
+      "11": {
+        "name": "Snow depth",
+        "unit": "m"
+      },
+      "12": {
+        "name": "Snowfall rate water equivalent",
+        "unit": "kg m-2 s-1"
+      },
+      "13": {
+        "name": "Water equivalent of accumulated snow depth",
+        "unit": "kg m-2"
+      },
+      "14": {
+        "name": "Convective snow",
+        "unit": "kg m-2"
+      },
+      "15": {
+        "name": "Large-scale snow",
+        "unit": "kg m-2"
+      },
+      "16": {
+        "name": "Snow melt",
+        "unit": "kg my"
+      },
+      "17": {
+        "name": "Snow age",
+        "unit": "d"
+      },
+      "18": {
+        "name": "Absolute humidity",
+        "unit": "kg m-3"
+      },
+      "19": {
+        "name": "Precipitation type",
+        "unit": ""
+      },
+      "20": {
+        "name": "Integrated liquid water",
+        "unit": "kg m-2"
+      },
+      "21": {
+        "name": "Condensate",
+        "unit": "kg kg-1"
+      },
+      "22": {
+        "name": "Cloud mixing ratio",
+        "unit": "kg kg-1"
+      },
+      "23": {
+        "name": "Ice water mixing ratio",
+        "unit": "kg kg-1"
+      },
+      "24": {
+        "name": "Rain mixing ratio",
+        "unit": "kg kg-1"
+      },
+      "25": {
+        "name": "Snow mixing ratio",
+        "unit": "kg kg-1"
+      },
+      "26": {
+        "name": "Horizontal moisture convergence",
+        "unit": "kg kg-1 s-1"
+      },
+      "27": {
+        "name": "Maximum relative humidity",
+        "unit": "%"
+      },
+      "28": {
+        "name": "Maximum absolute humidity",
+        "unit": "kg m-3"
+      },
+      "29": {
+        "name": "Total snowfall",
+        "unit": "m"
+      },
+      "30": {
+        "name": "Precipitable water category",
+        "unit": ""
+      },
+      "31": {
+        "name": "Hail",
+        "unit": "m"
+      },
+      "32": {
+        "name": "Graupel (snow pellets)",
+        "unit": "kg kg-1"
+      },
+      "33": {
+        "name": "Categorical rain",
+        "unit": ""
+      },
+      "34": {
+        "name": "Categorical freezing rain",
+        "unit": ""
+      },
+      "35": {
+        "name": "Categorical ice pellets",
+        "unit": ""
+      },
+      "36": {
+        "name": "Categorical snow",
+        "unit": ""
+      },
+      "37": {
+        "name": "Convective precipitation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "38": {
+        "name": "Horizontal moisture divergence",
+        "unit": "kg kg-1 s-1"
+      },
+      "39": {
+        "name": "Per cent frozen precipitation",
+        "unit": "%"
+      },
+      "40": {
+        "name": "Potential evaporation",
+        "unit": "kg m-2"
+      },
+      "41": {
+        "name": "Potential evaporation rate",
+        "unit": "W m-2"
+      },
+      "42": {
+        "name": "Snow cover",
+        "unit": "%"
+      },
+      "43": {
+        "name": "Rain fraction of total cloud water Proportion",
+        "unit": ""
+      },
+      "44": {
+        "name": "Rime factor",
+        "unit": ""
+      },
+      "45": {
+        "name": "Total column integrated rain",
+        "unit": "kg m-2"
+      },
+      "46": {
+        "name": "Total column integrated snow",
+        "unit": "kg m-2"
+      },
+      "47": {
+        "name": "Large scale water precipitation (non-convective)",
+        "unit": "kg m-2"
+      },
+      "48": {
+        "name": "Convective water precipitation",
+        "unit": "kg m-2"
+      },
+      "49": {
+        "name": "Total water precipitation",
+        "unit": "kg m-2"
+      },
+      "50": {
+        "name": "Total snow precipitation",
+        "unit": "kg my"
+      },
+      "51": {
+        "name": "Total column water (Vertically integrated total water (vapour + cloud water/ice))",
+        "unit": "kg my"
+      },
+      "52": {
+        "name": "Total precipitation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "53": {
+        "name": "Total snowfall rate water equivalent",
+        "unit": "kg m-2 s-1"
+      },
+      "54": {
+        "name": "Large scale precipitation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "55": {
+        "name": "Convective snowfall rate water equivalent",
+        "unit": "kg m-2 s-1"
+      },
+      "56": {
+        "name": "Large scale snowfall rate water equivalent",
+        "unit": "kg m-2 s-1"
+      },
+      "57": {
+        "name": "Total snowfall rate",
+        "unit": "m s-1"
+      },
+      "58": {
+        "name": "Convective snowfall rate",
+        "unit": "m s-1"
+      },
+      "59": {
+        "name": "Large scale snowfall rate",
+        "unit": "m s-1"
+      },
+      "60": {
+        "name": "Snow depth water equivalent",
+        "unit": "kg m-2"
+      },
+      "61": {
+        "name": "Snow density",
+        "unit": "kg m-3"
+      },
+      "62": {
+        "name": "Snow evaporation",
+        "unit": "kg m-2"
+      },
+      "63": {
+        "name": "Reserved",
+        "unit": ""
+      },
+      "64": {
+        "name": "Total column integrated water vapour",
+        "unit": "kg m-2"
+      },
+      "65": {
+        "name": "Rain precipitation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "66": {
+        "name": "Snow precipitation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "67": {
+        "name": "Freezing rain precipitation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "68": {
+        "name": "Ice pellets precipitation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "69": {
+        "name": "Total column integrated cloud water",
+        "unit": "kg m-2"
+      },
+      "70": {
+        "name": "Total column integrated cloud ice",
+        "unit": "kg m-2"
+      },
+      "71": {
+        "name": "Hail mixing ratio",
+        "unit": "kg kg-1"
+      },
+      "72": {
+        "name": "Total column integrated hail",
+        "unit": "kg m-2"
+      },
+      "73": {
+        "name": "Hail precipitation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "74": {
+        "name": "Total column integrated graupel",
+        "unit": "kg m-2"
+      },
+      "75": {
+        "name": "Graupel (snow pellets) precipitation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "76": {
+        "name": "Convective rain rate",
+        "unit": "kg m-2 s-1"
+      },
+      "77": {
+        "name": "Large scale rain rate",
+        "unit": "kg m-2 s-1"
+      },
+      "78": {
+        "name": "Total column integrated water (all components including precipitation)",
+        "unit": "kg m-2"
+      },
+      "79": {
+        "name": "Evaporation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "80": {
+        "name": "Total condensate",
+        "unit": "kg kg-1"
+      },
+      "81": {
+        "name": "Total column-integrated condensate",
+        "unit": "kg m-2"
+      },
+      "82": {
+        "name": "Cloud ice mixing-ratio",
+        "unit": "kg kg-1"
+      },
+      "83": {
+        "name": "Specific cloud liquid water content",
+        "unit": "kg kg-1"
+      },
+      "84": {
+        "name": "Specific cloud ice water content",
+        "unit": "kg kg-1"
+      },
+      "85": {
+        "name": "Specific rainwater content",
+        "unit": "kg kg-1"
+      },
+      "86": {
+        "name": "Specific snow water content",
+        "unit": "kg kg-1"
+      },
+      "87": {
+        "name": "Stratiform precipitation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "88": {
+        "name": "Categorical convective precipitation",
+        "unit": ""
+      },
+      "89": {
+        "name": "Reserved",
+        "unit": ""
+      },
+      "90": {
+        "name": "Total kinematic moisture flux",
+        "unit": "kg kg-1 m s-1"
+      },
+      "91": {
+        "name": "u-component (zonal) kinematic moisture flux",
+        "unit": "kg kg-1 m s-1"
+      },
+      "92": {
+        "name": "v-component (meridional) kinematic moisture flux",
+        "unit": "kg kg-1 m s-1"
+      },
+      "93": {
+        "name": "Relative humidity with respect to water",
+        "unit": "%"
+      },
+      "94": {
+        "name": "Relative humidity with respect to ice",
+        "unit": "%"
+      },
+      "95": {
+        "name": "Freezing or frozen precipitation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "96": {
+        "name": "Mass density of rain",
+        "unit": "kg m-3"
+      },
+      "97": {
+        "name": "Mass density of snow",
+        "unit": "kg m-3"
+      },
+      "98": {
+        "name": "Mass density of graupel",
+        "unit": "kg m-3"
+      },
+      "99": {
+        "name": "Mass density of hail",
+        "unit": "kg m-3"
+      },
+      "100": {
+        "name": "Specific number concentration of rain",
+        "unit": "kg-1"
+      },
+      "101": {
+        "name": "Specific number concentration of snow",
+        "unit": "kg-1"
+      },
+      "102": {
+        "name": "Specific number concentration of graupel",
+        "unit": "kg-1"
+      },
+      "103": {
+        "name": "Specific number concentration of hail",
+        "unit": "kg-1"
+      },
+      "104": {
+        "name": "Number density of rain",
+        "unit": "m-3"
+      },
+      "105": {
+        "name": "Number density of snow",
+        "unit": "m-3"
+      },
+      "106": {
+        "name": "Number density of graupel",
+        "unit": "m-3"
+      },
+      "107": {
+        "name": "Number density of hail",
+        "unit": "m-3"
+      },
+      "108": {
+        "name": "Specific humidity tendency due to parameterization",
+        "unit": "kg kg-1 s-1"
+      },
+      "109": {
+        "name": "Mass density of liquid water coating on hail expressed as mass of liquid water per unit volume of air",
+        "unit": "kg m-3"
+      },
+      "110": {
+        "name": "Specific mass of liquid water coating on hail expressed as mass of liquid water per unit mass of moist air",
+        "unit": "kg kg-1"
+      },
+      "111": {
+        "name": "Mass mixing ratio of liquid water coating on hail expressed as mass of liquid water per unit mass of dry air",
+        "unit": "kg kg-1"
+      },
+      "112": {
+        "name": "Mass density of liquid water coating on graupel expressed as mass of liquid water per unit volume of air",
+        "unit": "kg m-3"
+      },
+      "113": {
+        "name": "Specific mass of liquid water coating on graupel expressed as mass of liquid water per unit mass of moist air",
+        "unit": "kg kg-1"
+      },
+      "114": {
+        "name": "Mass mixing ratio of liquid water coating on graupel expressed as mass of liquid water per unit mass of dry air",
+        "unit": "kg kg-1"
+      },
+      "115": {
+        "name": "Mass density of liquid water coating on snow expressed as mass of liquid water per unit volume of air",
+        "unit": "kg m-3"
+      },
+      "116": {
+        "name": "Specific mass of liquid water coating on snow expressed as mass of liquid water per unit mass of moist air",
+        "unit": "kg kg-1"
+      },
+      "117": {
+        "name": "Mass mixing ratio of liquid water coating on snow expressed as mass of liquid water per unit mass of dry air",
+        "unit": "kg kg-1"
+      },
+      "118": {
+        "name": "Unbalanced component of specific humidity",
+        "unit": "kg kg-1"
+      },
+      "119": {
+        "name": "Unbalanced component of specific cloud liquid water content",
+        "unit": "kg kg-1"
+      },
+      "120": {
+        "name": "Unbalanced component of specific cloud ice water content",
+        "unit": "kg kg-1"
+      },
+      "121": {
+        "name": "Fraction of snow cover Proportion",
+        "unit": ""
+      },
+      "122": {
+        "name": "Precipitation intensity index ",
+        "unit": ""
+      },
+      "123": {
+        "name": "Dominant precipitation type",
+        "unit": ""
+      },
+      "124": {
+        "name": "Presence of showers",
+        "unit": ""
+      },
+      "125": {
+        "name": "Presence of blowing snow",
+        "unit": ""
+      },
+      "126": {
+        "name": "Presence of blizzard",
+        "unit": ""
+      },
+      "127": {
+        "name": "Ice pellets (non-water equivalent) precipitation rate",
+        "unit": "m/s"
+      },
+      "128": {
+        "name": "Total solid precipitation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "129": {
+        "name": "Effective radius of cloud water",
+        "unit": "m"
+      },
+      "130": {
+        "name": "Effective radius of rain",
+        "unit": "m"
+      },
+      "131": {
+        "name": "Effective radius of cloud ice",
+        "unit": "m"
+      },
+      "132": {
+        "name": "Effective radius of snow",
+        "unit": "m"
+      },
+      "133": {
+        "name": "Effective radius of graupel",
+        "unit": "m"
+      },
+      "134": {
+        "name": "Effective radius of hail",
+        "unit": "m"
+      },
+      "135": {
+        "name": "Effective radius of subgrid liquid clouds",
+        "unit": "m"
+      },
+      "136": {
+        "name": "Effective radius of subgrid ice clouds",
+        "unit": "m"
+      },
+      "137": {
+        "name": "Effective aspect ratio of rain",
+        "unit": ""
+      },
+      "138": {
+        "name": "Effective aspect ratio of cloud ice",
+        "unit": ""
+      },
+      "139": {
+        "name": "Effective aspect ratio of snow",
+        "unit": ""
+      },
+      "140": {
+        "name": "Effective aspect ratio of graupel",
+        "unit": ""
+      },
+      "141": {
+        "name": "Effective aspect ratio of hail",
+        "unit": ""
+      },
+      "142": {
+        "name": "Effective aspect ratio of subgrid ice clouds",
+        "unit": ""
+      },
+      "143": {
+        "name": "Potential evaporation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "144": {
+        "name": "Specific rain water content (convective)",
+        "unit": "kg kg-1"
+      },
+      "145": {
+        "name": "Specific snow water content (convective)",
+        "unit": "kg kg-1"
+      },
+      "146": {
+        "name": "Cloud ice precipitation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "147": {
+        "name": "Character of precipitation",
+        "unit": ""
+      },
+      "148": {
+        "name": "Snow evaporation rate",
+        "unit": "kg m-2 s-1"
+      },
+      "149": {
+        "name": "Cloud water mixing ratio",
+        "unit": "kg kg-1"
+      },
+      "200": {
+        "name": "1時間降水量レベル値",
+        "unit": ""
+      },
+      "201": {
+        "name": "10分間降水強度（1時間換算値）レベル値",
+        "unit": ""
+      },
+      "202": {
+        "name": "Reserved for local use",
+        "unit": ""
+      },
+      "203": {
+        "name": "降水強度レベル値(解析、予報）",
+        "unit": ""
+      },
+      "206": {
+        "name": "土壌雨量タンクレベル値",
+        "unit": ""
+      },
+      "207": {
+        "name": "Reserved for local use",
+        "unit": ""
+      },
+      "208": {
+        "name": "土砂災害警戒判定値",
+        "unit": ""
+      },
+      "214": {
+        "name": "降水強度の誤差の要因",
+        "unit": ""
+      },
+      "215": {
+        "name": "表面雨量指数値",
+        "unit": ""
+      },
+      "216": {
+        "name": "浸水危険度判定値",
+        "unit": ""
+      },
+      "217": {
+        "name": "洪水危険度判定値",
+        "unit": ""
+      },
+      "218": {
+        "name": "浸水・洪水危険度判定値",
+        "unit": ""
+      },
+      "232": {
+        "name": "積雪の深さのレベル値",
+        "unit": ""
+      },
+      "233": {
+        "name": "降雪の深さの合計のレベル値",
+        "unit": ""
+      }
+    },
+    "2": {
+      "2": {
+        "name": "U-Component of Wind",
+        "unit": "m s-1"
+      },
+      "3": {
+        "name": "V-Component of Wind",
+        "unit": "m s-1"
+      },
+      "8": {
+        "name": "Vertical Velocity (Pressure)",
+        "unit": "Pa s-1"
+      }
+    },
+    "3": {
+      "0": {
+        "name": "Pressure",
+        "unit": "Pa"
+      },
+      "1": {
+        "name": "Pressure Reduced to MSL",
+        "unit": "Pa"
+      },
+      "5": {
+        "name": "Geopotential Height",
+        "unit": "gpm"
+      }
+    },
+    "4": {
+      "0": {
+        "name": "Net short-wave radiation flux (surface)",
+        "unit": "W m-2"
+      },
+      "1": {
+        "name": "Net short-wave radiation flux (top of atmosphere)",
+        "unit": "W m-2"
+      },
+      "2": {
+        "name": "Short-wave radiation flux",
+        "unit": "W m-2"
+      },
+      "3": {
+        "name": "Global radiation flux",
+        "unit": "W m-2"
+      },
+      "4": {
+        "name": "Brightness temperature",
+        "unit": "K"
+      },
+      "5": {
+        "name": "Radiance (with respect to wave number) [W m-1 sr-1]",
+        "unit": ""
+      },
+      "6": {
+        "name": "Radiance (with respect to wavelength) [W m-3 sr-1]",
+        "unit": ""
+      },
+      "7": {
+        "name": "Downward short-wave radiation flux",
+        "unit": "W m-2"
+      },
+      "8": {
+        "name": "Upward short-wave radiation flux",
+        "unit": "W m-2"
+      },
+      "9": {
+        "name": "Net short wave radiation flux",
+        "unit": "W m-2"
+      },
+      "10": {
+        "name": "Photosynthetically active radiation",
+        "unit": "W m-2"
+      },
+      "11": {
+        "name": "Net short-wave radiation flux, clear sky",
+        "unit": "W m-2"
+      },
+      "12": {
+        "name": "Downward UV radiation",
+        "unit": "W m-2"
+      },
+      "13": {
+        "name": "Direct short-wave radiation flux",
+        "unit": "W m-2"
+      },
+      "14": {
+        "name": "Diffuse short-wave radiation flux",
+        "unit": "W m-2"
+      },
+      "15": {
+        "name": "Upward UV radiation emitted/reflected from the Earth's surface",
+        "unit": "W m-2"
+      },
+      "50": {
+        "name": "UV index (under clear sky)",
+        "unit": ""
+      },
+      "51": {
+        "name": "UV index",
+        "unit": ""
+      },
+      "52": {
+        "name": "Downward short-wave radiation flux, clear sky",
+        "unit": "W m-2"
+      },
+      "53": {
+        "name": "Upward short-wave radiation flux, clear sky",
+        "unit": "W m-2"
+      },
+      "54": {
+        "name": "Direct normal short-wave radiation flux (see Note 3)",
+        "unit": "W m-2"
+      }
+    },
+    "6": {
+      "0": {
+        "name": "Cloud ice",
+        "unit": "kg m-2"
+      },
+      "1": {
+        "name": "Total Cloud Cover",
+        "unit": "%"
+      },
+      "3": {
+        "name": "Low Cloud Cover",
+        "unit": "%"
+      },
+      "4": {
+        "name": "Medium Cloud Cover",
+        "unit": "%"
+      },
+      "5": {
+        "name": "High Cloud Cover",
+        "unit": "%"
+      },
+      "8": {
+        "name": "Cloud type",
+        "unit": ""
+      },
+      "12": {
+        "name": "Cloud top",
+        "unit": ""
+      },
+      "33": {
+        "name": "Sunshine duration",
+        "unit": "s"
+      },
+      "194": {
+        "name": "品質情報",
+        "unit": ""
+      },
+      "200": {
+        "name": "品質情報",
+        "unit": ""
+      },
+      "201": {
+        "name": "雲・ダストの有無",
+        "unit": ""
+      },
+      "202": {
+        "name": "雪氷の有無",
+        "unit": ""
+      }
+    },
+    "13": {
+      "0": {
+        "name": "Aerosol type",
+        "unit": ""
+      },
+      "192": {
+        "name": "ダスト下層濃度",
+        "unit": "kgm-3"
+      },
+      "193": {
+        "name": "ダスト気柱積算量",
+        "unit": "kgm-2"
+      }
+    },
+    "14": {
+      "0": {
+        "name": "Total ozone",
+        "unit": "DU"
+      },
+      "1": {
+        "name": "Ozone mixing ratio",
+        "unit": "kg kg-1"
+      },
+      "2": {
+        "name": "Total column integrated ozone",
+        "unit": "DU"
+      }
+    },
+    "19": {
+      "0": {
+        "name": "Visibility",
+        "unit": "m"
+      },
+      "2": {
+        "name": "Thunderstorm probability",
+        "unit": "%"
+      }
+    },
+    "191": {
+      "192": {
+        "name": "天気",
+        "unit": ""
+      }
+    },
+    "193": {
+      "0": {
+        "name": "竜巻発生確度",
+        "unit": ""
+      },
+      "1": {
+        "name": "雷活動度",
+        "unit": ""
+      }
+    }
+  }
+}

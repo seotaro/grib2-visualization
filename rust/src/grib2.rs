@@ -6,17 +6,40 @@ pub mod section;
 pub mod type_utils_impl;
 pub mod utils_impl;
 
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
+
 use self::section::SectionSets;
 use self::utils_impl::parse;
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ParameterDescription {
+    pub(crate) name: String,
+    pub(crate) unit: String,
+}
+
 #[derive(Clone)]
 pub struct Grib2<'a> {
+    // key = genre, category, number
+    parameter_descriptions:
+        Option<BTreeMap<usize, BTreeMap<usize, BTreeMap<usize, ParameterDescription>>>>,
+
     sectionsets: SectionSets<'a>,
 }
 
 impl<'a> Grib2<'a> {
     pub fn new() -> Self {
+        let json = include_str!("parameter-descriptions.json");
+        let parameter_descriptions = match serde_json::from_str(json) {
+            Ok(s) => Some(s),
+            Err(msg) => {
+                eprintln!("Failed load paramter.json: {}", msg);
+                None
+            }
+        };
+
         Self {
+            parameter_descriptions,
             sectionsets: SectionSets::new(),
         }
     }
@@ -27,6 +50,21 @@ impl<'a> Grib2<'a> {
 
     pub fn sectionsets(&self) -> &SectionSets<'a> {
         return &self.sectionsets;
+    }
+
+    pub fn parameter_description(
+        &self,
+        genre: usize,
+        parameter_category: usize,
+        parameter_number: usize,
+    ) -> Option<&ParameterDescription> {
+        return Some(
+            self.parameter_descriptions
+                .as_ref()?
+                .get(&genre)?
+                .get(&parameter_category)?
+                .get(&parameter_number)?,
+        );
     }
 
     pub fn dump(&self) {

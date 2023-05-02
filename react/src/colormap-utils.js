@@ -59,7 +59,7 @@ export const colormaps = (genre, category, number) => {
                         case 3: // Low Cloud Cover [%]
                         case 4: // Medium Cloud Cover [%]
                         case 5: // High Cloud Cover [%]
-                            return COLORMAPS['percentage'];
+                            return COLORMAPS['cloud'];
                     }
 
 
@@ -144,6 +144,27 @@ const createColormaps = () => {
             thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
         }
         colormaps['percentage'] = { thresholds, colors };
+    }
+
+    {
+        // cloud
+        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
+        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        let i = 0;
+        thresholds[i] = 0.0; colors.set([0.0, 0.0, 0.0, 0.0], i * 4); i++;
+        thresholds[i] = 10.0; colors.set([0.2, 0.2, 0.2, 1.0], i * 4); i++;
+        thresholds[i] = 20.0; colors.set([0.3, 0.3, 0.3, 1.0], i * 4); i++;
+        thresholds[i] = 30.0; colors.set([0.4, 0.4, 0.4, 1.0], i * 4); i++;
+        thresholds[i] = 40.0; colors.set([0.5, 0.5, 0.5, 1.0], i * 4); i++;
+        thresholds[i] = 50.0; colors.set([0.6, 0.6, 0.6, 1.0], i * 4); i++;
+        thresholds[i] = 60.0; colors.set([0.7, 0.7, 0.7, 1.0], i * 4); i++;
+        thresholds[i] = 70.0; colors.set([0.8, 0.8, 0.8, 1.0], i * 4); i++;
+        thresholds[i] = 80.0; colors.set([0.9, 0.9, 0.9, 1.0], i * 4); i++;
+        thresholds[i] = 90.0; colors.set([1.0, 1.0, 1.0, 1.0], i * 4); i++;
+        for (; i < MAX_COLORMAP_STEP; i++) {
+            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
+        }
+        colormaps['cloud'] = { thresholds, colors };
     }
 
     {

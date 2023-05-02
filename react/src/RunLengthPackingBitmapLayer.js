@@ -33,7 +33,8 @@ export default class RunLengthPackingBitmapLayer extends BitmapLayer {
           bounds,
           factor,
           levels,
-          colormap,
+          colors: colormap.colors,
+          thresholds: colormap.thresholds,
         })
         .draw();
     }

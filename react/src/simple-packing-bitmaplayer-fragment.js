@@ -26,7 +26,8 @@ uniform float r;
 uniform int e;
 uniform int d;
 const int MAX_COLORMAP_STEP = 100;  // loop index cannot be compared with non-constant expression
-uniform vec4 colormap[MAX_COLORMAP_STEP];  // vec4(threshold, r, g, b)
+uniform vec4 colors[MAX_COLORMAP_STEP];  // vec4(r, g, b, a)
+uniform float thresholds[MAX_COLORMAP_STEP]; 
 
 // from degrees to Web Mercator
 vec2 lnglat_to_mercator(vec2 lnglat) {
@@ -114,16 +115,16 @@ void main(void) {
   if(fullByte < 65535.0){
     float value = (r + fullByte *  pow(2.0, float(e))) /  pow(10.0, float(d));
 
-    bitmapColor = vec4(colormap[0].yzw, 1.0);
+    bitmapColor = colors[0];
     for(int i = 0; i < MAX_COLORMAP_STEP; i++) {
-      float threshold = colormap[i].x;
-      vec3 color = colormap[i].yzw;
+      float threshold = thresholds[i];
+      vec4 color = colors[i];
       
       if(value < threshold){
         break;
       }
       
-      bitmapColor = vec4(color, 1.0);
+      bitmapColor = color;
     }
   }
     

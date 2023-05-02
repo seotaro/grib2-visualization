@@ -8,6 +8,7 @@ use grib2::section::PackingType;
 use grib2::utils_impl::first_plane_name;
 use grib2::Grib2;
 use serde::Serialize;
+use std::cmp;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsValue;
 
@@ -38,6 +39,8 @@ pub struct SimplePackingAttributes {
     pub d: isize,
     pub bits: usize,
     pixels: Vec<u16>,
+    pub min: u16,
+    pub max: u16,
 }
 #[wasm_bindgen]
 impl SimplePackingAttributes {
@@ -61,7 +64,10 @@ pub struct RunLengthPackingAttributes {
     pub factor: isize,
     levels: Vec<u16>,
     pixels: Vec<u8>,
+    pub min: u8,
+    pub max: u8,
 }
+
 #[wasm_bindgen]
 impl RunLengthPackingAttributes {
     pub fn bounds(&self) -> JsValue {
@@ -243,6 +249,18 @@ impl Grib2Wrapper {
             PackingType::Simple => {
                 let image = sectionset.unpack_simple().ok()?;
 
+                // u16::MAX はビットマップ適用して範囲外のピクセル
+                let mut min = u16::MAX - 1;
+                let mut max = 0;
+                for pixel in image.pixels.iter() {
+                    if *pixel == u16::MAX {
+                        continue;
+                    }
+
+                    min = cmp::min(min, *pixel);
+                    max = cmp::max(max, *pixel);
+                }
+
                 Some(PackingImage {
                     packing_type,
                     simple_packing_attributes: Some(SimplePackingAttributes {
@@ -256,12 +274,21 @@ impl Grib2Wrapper {
                         d: image.d,
                         bits: image.bits,
                         pixels: image.pixels,
+                        min,
+                        max,
                     }),
                     run_length_packing_attributes: None,
                 })
             }
             PackingType::RunLength => {
                 let image = sectionset.unpack_run_length().ok()?;
+
+                let mut min = image.pixels[0];
+                let mut max = image.pixels[0];
+                for pixel in image.pixels.iter() {
+                    min = cmp::min(min, *pixel);
+                    max = cmp::max(max, *pixel);
+                }
 
                 Some(PackingImage {
                     packing_type,
@@ -274,8 +301,10 @@ impl Grib2Wrapper {
                         bounds,
                         bits: image.bits,
                         factor: image.factor,
-                        levels: image.levels,
                         pixels: image.pixels,
+                        min,
+                        max,
+                        levels: image.levels,
                     }),
                 })
             }
@@ -283,6 +312,18 @@ impl Grib2Wrapper {
                 let image = sectionset
                     .unpack_complex_packing_and_spatial_differencing()
                     .ok()?;
+
+                // u16::MAX はビットマップ適用して範囲外のピクセル
+                let mut min = u16::MAX - 1;
+                let mut max = 0;
+                for pixel in image.pixels.iter() {
+                    if *pixel == u16::MAX {
+                        continue;
+                    }
+
+                    min = cmp::min(min, *pixel);
+                    max = cmp::max(max, *pixel);
+                }
 
                 Some(PackingImage {
                     packing_type,
@@ -297,6 +338,8 @@ impl Grib2Wrapper {
                         d: image.d,
                         bits: image.bits,
                         pixels: image.pixels,
+                        min,
+                        max,
                     }),
                     run_length_packing_attributes: None,
                 })

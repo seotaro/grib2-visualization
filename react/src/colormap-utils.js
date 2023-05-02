@@ -15,9 +15,6 @@ export const colormaps = (genre, category, number) => {
                 case 1:
                     switch (number) {
                         case 1: return COLORMAPS['percentage']; // Relative Humidity [%]
-                        case 8: return COLORMAPS['total-precipitation'];    // Total Precipitation [kg m-2]
-                        // case 52:// Total precipitation rate [kg m-2 s-1]
-                        // case 57:// Total snowfall rate [m s-1]
                         case 201: return COLORMAPS['precipitation'];    // 10分間降水強度（１時間換算値）レベル値
                         case 203: return COLORMAPS['precipitation'];    // 降水強度レベル値(解析、予報）
                     }
@@ -29,27 +26,15 @@ export const colormaps = (genre, category, number) => {
                         case 2:   // U-Component of Wind [m s-1]
                         case 3:   // V-Component of Wind [m s-1]
                             return COLORMAPS['wind'];
-                        case 8: return COLORMAPS['vertical-velocity'];   // Vertical Velocity (Pressure) [Pa s-1]
-                        //           _ => None,
-                        //       },
                     }
                     break;
 
                 // Mass
                 case 3:
-                    switch (number) {
-                        case 0: // Pressure [Pa]
-                        case 1: // Pressure Reduced to MSL [Pa]
-                            return COLORMAPS['pressure'];
-                        case 5: return COLORMAPS['geopotential-height']; // Geopotential Height [gpm]
-                    }
                     break;
 
                 // Short-wave radiation
                 case 4:
-                    switch (number) {
-                        case 7: return COLORMAPS['short-wave-radiation-flux'];
-                    }
                     break;
 
                 // Cloud
@@ -81,12 +66,12 @@ export const colormaps = (genre, category, number) => {
     }
 
 
-    return COLORMAPS['percentage']; // デフォルト
+    return null;
 }
 
 const MAX_COLORMAP_STEP = 100; // GLSL の for ループのインデックスは定数値しか比較できないので固定サイズにする。
 
-const createGrayscaleColormap = (min, max, steps) => {
+export const createGrayscaleColormap = (min, max, steps) => {
     const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
     const thresholds = new Float32Array(MAX_COLORMAP_STEP);
     let i = 0;
@@ -98,6 +83,56 @@ const createGrayscaleColormap = (min, max, steps) => {
         thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
     }
     return { thresholds, colors };
+}
+
+export const createRainbowColormap = (min, max, steps) => {
+    const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
+    const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+    let i = 0;
+    for (let i = 0; i < steps; i++) {
+        const d = i / (steps - 1);
+        thresholds[i] = min + (max - min) * d;
+
+        let H = 0.0;
+        if (min < max) {
+            H = (1.0 - ((thresholds[i] - min) / (max - min))) * 240.0;
+        }
+        let S = 1.0;
+        let V = 1.0;
+
+        const RGB = HSVtoRGB(H, S, V);
+        colors.set([RGB[0], RGB[1], RGB[2], 1.0], i * 4);
+    }
+    for (let i = steps; i < MAX_COLORMAP_STEP; i++) {
+        thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
+    }
+    return { thresholds, colors };
+}
+
+// H: Hue angle
+// S: Saturation
+// V: Value
+const HSVtoRGB = (H, S, V) => {
+    if (360.0 <= H) {
+        H = 0.0;
+    }
+
+    const Hi = Math.floor(H / 60.0) % 6;
+    const f = H / 60.0 - Hi;
+    const p = V * (1.0 - S);
+    const q = V * (1.0 - S * f);
+    const t = V * (1.0 - S * (1.0 - f));
+
+    let RGB = [0.0, 0.0, 0.0];
+    switch (Hi) {
+        case 0: RGB = [V, t, p]; break;
+        case 1: RGB = [q, V, p]; break;
+        case 2: RGB = [p, V, t]; break;
+        case 3: RGB = [p, q, V]; break;
+        case 4: RGB = [t, p, V]; break;
+        case 5: RGB = [V, p, q]; break;
+    }
+    return RGB;
 }
 
 const createColormaps = () => {

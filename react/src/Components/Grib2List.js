@@ -42,13 +42,13 @@ const columns = [
     sortComparator: (v1, v2) => v1[0].localeCompare(v2[0]),
   },
   {
-    field: 'parameter_name',
-    headerName: 'parameter_name',
+    field: 'parameter_description',
+    headerName: 'parameter_description',
     type: 'string',
     width: 250,
     sortable: true,
     valueGetter: (params) => [
-      params.row.parameter_name,
+      params.row.parameter_description,
       params.row.genre,
       params.row.parameter_category,
       params.row.parameter_number],

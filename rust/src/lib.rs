@@ -5,7 +5,7 @@ mod grib2;
 use chrono::{DateTime, Utc};
 use grib2::section::Bounds;
 use grib2::section::PackingType;
-use grib2::utils_impl::{first_plane_name, parameter_name};
+use grib2::utils_impl::first_plane_name;
 use grib2::Grib2;
 use serde::Serialize;
 use wasm_bindgen::prelude::*;
@@ -107,7 +107,7 @@ pub struct Item {
     packing_type: Option<PackingType>,
     point_count: Option<u32>,
     genre: Option<u32>,
-    parameter_name: Option<String>,
+    parameter_description: Option<String>,
     parameter_category: Option<u32>,
     parameter_number: Option<u32>,
     datetime: Option<DateTime<Utc>>,
@@ -154,7 +154,7 @@ impl Grib2Wrapper {
                 reference_datetime: sectionset.reference_datetime(),
                 packing_type: sectionset.packing_type(),
                 point_count: Self::to_u32(sectionset.point_count()),
-                parameter_name: Self::parameter_name(
+                parameter_description: self.parameter_description(
                     sectionset.genre,
                     sectionset.parameter_category(),
                     sectionset.parameter_number(),
@@ -182,7 +182,7 @@ impl Grib2Wrapper {
             log(&format!(
                 "No.{:03} {:?} {:?} {} ",
                 i,
-                Self::parameter_name(
+                self.parameter_description(
                     sectionset.genre,
                     sectionset.parameter_category(),
                     sectionset.parameter_number(),
@@ -197,12 +197,17 @@ impl Grib2Wrapper {
         }
     }
 
-    pub fn parameter_name(
+    pub fn parameter_description(
+        &self,
         genre: Option<usize>,
         parameter_category: Option<usize>,
         parameter_number: Option<usize>,
     ) -> Option<String> {
-        parameter_name(genre?, parameter_category?, parameter_number?)
+        let description =
+            self.grib2
+                .parameter_description(genre?, parameter_category?, parameter_number?);
+
+        return Some(format!("{} [{}]", description?.name, description?.unit));
     }
 
     pub fn first_plane_name(

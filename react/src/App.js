@@ -12,7 +12,7 @@ import Dropzone from 'react-dropzone'
 import { Grib2List } from './Components/Grib2List';
 import { Settings } from './Components/Settings';
 import { latlonlineGeoJson } from './utils'
-import { colormaps } from './colormap-utils'
+import { colormaps, createGrayscaleColormap, createRainbowColormap } from './colormap-utils'
 import SimplePackingBitmapLayer from './SimplePackingBitmapLayer'
 import RunLengthPackingBitmapLayer from './RunLengthPackingBitmapLayer'
 import init, * as wasm from './wasm/rust';
@@ -147,12 +147,19 @@ function App() {
           , image.run_length_packing_attributes());
 
         const item = items[itemIndex];
-        setColormap(colormaps(item.genre, item.parameter_category, item.parameter_number));
 
+        let colormap = colormaps(item.genre, item.parameter_category, item.parameter_number);
         switch (image.packing_type()) {
           case 'simple':
             {
               const attributes = image.simple_packing_attributes();
+              if (colormap == null) {
+                const min = (attributes.r + attributes.min * Math.pow(2.0, attributes.e)) / Math.pow(10.0, attributes.d);
+                const max = (attributes.r + attributes.max * Math.pow(2.0, attributes.e)) / Math.pow(10.0, attributes.d);
+                colormap = createRainbowColormap(min, max, 20);
+              }
+              console.log('attributes r:', attributes.r, 'e:', attributes.e, 'd:', attributes.d, 'min:', attributes.min, 'max:', attributes.max);
+
               setTexture(createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
             }
             break;
@@ -160,11 +167,21 @@ function App() {
           case 'run-length':
             {
               const attributes = image.run_length_packing_attributes();
+              if (colormap == null) {
+                // 0 は欠測
+                const levels = attributes.levels();
+                const min = levels[(0 < attributes.min) ? attributes.min - 1 : 0] / Math.pow(10.0, attributes.factor);
+                const max = levels[(0 < attributes.max) ? attributes.max - 1 : 0] / Math.pow(10.0, attributes.factor);
+                colormap = createGrayscaleColormap(min, max, 20);
+              }
+              console.log('attributes factor:', attributes.factor, 'min:', attributes.min, 'max:', attributes.max);
+
               setTexture(createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
             }
             break;
         }
 
+        setColormap(colormap);
         setImage(image);
       }
     }

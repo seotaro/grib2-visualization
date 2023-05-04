@@ -182,7 +182,8 @@ function App() {
               }
               console.log('attributes factor:', attributes.factor
                 , 'min:', attributes.min, '（', min, '）'
-                , 'max:', attributes.max, '（', max, '）', levels);
+                , 'max:', attributes.max, '（', max, '）'
+                , 'levels', levels);
 
               setTexture(createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
             }

@@ -744,7 +744,7 @@
         "unit": ""
       },
       "202": {
-        "name": "Reserved for local use",
+        "name": "10分間降水量レベル値",
         "unit": ""
       },
       "203": {
@@ -762,6 +762,10 @@
       "208": {
         "name": "土砂災害警戒判定値",
         "unit": ""
+      },
+      "210": {
+        "name": "日平均降水量",
+        "unit": "mm/日"
       },
       "214": {
         "name": "降水強度の誤差の要因",
@@ -1008,6 +1012,190 @@
       "1": {
         "name": "雷活動度",
         "unit": ""
+      }
+    }
+  },
+  "1": {},
+  "2": {},
+  "3": {},
+  "4": {},
+  "10": {
+    "0": {
+      "3": {
+        "name": "Significant height of combined wind waves and swell",
+        "unit": "m"
+      },
+      "4": {
+        "name": "Direction of wind waves",
+        "unit": "degree true"
+      },
+      "5": {
+        "name": "Significant height of wind waves",
+        "unit": "m"
+      },
+      "6": {
+        "name": "Mean period of wind waves",
+        "unit": "s"
+      },
+      "10": {
+        "name": "Primary wave direction",
+        "unit": "degree true"
+      },
+      "11": {
+        "name": "Primary wave mean period",
+        "unit": "s"
+      },
+      "47": {
+        "name": "Significant wave height of first swell partition",
+        "unit": "m"
+      },
+      "48": {
+        "name": "Significant wave height of second swell partition",
+        "unit": "m"
+      },
+      "49": {
+        "name": "Significant wave height of third swell partition",
+        "unit": "m"
+      },
+      "50": {
+        "name": "Mean wave period of first swell partition",
+        "unit": "s"
+      },
+      "51": {
+        "name": "Mean wave period of second swell partition",
+        "unit": "s"
+      },
+      "52": {
+        "name": "Mean wave period of third swell partition",
+        "unit": "s"
+      },
+      "53": {
+        "name": "Mean wave direction of first swell partition",
+        "unit": "°"
+      },
+      "54": {
+        "name": "Mean wave direction of second swell partition",
+        "unit": "°"
+      },
+      "55": {
+        "name": "Mean wave direction of third swell partition",
+        "unit": "°"
+      }
+    },
+    "2": {
+      "0": {
+        "name": "Ice cover Proportion",
+        "unit": ""
+      },
+      "1": {
+        "name": "Ice thickness ",
+        "unit": "m"
+      },
+      "2": {
+        "name": "Direction of ice drift",
+        "unit": "degree true"
+      },
+      "3": {
+        "name": "Speed of ice drift",
+        "unit": "m s-1"
+      },
+      "4": {
+        "name": "u-component of ice drift",
+        "unit": "m s-1"
+      },
+      "5": {
+        "name": "v-component of ice drift",
+        "unit": "m s-1"
+      },
+      "6": {
+        "name": "Ice growth rate",
+        "unit": "m s-1"
+      },
+      "7": {
+        "name": "Ice divergence",
+        "unit": "s-1"
+      },
+      "8": {
+        "name": "Ice temperature",
+        "unit": "K"
+      },
+      "9": {
+        "name": "Module of ice internal pressure ",
+        "unit": "Pa m"
+      },
+      "10": {
+        "name": "Zonal vector component of vertically integrated ice internal pressure",
+        "unit": "Pa m"
+      },
+      "11": {
+        "name": "Meridional vector component of vertically integrated ice internal pressure",
+        "unit": "Pa m"
+      },
+      "12": {
+        "name": "Compressive ice strength",
+        "unit": "N m-1"
+      },
+      "13": {
+        "name": "Snow temperature (over sea ice)",
+        "unit": "K"
+      },
+      "14": {
+        "name": "Albedo",
+        "unit": ""
+      }
+    },
+    "3": {
+      "0": {
+        "name": "Water temperature",
+        "unit": "K"
+      },
+      "1": {
+        "name": "Deviation of sea level from mean",
+        "unit": "m"
+      },
+      "2": {
+        "name": "Heat exchange coefficient",
+        "unit": ""
+      },
+      "3": {
+        "name": "Practical salinity",
+        "unit": ""
+      },
+      "4": {
+        "name": "Downward heat flux",
+        "unit": "W m-2"
+      },
+      "5": {
+        "name": "Eastward surface stress",
+        "unit": "N m-2"
+      },
+      "6": {
+        "name": "Northward surface stress",
+        "unit": "N m-2"
+      },
+      "7": {
+        "name": "x-component surface stress",
+        "unit": "N m-2"
+      },
+      "8": {
+        "name": "y-component surface stress",
+        "unit": "N m-2"
+      },
+      "9": {
+        "name": "Thermosteric change in sea-surface height",
+        "unit": "m"
+      },
+      "10": {
+        "name": "Halosteric change in sea-surface height",
+        "unit": "m"
+      },
+      "11": {
+        "name": "Steric change in sea-surface height",
+        "unit": "m"
+      },
+      "12": {
+        "name": "Sea salt flux",
+        "unit": "kg m-2 s-1"
       }
     }
   }

@@ -148,6 +148,8 @@ pub(crate) fn first_plane_name(
         100 => Some(format!("Isobaric Surface: {}[Pa]", v)),
         101 => Some(format!("Mean Sea Level: {}[m]", v)),
         103 => Some(format!("Specified Height Level Above Ground: {}[m]", v)),
+        200 => Some(format!("タンクモデルの全タンク（土壌雨量指数）")),
+        201 => Some(format!("タンクモデルのタンク番号: {}", v)),
         _ => None,
     }
 }

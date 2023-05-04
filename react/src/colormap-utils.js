@@ -14,10 +14,18 @@ export const colormaps = (genre, category, number) => {
                 // Moisture
                 case 1:
                     switch (number) {
-                        case 1: return COLORMAPS['percentage']; // Relative Humidity [%]
-                        case 201: return COLORMAPS['precipitation'];    // 10分間降水強度（１時間換算値）レベル値
-                        case 202: return COLORMAPS['precipitation'];    // 10分間降水強度（１時間換算値）レベル値
-                        case 203: return COLORMAPS['precipitation'];    // 降水強度レベル値(解析、予報）
+                        case 1: return COLORMAPS['percentage'];                 // Relative Humidity [%]
+                        case 200: return COLORMAPS['precipitation']             // 1時間降水量レベル値
+                        case 201: return COLORMAPS['precipitation'];            // 10分間降水強度（１時間換算値）レベル値
+                        case 202: return COLORMAPS['precipitation-10min'];      // 10分間降水量レベル値
+                        case 203: return COLORMAPS['precipitation'];            // 降水強度レベル値(解析、予報）
+                        case 204: return COLORMAPS['precipitation'];            // 総降水量のレベル値
+                        case 206: return COLORMAPS['precipitation'];            // 土壌雨量タンクレベル値
+                        case 208: return COLORMAPS['sediment-warning-index'];   // 土砂災害警戒判定値
+                        case 216: return COLORMAPS['warning-index'];            // 浸水危険度判定値
+                        case 217: return COLORMAPS['warning-index'];            // 洪水危険度判定値
+                        case 218: return COLORMAPS['warning-index'];            // 浸水・洪水危険度判定値
+                        case 233: return COLORMAPS['precipitation'];            // 降雪の深さの合計のレベル値
                     }
                     break;
 
@@ -76,6 +84,12 @@ export const colormaps = (genre, category, number) => {
         // Oceanographic products
         case 10:
             switch (category) {
+                // surface properties
+                case 3:
+                    switch (number) {
+                        case 0: return COLORMAPS['temperature'];    // "Water temperature [K]"
+                    }
+                    break;
 
             }
             break;
@@ -242,6 +256,26 @@ const createColormaps = () => {
     }
 
     {
+        // 10分間降水強度
+        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
+        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        let i = 0;
+        thresholds[i] = 0.0 / 6.0; colors.set([0.0, 0.0, 0.0, 0.0], i * 4); i++;    // No echo
+        thresholds[i] = 0.1 / 6.0; colors.set([240 / 255, 240 / 255, 254 / 255, 1.0], i * 4); i++;
+        thresholds[i] = 1.0 / 6.0; colors.set([153 / 255, 204 / 255, 253 / 255, 1.0], i * 4); i++;
+        thresholds[i] = 5.0 / 6.0; colors.set([44 / 255, 131 / 255, 251 / 255, 1.0], i * 4); i++;
+        thresholds[i] = 10.0 / 6.0; colors.set([27 / 255, 65 / 255, 250 / 255, 1.0], i * 4); i++;
+        thresholds[i] = 20.0 / 6.0; colors.set([253 / 255, 241 / 255, 49 / 255, 1.0], i * 4); i++;
+        thresholds[i] = 30.0 / 6.0; colors.set([251 / 255, 143 / 255, 36 / 255, 1.0], i * 4); i++;
+        thresholds[i] = 50.0 / 6.0; colors.set([250 / 255, 46 / 255, 28 / 255, 1.0], i * 4); i++;
+        thresholds[i] = 80.0 / 6.0; colors.set([168 / 255, 23 / 255, 93 / 255, 1.0], i * 4); i++;
+        for (; i < MAX_COLORMAP_STEP; i++) {
+            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
+        }
+        colormaps['precipitation-10min'] = { thresholds, colors };
+    }
+
+    {
         // total precipitation
         const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
         const thresholds = new Float32Array(MAX_COLORMAP_STEP);
@@ -344,6 +378,50 @@ const createColormaps = () => {
             thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
         }
         colormaps['thunder'] = { thresholds, colors };
+    }
+
+    {
+        // 土砂災害警戒判定値
+        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
+        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        let i = 0;
+        thresholds[i] = 0.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 欠測値
+        thresholds[i] = 1.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 海等の格子
+        thresholds[i] = 2.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 警戒判定対象外格子
+        thresholds[i] = 3.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 土砂災害警戒判定値0
+        thresholds[i] = 4.0; colors.set([242 / 255, 231 / 255, 0 / 255, 1.0], i * 4); i++;  // 土砂災害警戒判定値1
+        thresholds[i] = 5.0; colors.set([255 / 255, 40 / 255, 0 / 255, 1.0], i * 4); i++;   // 土砂災害警戒判定値2
+        thresholds[i] = 6.0; colors.set([170 / 255, 0 / 255, 170 / 255, 1.0], i * 4); i++;  // 土砂災害警戒判定値3
+        thresholds[i] = 7.0; colors.set([12 / 255, 0 / 255, 12 / 255, 1.0], i * 4); i++;    // 土砂災害警戒判定値4
+        thresholds[i] = 8.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 予備 
+        thresholds[i] = 9.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 予備 
+        thresholds[i] = 10.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;     // 予備 
+        for (; i < MAX_COLORMAP_STEP; i++) {
+            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
+        }
+        colormaps['sediment-warning-index'] = { thresholds, colors };
+    }
+
+    {
+        // 警戒判定値
+        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
+        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        let i = 0;
+        thresholds[i] = 0.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 欠測値
+        thresholds[i] = 1.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 土砂災害警戒判定値0
+        thresholds[i] = 2.0; colors.set([242 / 255, 231 / 255, 0 / 255, 1.0], i * 4); i++;  // 土砂災害警戒判定値1
+        thresholds[i] = 3.0; colors.set([255 / 255, 40 / 255, 0 / 255, 1.0], i * 4); i++;   // 土砂災害警戒判定値2
+        thresholds[i] = 4.0; colors.set([170 / 255, 0 / 255, 170 / 255, 1.0], i * 4); i++;  // 土砂災害警戒判定値3
+        thresholds[i] = 5.0; colors.set([12 / 255, 0 / 255, 12 / 255, 1.0], i * 4); i++;    // 土砂災害警戒判定値4
+        thresholds[i] = 6.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 予備 
+        thresholds[i] = 7.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 予備 
+        thresholds[i] = 8.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 予備 
+        thresholds[i] = 9.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 予備 
+        thresholds[i] = 10.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;     // 予備 
+        for (; i < MAX_COLORMAP_STEP; i++) {
+            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
+        }
+        colormaps['warning-index'] = { thresholds, colors };
     }
 
     {

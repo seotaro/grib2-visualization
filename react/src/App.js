@@ -314,6 +314,13 @@ function App() {
         {
           const attributes = image.run_length_packing_attributes();
           const bounds = attributes.bounds();
+
+          // シェーダーに渡す配列は固定サイズ
+          const buffer = new ArrayBuffer(256 * 2);
+          const levels = new Int16Array(buffer);
+          levels.fill(0, 0, 256);
+          levels.set(attributes.levels(), 0);
+
           layers.push(
             new RunLengthPackingBitmapLayer({
               id: "run-length-packing-bitmap-layer",
@@ -323,7 +330,7 @@ function App() {
               image: texture,
               opacity,
               factor: attributes.factor,
-              levels: attributes.levels(),
+              levels: levels,
               colormap,
               parameters,
             }),

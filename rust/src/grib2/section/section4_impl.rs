@@ -1,6 +1,5 @@
 //! GRIB2 Section4 implementation
 
-use chrono::{DateTime, Utc};
 use std::fmt;
 
 use super::super::type_utils_impl::u16_be;

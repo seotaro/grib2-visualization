@@ -8,7 +8,6 @@ use super::super::decode_utils_impl::unpack;
 use super::super::decode_utils_impl::unpack_complex_packing_and_spatial_differencing;
 use super::super::decode_utils_impl::unpack_run_length_packing;
 use super::section5_template::TemplateNumber as Section5TemplateNumber;
-use super::section7_template::TemplateNumber as Section7TemplateNumber;
 use super::Bounds;
 use super::PackingType;
 use super::RawRunLengthPackingImage;

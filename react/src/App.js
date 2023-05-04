@@ -1,4 +1,4 @@
-import React, { useState, useEffect, } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import DeckGL from '@deck.gl/react';
 import { BitmapLayer, GeoJsonLayer, SolidPolygonLayer } from '@deck.gl/layers';
@@ -119,6 +119,8 @@ function App() {
   const [viewMode, setViewMode] = useState('globe');
   const [opacity, setOpacity] = useState(1.0);
 
+  const grib2ListRef = useRef();
+
   // 画面更新
   const [update, setUpdate] = useState(0);
   const redraw = () => {
@@ -157,6 +159,8 @@ function App() {
                 const min = (attributes.r + attributes.min * Math.pow(2.0, attributes.e)) / Math.pow(10.0, attributes.d);
                 const max = (attributes.r + attributes.max * Math.pow(2.0, attributes.e)) / Math.pow(10.0, attributes.d);
                 colormap = createRainbowColormap(min, max, 20);
+
+                console.log(min, max, colormap)
               }
               console.log('attributes r:', attributes.r, 'e:', attributes.e, 'd:', attributes.d, 'min:', attributes.min, 'max:', attributes.max);
 
@@ -172,7 +176,9 @@ function App() {
                 const levels = attributes.levels();
                 const min = levels[(0 < attributes.min) ? attributes.min - 1 : 0] / Math.pow(10.0, attributes.factor);
                 const max = levels[(0 < attributes.max) ? attributes.max - 1 : 0] / Math.pow(10.0, attributes.factor);
-                colormap = createGrayscaleColormap(min, max, 20);
+                colormap = createRainbowColormap(min, max, 20);
+
+                console.log(min, max, colormap)
               }
               console.log('attributes factor:', attributes.factor, 'min:', attributes.min, 'max:', attributes.max);
 
@@ -214,6 +220,7 @@ function App() {
   const onDropFiles = async (acceptedFiles) => {
     if (acceptedFiles == null) return;
 
+    setItems(null);
     setImage(null);
     setTexture(null);
     setItemIndex(0);
@@ -230,6 +237,10 @@ function App() {
     // grib2.dump();
 
     setItems(grib2.items());
+
+    if (grib2ListRef.current) {
+      grib2ListRef.current.initialize();
+    }
   }
 
   const layers = [];
@@ -408,6 +419,7 @@ function App() {
             />
 
             <Grib2List
+              ref={grib2ListRef}
               initial={{ items, selection: itemIndex }}
               onChangeSelection={onChangeSelection}
             />

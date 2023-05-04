@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
@@ -57,8 +57,18 @@ const columns = [
   },
 ];
 
-export const Grib2List = (props) => {
+export const Grib2List = forwardRef((props, ref) => {
   const { initial, onChangeSelection } = props;
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 25,
+  });
+
+  useImperativeHandle(ref, () => ({
+    initialize: () => {
+      setPaginationModel({ page: 0, pageSize: paginationModel.pageSize });
+    }
+  }))
 
   return (<>
     <Box sx={{}}>
@@ -73,7 +83,9 @@ export const Grib2List = (props) => {
             paginationModel: { pageSize: 25, page: 0 },
           },
         }}
+        paginationModel={paginationModel}
         pageSizeOptions={[5, 10, 25, 50, 100]}
+        onPaginationModelChange={setPaginationModel}
         headerHeight={30}
         rowHeight={30}
         hideFooterSelectedRowCount={true}
@@ -86,4 +98,4 @@ export const Grib2List = (props) => {
       </Box>
     </Box>
   </>)
-}
+});

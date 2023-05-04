@@ -16,6 +16,7 @@ export const colormaps = (genre, category, number) => {
                     switch (number) {
                         case 1: return COLORMAPS['percentage']; // Relative Humidity [%]
                         case 201: return COLORMAPS['precipitation'];    // 10分間降水強度（１時間換算値）レベル値
+                        case 202: return COLORMAPS['precipitation'];    // 10分間降水強度（１時間換算値）レベル値
                         case 203: return COLORMAPS['precipitation'];    // 降水強度レベル値(解析、予報）
                     }
                     break;
@@ -35,6 +36,11 @@ export const colormaps = (genre, category, number) => {
 
                 // Short-wave radiation
                 case 4:
+                    switch (number) {
+                        case 51: // UV index
+                        case 52: // Downward short-wave radiation flux, clear sky
+                            return COLORMAPS['un-index'];
+                    }
                     break;
 
                 // Cloud
@@ -52,6 +58,16 @@ export const colormaps = (genre, category, number) => {
                 case 191:
                     switch (number) {
                         case 192: return COLORMAPS['weather'];  // 天気
+                    }
+                    break;
+
+
+
+                // ナウキャスト
+                case 193:
+                    switch (number) {
+                        case 0: return COLORMAPS['tornado'];    // 竜巻発生確度
+                        case 1: return COLORMAPS['thunder'];    // 雷活動度
                     }
                     break;
             }
@@ -96,6 +112,9 @@ export const createRainbowColormap = (min, max, steps) => {
         let H = 0.0;
         if (min < max) {
             H = (1.0 - ((thresholds[i] - min) / (max - min))) * 240.0;
+            if (H < 0.0) {
+                H = 0.0;
+            }
         }
         let S = 1.0;
         let V = 1.0;
@@ -293,6 +312,43 @@ const createColormaps = () => {
             thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
         }
         colormaps['weather'] = { thresholds, colors };
+    }
+
+    {
+        // 竜巻発生確度
+        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
+        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        let i = 0;
+        thresholds[i] = 0.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;          // 計算領域外又は欠測
+        thresholds[i] = 1.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;          // なし
+        thresholds[i] = 2.0; colors.set([251 / 255, 248 / 255, 151 / 255, 1.0], i * 4); i++;    // 発生確度1
+        thresholds[i] = 3.0; colors.set([252 / 255, 150 / 255, 141 / 255, 1.0], i * 4); i++;    // 発生確度2
+        for (; i < MAX_COLORMAP_STEP; i++) {
+            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
+        }
+        colormaps['tornado'] = { thresholds, colors };
+    }
+
+    {
+        // 雷活動度
+        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
+        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        let i = 0;
+        thresholds[i] = 0.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;          // 計算領域外又は欠測
+        thresholds[i] = 1.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;          // なし
+        thresholds[i] = 2.0; colors.set([254 / 255, 248 / 255, 151 / 255, 1.0], i * 4); i++;    // 活動度1
+        thresholds[i] = 3.0; colors.set([253 / 255, 207 / 255, 146 / 255, 1.0], i * 4); i++;    // 活動度2
+        thresholds[i] = 4.0; colors.set([252 / 255, 150 / 255, 141 / 255, 1.0], i * 4); i++;    // 活動度3
+        thresholds[i] = 5.0; colors.set([223 / 255, 147 / 255, 252 / 255, 1.0], i * 4); i++;    // 活動度4
+        for (; i < MAX_COLORMAP_STEP; i++) {
+            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
+        }
+        colormaps['thunder'] = { thresholds, colors };
+    }
+
+    {
+        // UV index
+        colormaps['uv-index'] = createRainbowColormap(0, 13, 14);
     }
 
     // short-wave radiation flux

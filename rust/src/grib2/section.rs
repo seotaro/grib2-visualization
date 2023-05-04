@@ -33,7 +33,7 @@ pub struct RawRunLengthPackingImage {
     pub height: usize,
     pub bits: usize,
     pub factor: isize,
-    pub levels: Vec<u16>,
+    pub levels: Vec<i16>,
     pub pixels: Vec<u8>,
 }
 

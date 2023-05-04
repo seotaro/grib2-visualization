@@ -155,14 +155,16 @@ function App() {
           case 'simple':
             {
               const attributes = image.simple_packing_attributes();
+              const min = (attributes.r + attributes.min * Math.pow(2.0, attributes.e)) / Math.pow(10.0, attributes.d);
+              const max = (attributes.r + attributes.max * Math.pow(2.0, attributes.e)) / Math.pow(10.0, attributes.d);
               if (colormap == null) {
-                const min = (attributes.r + attributes.min * Math.pow(2.0, attributes.e)) / Math.pow(10.0, attributes.d);
-                const max = (attributes.r + attributes.max * Math.pow(2.0, attributes.e)) / Math.pow(10.0, attributes.d);
                 colormap = createRainbowColormap(min, max, 20);
-
-                console.log(min, max, colormap)
               }
-              console.log('attributes r:', attributes.r, 'e:', attributes.e, 'd:', attributes.d, 'min:', attributes.min, 'max:', attributes.max);
+              console.log('attributes r:', attributes.r
+                , 'e:', attributes.e
+                , 'd:', attributes.d
+                , 'min:', attributes.min, '（', min, '）'
+                , 'max:', attributes.max, '（', max, '）');
 
               setTexture(createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
             }
@@ -171,16 +173,16 @@ function App() {
           case 'run-length':
             {
               const attributes = image.run_length_packing_attributes();
+              const levels = attributes.levels();
+              const min = levels[(0 < attributes.min) ? attributes.min - 1 : 0] / Math.pow(10.0, attributes.factor);
+              const max = levels[(0 < attributes.max) ? attributes.max - 1 : 0] / Math.pow(10.0, attributes.factor);
               if (colormap == null) {
                 // 0 は欠測
-                const levels = attributes.levels();
-                const min = levels[(0 < attributes.min) ? attributes.min - 1 : 0] / Math.pow(10.0, attributes.factor);
-                const max = levels[(0 < attributes.max) ? attributes.max - 1 : 0] / Math.pow(10.0, attributes.factor);
                 colormap = createRainbowColormap(min, max, 20);
-
-                console.log(min, max, colormap)
               }
-              console.log('attributes factor:', attributes.factor, 'min:', attributes.min, 'max:', attributes.max);
+              console.log('attributes factor:', attributes.factor
+                , 'min:', attributes.min, '（', min, '）'
+                , 'max:', attributes.max, '（', max, '）', levels);
 
               setTexture(createGrayscale8bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
             }

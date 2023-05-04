@@ -278,13 +278,13 @@ impl<'a> Template200<'a> {
     }
 
     // List of MVL scaled representative values of each level from lv = 1 to MVL
-    pub(crate) fn levels(&self) -> Vec<u16> {
+    pub(crate) fn levels(&self) -> Vec<i16> {
         let m = self.m();
 
-        let mut dest: Vec<u16> = vec![0; m];
+        let mut dest: Vec<i16> = vec![0; m];
         for i in 0..m {
             let index = 17 + i * 2;
-            dest[i] = u16_be(&self.buf[index..index + 2]);
+            dest[i] = i16_be(&self.buf[index..index + 2]);
         }
 
         return dest;

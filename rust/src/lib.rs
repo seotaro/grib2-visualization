@@ -62,7 +62,7 @@ pub struct RunLengthPackingAttributes {
     bounds: Bounds,
     pub bits: usize,
     pub factor: isize,
-    levels: Vec<u16>,
+    levels: Vec<i16>,
     pixels: Vec<u8>,
     pub min: u8,
     pub max: u8,
@@ -76,7 +76,7 @@ impl RunLengthPackingAttributes {
     pub fn pixels(&self) -> Vec<u8> {
         self.pixels.clone()
     }
-    pub fn levels(&self) -> Vec<u16> {
+    pub fn levels(&self) -> Vec<i16> {
         self.levels.clone()
     }
 }

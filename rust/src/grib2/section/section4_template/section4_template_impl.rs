@@ -501,7 +501,7 @@ impl<'a> Template for Template8<'a> {
     }
 
     // データセットの時刻を返す。
-    fn datetime(&self, reference_time: DateTime<Utc>) -> DateTime<Utc> {
+    fn datetime(&self, _reference_time: DateTime<Utc>) -> DateTime<Utc> {
         self.end_time()
     }
 }
@@ -657,7 +657,7 @@ impl<'a> Template for Template9<'a> {
     }
 
     // データセットの時刻を返す。
-    fn datetime(&self, reference_time: DateTime<Utc>) -> DateTime<Utc> {
+    fn datetime(&self, _reference_time: DateTime<Utc>) -> DateTime<Utc> {
         self.end_time()
     }
 }
@@ -813,7 +813,7 @@ impl<'a> Template for Template11<'a> {
     }
 
     // データセットの時刻を返す。
-    fn datetime(&self, reference_time: DateTime<Utc>) -> DateTime<Utc> {
+    fn datetime(&self, _reference_time: DateTime<Utc>) -> DateTime<Utc> {
         self.end_time()
     }
 }
@@ -1105,7 +1105,7 @@ impl<'a> Template for Template50008<'a> {
     }
 
     // データセットの時刻を返す。
-    fn datetime(&self, reference_time: DateTime<Utc>) -> DateTime<Utc> {
+    fn datetime(&self, _reference_time: DateTime<Utc>) -> DateTime<Utc> {
         self.end_time()
     }
 }
@@ -1262,7 +1262,7 @@ impl<'a> Template for Template50009<'a> {
     }
 
     // データセットの時刻を返す。
-    fn datetime(&self, reference_time: DateTime<Utc>) -> DateTime<Utc> {
+    fn datetime(&self, _reference_time: DateTime<Utc>) -> DateTime<Utc> {
         self.end_time()
     }
 }
@@ -1418,7 +1418,7 @@ impl<'a> Template for Template50011<'a> {
         u8_be(&self.buf[10..11]) as usize
     }
     // データセットの時刻を返す。
-    fn datetime(&self, reference_time: DateTime<Utc>) -> DateTime<Utc> {
+    fn datetime(&self, _reference_time: DateTime<Utc>) -> DateTime<Utc> {
         self.end_time()
     }
 }
@@ -1573,7 +1573,7 @@ impl<'a> Template for Template50012<'a> {
         u8_be(&self.buf[10..11]) as usize
     }
     // データセットの時刻を返す。
-    fn datetime(&self, reference_time: DateTime<Utc>) -> DateTime<Utc> {
+    fn datetime(&self, _reference_time: DateTime<Utc>) -> DateTime<Utc> {
         self.end_time()
     }
 }

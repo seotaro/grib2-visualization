@@ -213,6 +213,9 @@ impl Grib2Wrapper {
             self.grib2
                 .parameter_description(genre?, parameter_category?, parameter_number?);
 
+        if description?.unit.is_empty() {
+            return Some(format!("{}", description?.name));
+        }
         return Some(format!("{} [{}]", description?.name, description?.unit));
     }
 

@@ -3,6 +3,7 @@
 use std::fmt;
 
 use super::super::type_utils_impl::i32_be;
+use super::super::type_utils_impl::u16_be;
 use super::super::type_utils_impl::u32_be;
 use super::super::type_utils_impl::u8_be;
 use super::Section;
@@ -11,6 +12,11 @@ use super::Section3;
 impl<'a> Section3<'a> {
     pub(crate) fn create(buf: &'a [u8]) -> Self {
         Self { buf: buf }
+    }
+
+    // Grid definition template number (= N) (see Code table 3.1)
+    fn template_number(&self) -> usize {
+        u16_be(&self.buf[12..14]) as usize
     }
 
     // Number of data points
@@ -106,18 +112,20 @@ impl fmt::Debug for Section3<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "\
-point count: {}, \
-Ni: {}, \
-Nj: {}, \
-La1: {}, \
-Lo1: {}, \
-La2: {}, \
-Lo2: {}, \
-Di: {}, \
-Dj: {}\
+            "Section3\n\
+\tpoint count: {}\n\
+\ttemplate: 3.{}\n\
+\tNi: {}\n\
+\tNj: {}\n\
+\tLa1: {}\n\
+\tLo1: {}\n\
+\tLa2: {}\n\
+\tLo2: {}\n\
+\tDi: {}\n\
+\tDj: {}\n\
         ",
             self.point_count(),
+            self.template_number(),
             self.ni(),
             self.nj(),
             self.la1(),

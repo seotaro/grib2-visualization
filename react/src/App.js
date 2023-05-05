@@ -433,11 +433,33 @@ function App() {
               initial={{ items, selection: itemIndex }}
               onChangeSelection={onChangeSelection}
             />
+            <Information item={(items && items[itemIndex]) ? items[itemIndex] : null} />
           </Box>
         </Box>
       </Box >
     </>
   );
+}
+
+const Information = ({ item }) => {
+  return (<Box sx={{
+    m: 1,
+    p: 1,
+    minHeight: 100,
+    color: 'gray',
+    borderRadius: 1,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'lightgray',
+    overflow: 'auto',
+  }}>
+    <pre>
+      {item?.information
+        ? item.information
+        : 'None of information'
+      }
+    </pre>
+  </Box>)
 }
 
 export default App;

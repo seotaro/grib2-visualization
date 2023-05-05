@@ -227,6 +227,47 @@ impl fmt::Display for SectionSet<'_> {
     }
 }
 
+impl fmt::Debug for SectionSet<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}{}{}{}{}{}{}{}",
+            match self.genre {
+                Some(genre) => format!("Section0\n\tgenre: {}\n", genre),
+                _ => String::from(""),
+            },
+            match self.section1 {
+                Some(sec) => format!("{:?}", sec),
+                _ => String::from(""),
+            },
+            match self.section2 {
+                Some(sec) => format!("{:?}", sec),
+                _ => String::from(""),
+            },
+            match self.section3 {
+                Some(sec) => format!("{:?}", sec),
+                _ => String::from(""),
+            },
+            match self.section4 {
+                Some(sec) => format!("{:?}", sec),
+                _ => String::from(""),
+            },
+            match self.section5 {
+                Some(sec) => format!("{:?}", sec),
+                _ => String::from(""),
+            },
+            match self.section6 {
+                Some(sec) => format!("{:?}", sec),
+                _ => String::from(""),
+            },
+            match self.section7 {
+                Some(sec) => format!("{:?}", sec),
+                _ => String::from(""),
+            },
+        )
+    }
+}
+
 impl<'a> SectionSets<'a> {
     pub(crate) fn new() -> Self {
         Self { items: Vec::new() }

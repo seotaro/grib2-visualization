@@ -121,6 +121,7 @@ pub struct Item {
     first_plane_type: Option<u32>,
     first_plane_factor: Option<i32>,
     first_plane_value: Option<i32>,
+    information: Option<String>,
 }
 
 #[wasm_bindgen]
@@ -177,6 +178,7 @@ impl Grib2Wrapper {
                 first_plane_type: Self::to_u32(sectionset.first_plane_type()),
                 first_plane_factor: Self::to_i32(sectionset.first_plane_factor()),
                 first_plane_value: Self::to_i32(sectionset.first_plane_value()),
+                information: Some(format!("{:?}", sectionset)),
             })
         }
         self.items = items;

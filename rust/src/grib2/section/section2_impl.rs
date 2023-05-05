@@ -30,3 +30,9 @@ impl fmt::Display for Section2<'_> {
         write!(f, "--Section2\nlength: {}\n", self.length(),)
     }
 }
+
+impl fmt::Debug for Section2<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Section2\n",)
+    }
+}

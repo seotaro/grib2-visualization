@@ -261,23 +261,25 @@ impl fmt::Debug for Template0<'_> {
         write!(
             f,
             "\
-parameter-category: {}, \
-parameter-number: {}, \
-first-plane-type: {}, \
-first-plane-factor: {}, \
-first-plane-value: {}, \
-second-plane-type: {}, \
-second-plane-factor: {}, \
-second-plane-value: {}, \
+\tparameter category: {}\n\
+\tparameter number: {}\n\
+\tforecast time span: {}\n\
+\tfirst plane type: {}\n\
+\tfirst plane factor: {}\n\
+\tfirst plane value: {}\n\
+\tsecond plane type: {}\n\
+\tsecond plane factor: {}\n\
+\tsecond plane value: {}\n\
 ",
             self.parameter_category(),
             self.parameter_number(),
+            self.forecast_time_span(),
             self.first_plane_type(),
             self.first_plane_factor(),
             self.first_plane_value(),
             self.second_plane_type(),
             self.second_plane_factor(),
-            self.second_plane_value()
+            self.second_plane_value(),
         )
     }
 }
@@ -396,17 +398,19 @@ impl fmt::Debug for Template1<'_> {
         write!(
             f,
             "\
-parameter-category: {}, \
-parameter-number: {}, \
-first-plane-type: {}, \
-first-plane-factor: {}, \
-first-plane-value: {}, \
-second-plane-type: {}, \
-second-plane-factor: {}, \
-second-plane-value: {}, \
+\tparameter category: {}\n\
+\tparameter number: {}\n\
+\tforecast time span: {}\n\
+\tfirst plane type: {}\n\
+\tfirst plane factor: {}\n\
+\tfirst plane value: {}\n\
+\tsecond plane type: {}\n\
+\tsecond plane factor: {}\n\
+\tsecond plane value: {}\n\
 ",
             self.parameter_category(),
             self.parameter_number(),
+            self.forecast_time_span(),
             self.first_plane_type(),
             self.first_plane_factor(),
             self.first_plane_value(),
@@ -525,7 +529,7 @@ second-plane-type: {}\n\
 second-plane-factor: {}\n\
 second-plane-value: {}\n\
 end time: {}\n\
-statistics type: {}\n\
+statistics-type: {}\n\
 statistics time span: {}\n\
 ",
             self.parameter_category(),
@@ -552,23 +556,31 @@ impl fmt::Debug for Template8<'_> {
         write!(
             f,
             "\
-parameter-category: {}, \
-parameter-number: {}, \
-first-plane-type: {}, \
-first-plane-factor: {}, \
-first-plane-value: {}, \
-second-plane-type: {}, \
-second-plane-factor: {}, \
-second-plane-value: {}, \
+\tparameter category: {}\n\
+\tparameter number: {}\n\
+\tforecast time span: {}\n\
+\tfirst plane type: {}\n\
+\tfirst plane factor: {}\n\
+\tfirst plane value: {}\n\
+\tsecond plane type: {}\n\
+\tsecond plane factor: {}\n\
+\tsecond plane value: {}\n\
+\tend time: {}\n\
+\tstatistics type: {}\n\
+\tstatistics time span: {}\n\
 ",
             self.parameter_category(),
             self.parameter_number(),
+            self.forecast_time_span(),
             self.first_plane_type(),
             self.first_plane_factor(),
             self.first_plane_value(),
             self.second_plane_type(),
             self.second_plane_factor(),
             self.second_plane_value(),
+            self.end_time(),
+            self.statistics_type(),
+            self.statistics_time_span(),
         )
     }
 }
@@ -681,7 +693,7 @@ second-plane-type: {}\n\
 second-plane-factor: {}\n\
 second-plane-value: {}\n\
 end time: {}\n\
-statistics type: {}\n\
+statistics-type: {}\n\
 statistics time span: {}\n\
 ",
             self.parameter_category(),
@@ -708,23 +720,31 @@ impl fmt::Debug for Template9<'_> {
         write!(
             f,
             "\
-parameter-category: {}, \
-parameter-number: {}, \
-first-plane-type: {}, \
-first-plane-factor: {}, \
-first-plane-value: {}, \
-second-plane-type: {}, \
-second-plane-factor: {}, \
-second-plane-value: {}, \
+\tparameter category: {}\n\
+\tparameter number: {}\n\
+\tforecast time span: {}\n\
+\tfirst plane type: {}\n\
+\tfirst plane factor: {}\n\
+\tfirst plane value: {}\n\
+\tsecond plane type: {}\n\
+\tsecond plane factor: {}\n\
+\tsecond plane value: {}\n\
+\tend time: {}\n\
+\tstatistics type: {}\n\
+\tstatistics time span: {}\n\
 ",
             self.parameter_category(),
             self.parameter_number(),
+            self.forecast_time_span(),
             self.first_plane_type(),
             self.first_plane_factor(),
             self.first_plane_value(),
             self.second_plane_type(),
             self.second_plane_factor(),
             self.second_plane_value(),
+            self.end_time(),
+            self.statistics_type(),
+            self.statistics_time_span(),
         )
     }
 }
@@ -837,7 +857,7 @@ second-plane-type: {}\n\
 second-plane-factor: {}\n\
 second-plane-value: {}\n\
 end time: {}\n\
-statistics type: {}\n\
+statistics-type: {}\n\
 statistics time span: {}\n\
 ",
             self.parameter_category(),
@@ -864,23 +884,31 @@ impl fmt::Debug for Template11<'_> {
         write!(
             f,
             "\
-parameter-category: {}, \
-parameter-number: {}, \
-first-plane-type: {}, \
-first-plane-factor: {}, \
-first-plane-value: {}, \
-second-plane-type: {}, \
-second-plane-factor: {}, \
-second-plane-value: {}, \
+\tparameter category: {}\n\
+\tparameter number: {}\n\
+\tforecast time span: {}\n\
+\tfirst plane type: {}\n\
+\tfirst plane factor: {}\n\
+\tfirst plane value: {}\n\
+\tsecond plane type: {}\n\
+\tsecond plane factor: {}\n\
+\tsecond plane value: {}\n\
+\tend time: {}\n\
+\tstatistics type: {}\n\
+\tstatistics time span: {}\n\
 ",
             self.parameter_category(),
             self.parameter_number(),
+            self.forecast_time_span(),
             self.first_plane_type(),
             self.first_plane_factor(),
             self.first_plane_value(),
             self.second_plane_type(),
             self.second_plane_factor(),
             self.second_plane_value(),
+            self.end_time(),
+            self.statistics_type(),
+            self.statistics_time_span(),
         )
     }
 }
@@ -1000,17 +1028,19 @@ impl fmt::Debug for Template50000<'_> {
         write!(
             f,
             "\
-parameter-category: {}, \
-parameter-number: {}, \
-first-plane-type: {}, \
-first-plane-factor: {}, \
-first-plane-value: {}, \
-second-plane-type: {}, \
-second-plane-factor: {}, \
-second-plane-value: {}, \
+\tparameter category: {}\n\
+\tparameter number: {}\n\
+\tforecast time span: {}\n\
+\tfirst plane type: {}\n\
+\tfirst plane factor: {}\n\
+\tfirst plane value: {}\n\
+\tsecond plane type: {}\n\
+\tsecond plane factor: {}\n\
+\tsecond plane value: {}\n\
 ",
             self.parameter_category(),
             self.parameter_number(),
+            self.forecast_time_span(),
             self.first_plane_type(),
             self.first_plane_factor(),
             self.first_plane_value(),
@@ -1129,7 +1159,7 @@ second-plane-type: {}\n\
 second-plane-factor: {}\n\
 second-plane-value: {}\n\
 end time: {}\n\
-statistics type: {}\n\
+statistics-type: {}\n\
 statistics time span: {}\n\
 ",
             self.parameter_category(),
@@ -1157,23 +1187,31 @@ impl fmt::Debug for Template50008<'_> {
         write!(
             f,
             "\
-parameter-category: {}, \
-parameter-number: {}, \
-first-plane-type: {}, \
-first-plane-factor: {}, \
-first-plane-value: {}, \
-second-plane-type: {}, \
-second-plane-factor: {}, \
-second-plane-value: {}, \
+\tparameter category: {}\n\
+\tparameter number: {}\n\
+\tforecast time span: {}\n\
+\tfirst plane type: {}\n\
+\tfirst plane factor: {}\n\
+\tfirst plane value: {}\n\
+\tsecond plane type: {}\n\
+\tsecond plane factor: {}\n\
+\tsecond plane value: {}\n\
+\tend time: {}\n\
+\tstatistics type: {}\n\
+\tstatistics time span: {}\n\
 ",
             self.parameter_category(),
             self.parameter_number(),
+            self.forecast_time_span(),
             self.first_plane_type(),
             self.first_plane_factor(),
             self.first_plane_value(),
             self.second_plane_type(),
             self.second_plane_factor(),
             self.second_plane_value(),
+            self.end_time(),
+            self.statistics_type(),
+            self.statistics_time_span(),
         )
     }
 }
@@ -1286,7 +1324,7 @@ second-plane-type: {}\n\
 second-plane-factor: {}\n\
 second-plane-value: {}\n\
 end time: {}\n\
-statistics type: {}\n\
+statistics-type: {}\n\
 statistics time span: {}\n\
 ",
             self.parameter_category(),
@@ -1314,23 +1352,31 @@ impl fmt::Debug for Template50009<'_> {
         write!(
             f,
             "\
-parameter-category: {}, \
-parameter-number: {}, \
-first-plane-type: {}, \
-first-plane-factor: {}, \
-first-plane-value: {}, \
-second-plane-type: {}, \
-second-plane-factor: {}, \
-second-plane-value: {}, \
+\tparameter category: {}\n\
+\tparameter number: {}\n\
+\tforecast time span: {}\n\
+\tfirst plane type: {}\n\
+\tfirst plane factor: {}\n\
+\tfirst plane value: {}\n\
+\tsecond plane type: {}\n\
+\tsecond plane factor: {}\n\
+\tsecond plane value: {}\n\
+\tend time: {}\n\
+\tstatistics type: {}\n\
+\tstatistics time span: {}\n\
 ",
             self.parameter_category(),
             self.parameter_number(),
+            self.forecast_time_span(),
             self.first_plane_type(),
             self.first_plane_factor(),
             self.first_plane_value(),
             self.second_plane_type(),
             self.second_plane_factor(),
             self.second_plane_value(),
+            self.end_time(),
+            self.statistics_type(),
+            self.statistics_time_span(),
         )
     }
 }
@@ -1442,7 +1488,7 @@ second-plane-type: {}\n\
 second-plane-factor: {}\n\
 second-plane-value: {}\n\
 end time: {}\n\
-statistics type: {}\n\
+statistics-type: {}\n\
 statistics time span: {}\n\
 ",
             self.parameter_category(),
@@ -1469,23 +1515,31 @@ impl fmt::Debug for Template50011<'_> {
         write!(
             f,
             "\
-parameter-category: {}, \
-parameter-number: {}, \
-first-plane-type: {}, \
-first-plane-factor: {}, \
-first-plane-value: {}, \
-second-plane-type: {}, \
-second-plane-factor: {}, \
-second-plane-value: {}, \
+\tparameter category: {}\n\
+\tparameter number: {}\n\
+\tforecast time span: {}\n\
+\tfirst plane type: {}\n\
+\tfirst plane factor: {}\n\
+\tfirst plane value: {}\n\
+\tsecond plane type: {}\n\
+\tsecond plane factor: {}\n\
+\tsecond plane value: {}\n\
+\tend time: {}\n\
+\tstatistics type: {}\n\
+\tstatistics time span: {}\n\
 ",
             self.parameter_category(),
             self.parameter_number(),
+            self.forecast_time_span(),
             self.first_plane_type(),
             self.first_plane_factor(),
             self.first_plane_value(),
             self.second_plane_type(),
             self.second_plane_factor(),
             self.second_plane_value(),
+            self.end_time(),
+            self.statistics_type(),
+            self.statistics_time_span(),
         )
     }
 }
@@ -1597,7 +1651,7 @@ second-plane-type: {}\n\
 second-plane-factor: {}\n\
 second-plane-value: {}\n\
 end time: {}\n\
-statistics type: {}\n\
+statistics-type: {}\n\
 statistics time span: {}\n\
 ",
             self.parameter_category(),
@@ -1624,23 +1678,31 @@ impl fmt::Debug for Template50012<'_> {
         write!(
             f,
             "\
-parameter-category: {}, \
-parameter-number: {}, \
-first-plane-type: {}, \
-first-plane-factor: {}, \
-first-plane-value: {}, \
-second-plane-type: {}, \
-second-plane-factor: {}, \
-second-plane-value: {}, \
+\tparameter category: {}\n\
+\tparameter number: {}\n\
+\tforecast time span: {}\n\
+\tfirst plane type: {}\n\
+\tfirst plane factor: {}\n\
+\tfirst plane value: {}\n\
+\tsecond plane type: {}\n\
+\tsecond plane factor: {}\n\
+\tsecond plane value: {}\n\
+\tend time: {}\n\
+\tstatistics type: {}\n\
+\tstatistics time span: {}\n\
 ",
             self.parameter_category(),
             self.parameter_number(),
+            self.forecast_time_span(),
             self.first_plane_type(),
             self.first_plane_factor(),
             self.first_plane_value(),
             self.second_plane_type(),
             self.second_plane_factor(),
             self.second_plane_value(),
+            self.end_time(),
+            self.statistics_type(),
+            self.statistics_time_span(),
         )
     }
 }

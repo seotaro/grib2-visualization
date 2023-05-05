@@ -63,8 +63,19 @@ impl fmt::Display for Section7<'_> {
 impl fmt::Debug for Section7<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.template() {
-            Some(template) => write!(f, "template7.{} {:?}", self.template_number(), template),
-            None => write!(f, "None"),
+            Some(template) => write!(
+                f,
+                "Section7\n\
+\ttemplate: 7.{}\n{:?}",
+                self.template_number(),
+                template
+            ),
+            None => write!(
+                f,
+                "Section7\n\
+\tunsported template7.{}\n",
+                self.template_number()
+            ),
         }
     }
 }

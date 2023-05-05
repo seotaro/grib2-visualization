@@ -42,7 +42,7 @@ impl fmt::Display for Section6<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "bit_map: {}",
+            "bit-map: {}",
             match self.bit_map_indicator() {
                 255 => "not apply",
                 _ => "apply",
@@ -53,6 +53,14 @@ impl fmt::Display for Section6<'_> {
 
 impl fmt::Debug for Section6<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "bit_map indicator: {}", self.bit_map_indicator())
+        write!(
+            f,
+            "Section6\n\
+\tbit-map: {}\n",
+            match self.bit_map_indicator() {
+                255 => "none",
+                _ => "applied",
+            }
+        )
     }
 }

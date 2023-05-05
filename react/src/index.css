@@ -29,3 +29,7 @@ ol {
 li {
   color: darkgray;
 }
+
+pre {
+  margin: 0;
+}

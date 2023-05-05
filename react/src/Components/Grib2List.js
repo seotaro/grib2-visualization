@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import moment from 'moment-timezone';
 import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 
 const columns = [
   {
@@ -94,7 +95,9 @@ export const Grib2List = forwardRef((props, ref) => {
         onRowSelectionModelChange={(selectionModel) => onChangeSelection(selectionModel[0])}
       />
       <Box sx={{ m: 1, color: 'darkgray' }}>
-        ※ Shift + Arrow Up/Down: Select the current row and the row above or below
+        <Typography variant="body2" >
+          ※ Shift + Arrow Up/Down: Select the current row and the row above or below
+        </Typography>
       </Box>
     </Box>
   </>)

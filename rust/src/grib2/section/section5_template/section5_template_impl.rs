@@ -111,10 +111,10 @@ impl fmt::Debug for Template0<'_> {
         write!(
             f,
             "\
-r: {}, \
-e: {}, \
-d: {}, \
-bit length: {}, \
+\tr: {}\n\
+\te: {}\n\
+\td: {}\n\
+\tbit length: {}\n\
             ",
             self.r(),
             self.e(),
@@ -224,19 +224,19 @@ impl fmt::Debug for Template3<'_> {
         write!(
             f,
             "\
-r: {}, \
-e: {}, \
-d: {}, \
-bits: {}, \
-ng: {}, \
-group_width_reference: {}, \
-group_width_bits: {}, \
-group_length_reference: {}, \
-group_length_increment: {}, \
-last_group_length: {}, \
-group_length_bits: {}, \
-order: {}, \
-octets: {}, \
+\tr: {}\n\
+\te: {}\n\
+\td: {}\n\
+\tbits: {}\n\
+\tng: {}\n\
+\tgroup width reference: {}\n\
+\tgroup width bits: {}\n\
+\tgroup length reference: {}\n\
+\tgroup length increment: {}\n\
+\tlast group length: {}\n\
+\tgroup length bits: {}\n\
+\torder: {}\n\
+\toctets: {}\n\
             ",
             self.r(),
             self.e(),
@@ -326,11 +326,11 @@ impl fmt::Debug for Template200<'_> {
         write!(
             f,
             "\
-bits: {}, \
-v: {}, \
-m: {}, \
-factor: {}, \
-levels.len(): {}, \
+\tbits: {}\n\
+\tv: {}\n\
+\tm: {}\n\
+\tfactor: {}\n\
+\tlevels.len(): {}\n\
             ",
             self.bits(),
             self.v(),

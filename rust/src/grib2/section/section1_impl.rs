@@ -20,12 +20,6 @@ impl<'a> Section1<'a> {
     }
 }
 
-impl fmt::Debug for Section1<'_> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self.reference_time())
-    }
-}
-
 impl<'a> Section for Section1<'a> {
     // Length of section in octets
     fn length(&self) -> usize {
@@ -41,5 +35,16 @@ impl<'a> Section for Section1<'a> {
 impl fmt::Display for Section1<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "--Section1\nlength: {}\n", self.length(),)
+    }
+}
+
+impl fmt::Debug for Section1<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "Section1\n\
+\treference_time: {:?}\n",
+            self.reference_time()
+        )
     }
 }

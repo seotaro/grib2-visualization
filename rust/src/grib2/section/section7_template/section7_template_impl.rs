@@ -43,7 +43,7 @@ impl fmt::Display for Template0<'_> {
 
 impl fmt::Debug for Template0<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "",)
+        write!(f, "\tpacking: simple packing",)
     }
 }
 
@@ -61,7 +61,7 @@ impl fmt::Display for Template3<'_> {
 
 impl fmt::Debug for Template3<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "",)
+        write!(f, "\tpacking: complex packing and spatial differencing",)
     }
 }
 
@@ -79,6 +79,6 @@ impl fmt::Display for Template200<'_> {
 
 impl fmt::Debug for Template200<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "")
+        write!(f, "\tpacking: run length packing")
     }
 }

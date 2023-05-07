@@ -114,6 +114,7 @@ pub struct Item {
     point_count: Option<u32>,
     genre: Option<u32>,
     parameter_description: Option<String>,
+    parameter_unit: Option<String>,
     parameter_category: Option<u32>,
     parameter_number: Option<u32>,
     datetime: Option<DateTime<Utc>>,
@@ -162,6 +163,11 @@ impl Grib2Wrapper {
                 packing_type: sectionset.packing_type(),
                 point_count: Self::to_u32(sectionset.point_count()),
                 parameter_description: self.parameter_description(
+                    sectionset.genre,
+                    sectionset.parameter_category(),
+                    sectionset.parameter_number(),
+                ),
+                parameter_unit: self.parameter_unit(
                     sectionset.genre,
                     sectionset.parameter_category(),
                     sectionset.parameter_number(),
@@ -219,6 +225,19 @@ impl Grib2Wrapper {
             return Some(format!("{}", description?.name));
         }
         return Some(format!("{} [{}]", description?.name, description?.unit));
+    }
+
+    pub fn parameter_unit(
+        &self,
+        genre: Option<usize>,
+        parameter_category: Option<usize>,
+        parameter_number: Option<usize>,
+    ) -> Option<String> {
+        let description =
+            self.grib2
+                .parameter_description(genre?, parameter_category?, parameter_number?);
+
+        return Some(format!("{}", description?.unit));
     }
 
     pub fn first_plane_name(

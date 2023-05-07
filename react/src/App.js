@@ -12,7 +12,12 @@ import Dropzone from 'react-dropzone'
 import { Grib2List } from './Components/Grib2List';
 import { Settings } from './Components/Settings';
 import { latlonlineGeoJson, normalizeAngle } from './utils'
-import { colormaps, createGrayscaleColormap, createRainbowColormap } from './colormap-utils'
+import {
+  colormaps
+  , createGrayscaleColormap
+  , createRainbowColormap
+  , normalizeRange
+} from './colormap-utils'
 import SimplePackingBitmapLayer from './SimplePackingBitmapLayer'
 import RunLengthPackingBitmapLayer from './RunLengthPackingBitmapLayer'
 import init, * as wasm from './wasm/rust';
@@ -192,7 +197,8 @@ function App() {
               const min = (attributes.r + attributes.min * Math.pow(2.0, attributes.e)) / Math.pow(10.0, attributes.d);
               const max = (attributes.r + attributes.max * Math.pow(2.0, attributes.e)) / Math.pow(10.0, attributes.d);
               if (colormap == null) {
-                colormap = createRainbowColormap(min, max, 20);
+                const range = normalizeRange({ min, max });
+                colormap = createRainbowColormap(range.min, range.max, 20);
               }
               console.log('attributes r:', attributes.r
                 , 'e:', attributes.e
@@ -208,12 +214,14 @@ function App() {
           case 'run-length':
             {
               const attributes = image.run_length_packing_attributes();
+
+              // 0 は欠測
               const levels = attributes.levels();
               const min = levels[(0 < attributes.min) ? attributes.min - 1 : 0] / Math.pow(10.0, attributes.factor);
               const max = levels[(0 < attributes.max) ? attributes.max - 1 : 0] / Math.pow(10.0, attributes.factor);
               if (colormap == null) {
-                // 0 は欠測
-                colormap = createRainbowColormap(min, max, 20);
+                const range = normalizeRange({ min, max });
+                colormap = createRainbowColormap(range.min, range.max, 20);
               }
               console.log('attributes factor:', attributes.factor
                 , 'min:', attributes.min, '（', min, '）'
@@ -425,7 +433,7 @@ function App() {
         display: 'flex',
         flexDirection: 'row',
       }}>
-        <Box sx={{ position: 'relative', width: '50%', }}>
+        <Box sx={{ position: 'relative', width: '50%' }}>
           <DeckGL
             initialViewState={SETTINGS.initialViewState}
             controller={true}
@@ -440,9 +448,20 @@ function App() {
               : <MapView id="map" controller={true} repeat={true} />
             }
           </DeckGL>
+
+          <Box sx={{
+            position: 'absolute', bottom: 20, width: '100%',
+            display: 'flex', flexDirection: 'row', justifyContent: 'center',
+          }}>
+            <Contour
+              colormap={colormap}
+              unit={(items && items[itemIndex]) ? items[itemIndex].parameter_unit : null}
+              isLevelValue={image?.packing_type() === 'run-length'}
+            />
+          </Box >
         </Box>
 
-        <Box sx={{ width: '50%', height: '100%', bgcolor: '#ffffff', overflow: 'auto' }}
+        <Box sx={{ position: 'relative', width: '50%', bgcolor: '#ffffff', overflow: 'auto' }}
         >
           <Box sx={{ m: 1 }} >
             <Typography variant='h4' gutterBottom>
@@ -522,6 +541,46 @@ const Information = ({ item }) => {
       }
     </pre>
   </Box>)
+}
+
+const Contour = ({ colormap, unit, isLevelValue }) => {
+  if (colormap == null) return <></>
+
+  const width = 400 / colormap.colors.length;
+  const height = 10;
+
+  const normalizeColor = (rgba) => {
+    const r = Math.ceil(rgba[0] * 255);
+    const g = Math.ceil(rgba[1] * 255);
+    const b = Math.ceil(rgba[2] * 255);
+    return `${r}, ${g}, ${b}, 1.0`;
+  }
+
+  // レベル値の場合、カラーマップの最初のステップは欠測を表すので次のステップから表示する。 
+
+  return <>
+    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+      <Box sx={{ height, mr: 1, color: 'darkgray', }} >
+        {colormap.thresholds[isLevelValue ? 1 : 0]}
+      </Box>
+
+      {colormap.colors
+        .filter((_, i) => !(isLevelValue && (i === 0)))
+        .map((x, i) => {
+          return <Box key={i} sx={{ width, height, bgcolor: `rgba(${normalizeColor(x)})`, }} />
+        })}
+
+      <Box sx={{ height, ml: 1, color: 'darkgray', }} >
+        {colormap.thresholds[colormap.thresholds.length - 1]}
+      </Box>
+
+      {unit &&
+        <Box sx={{ height, ml: 1, color: 'darkgray', }} >
+          {`[${unit}]`}
+        </Box>
+      }
+    </Box>
+  </>
 }
 
 export default App;

@@ -203,7 +203,7 @@ const createColormaps = () => {
         const colors = [];
         const thresholds = [];
         let i = 0;
-        thresholds.push(-273.15); colors.push([0.0, 29 / 255, 114 / 255, 1.0]);
+        thresholds.push(-10.0 + 273.15); colors.push([0.0, 29 / 255, 114 / 255, 1.0]);
         thresholds.push(-5.0 + 273.15); colors.push([0.0, 57 / 255, 248 / 255, 1.0]);
         thresholds.push(0.0 + 273.15); colors.push([0.0, 139 / 255, 250 / 255, 1.0]);
         thresholds.push(5.0 + 273.15); colors.push([169 / 255, 232 / 255, 253 / 255, 1.0]);

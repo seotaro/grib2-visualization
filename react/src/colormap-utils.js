@@ -99,33 +99,31 @@ export const colormaps = (genre, category, number) => {
     return null;
 }
 
-const MAX_COLORMAP_STEP = 100; // GLSL の for ループのインデックスは定数値しか比較できないので固定サイズにする。
+export const MAX_COLORMAP_STEP = 100; // GLSL の for ループのインデックスは定数値しか比較できないので固定サイズにする。
 
 export const createGrayscaleColormap = (min, max, steps) => {
-    const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-    const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+    const colors = [];
+    const thresholds = [];
     let i = 0;
     for (let i = 0; i < steps; i++) {
         const d = i / (steps - 1);
-        thresholds[i] = min + (max - min) * d; colors.set([d, d, d, 1.0], i * 4);
-    }
-    for (let i = steps; i < MAX_COLORMAP_STEP; i++) {
-        thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
+        thresholds.push(min + (max - min) * d);
+        colors.push([d, d, d, 1.0]);
     }
     return { thresholds, colors };
 }
 
 export const createRainbowColormap = (min, max, steps) => {
-    const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-    const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+    const colors = [];
+    const thresholds = [];
     let i = 0;
     for (let i = 0; i < steps; i++) {
         const d = i / (steps - 1);
-        thresholds[i] = min + (max - min) * d;
+        const threshold = min + (max - min) * d;
 
         let H = 0.0;
         if (min < max) {
-            H = (1.0 - ((thresholds[i] - min) / (max - min))) * 240.0;
+            H = (1.0 - ((threshold - min) / (max - min))) * 240.0;
             if (H < 0.0) {
                 H = 0.0;
             }
@@ -134,12 +132,43 @@ export const createRainbowColormap = (min, max, steps) => {
         let V = 1.0;
 
         const RGB = HSVtoRGB(H, S, V);
-        colors.set([RGB[0], RGB[1], RGB[2], 1.0], i * 4);
-    }
-    for (let i = steps; i < MAX_COLORMAP_STEP; i++) {
-        thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
+        thresholds.push(threshold);
+        colors.push([RGB[0], RGB[1], RGB[2], 1.0]);
     }
     return { thresholds, colors };
+}
+
+export const normalizeRange = ({ min, max }) => {
+    const d = max - min;
+    if (d < 0.0000001) {
+        min = Math.ceil(min * 100000000.0) / 100000000.0;
+        max = Math.floor(max * 100000000.0) / 100000000.0;
+    } else if (d < 0.000001) {
+        min = Math.ceil(min * 10000000.0) / 10000000.0;
+        max = Math.floor(max * 10000000.0) / 10000000.0;
+    } else if (d < 0.00001) {
+        min = Math.ceil(min * 1000000.0) / 1000000.0;
+        max = Math.floor(max * 1000000.0) / 1000000.0;
+    } else if (d < 0.0001) {
+        min = Math.ceil(min * 100000.0) / 100000.0;
+        max = Math.floor(max * 100000.0) / 100000.0;
+    } else if (d < 0.001) {
+        min = Math.ceil(min * 10000.0) / 10000.0;
+        max = Math.floor(max * 10000.0) / 10000.0;
+    } else if (d < 0.01) {
+        min = Math.ceil(min * 1000.0) / 1000.0;
+        max = Math.floor(max * 1000.0) / 1000.0;
+    } else if (d < 0.1) {
+        min = Math.ceil(min * 100.0) / 100.0;
+        max = Math.floor(max * 100.0) / 100.0;
+    } else if (d < 1.0) {
+        min = Math.ceil(min * 10.0) / 10.0;
+        max = Math.floor(max * 10.0) / 10.0;
+    } else {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+    }
+    return { min, max };
 }
 
 // H: Hue angle
@@ -171,22 +200,19 @@ const HSVtoRGB = (H, S, V) => {
 const createColormaps = () => {
     {
         // temperature
-        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        const colors = [];
+        const thresholds = [];
         let i = 0;
-        thresholds[i] = -273.15; colors.set([0.0, 29 / 255, 114 / 255, 1.0], i * 4); i++;
-        thresholds[i] = -5.0 + 273.15; colors.set([0.0, 57 / 255, 248 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 0.0 + 273.15; colors.set([0.0, 139 / 255, 250 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 5.0 + 273.15; colors.set([169 / 255, 232 / 255, 253 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 10.0 + 273.15; colors.set([255 / 255, 255 / 255, 239 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 15.0 + 273.15; colors.set([255 / 255, 255 / 255, 148 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 20.0 + 273.15; colors.set([252 / 255, 243 / 255, 55 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 25.0 + 273.15; colors.set([255 / 255, 143 / 255, 39 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 30.0 + 273.15; colors.set([255 / 255, 38 / 255, 27 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 35.0 + 273.15; colors.set([180 / 255, 8 / 255, 92 / 255, 1.0], i * 4); i++;
-        for (; i < MAX_COLORMAP_STEP; i++) {
-            thresholds[i] = Infinity; colors.set([180 / 255, 8 / 255, 92 / 255, 1.0], i * 4);
-        }
+        thresholds.push(-10.0 + 273.15); colors.push([0.0, 29 / 255, 114 / 255, 1.0]);
+        thresholds.push(-5.0 + 273.15); colors.push([0.0, 57 / 255, 248 / 255, 1.0]);
+        thresholds.push(0.0 + 273.15); colors.push([0.0, 139 / 255, 250 / 255, 1.0]);
+        thresholds.push(5.0 + 273.15); colors.push([169 / 255, 232 / 255, 253 / 255, 1.0]);
+        thresholds.push(10.0 + 273.15); colors.push([255 / 255, 255 / 255, 239 / 255, 1.0]);
+        thresholds.push(15.0 + 273.15); colors.push([255 / 255, 255 / 255, 148 / 255, 1.0]);
+        thresholds.push(20.0 + 273.15); colors.push([252 / 255, 243 / 255, 55 / 255, 1.0]);
+        thresholds.push(25.0 + 273.15); colors.push([255 / 255, 143 / 255, 39 / 255, 1.0]);
+        thresholds.push(30.0 + 273.15); colors.push([255 / 255, 38 / 255, 27 / 255, 1.0]);
+        thresholds.push(35.0 + 273.15); colors.push([180 / 255, 8 / 255, 92 / 255, 1.0]);
 
 
 
@@ -195,232 +221,196 @@ const createColormaps = () => {
 
     {
         // percentage
-        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        const colors = [];
+        const thresholds = [];
         let i = 0;
-        thresholds[i] = 0.0; colors.set([0.1, 0.1, 0.1, 1.0], i * 4); i++;
-        thresholds[i] = 10.0; colors.set([0.2, 0.2, 0.2, 1.0], i * 4); i++;
-        thresholds[i] = 20.0; colors.set([0.3, 0.3, 0.3, 1.0], i * 4); i++;
-        thresholds[i] = 30.0; colors.set([0.4, 0.4, 0.4, 1.0], i * 4); i++;
-        thresholds[i] = 40.0; colors.set([0.5, 0.5, 0.5, 1.0], i * 4); i++;
-        thresholds[i] = 50.0; colors.set([0.6, 0.6, 0.6, 1.0], i * 4); i++;
-        thresholds[i] = 60.0; colors.set([0.7, 0.7, 0.7, 1.0], i * 4); i++;
-        thresholds[i] = 70.0; colors.set([0.8, 0.8, 0.8, 1.0], i * 4); i++;
-        thresholds[i] = 80.0; colors.set([0.9, 0.9, 0.9, 1.0], i * 4); i++;
-        thresholds[i] = 90.0; colors.set([1.0, 1.0, 1.0, 1.0], i * 4); i++;
-        for (; i < MAX_COLORMAP_STEP; i++) {
-            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
-        }
+        thresholds.push(0.0); colors.push([0.1, 0.1, 0.1, 1.0]);
+        thresholds.push(10.0); colors.push([0.2, 0.2, 0.2, 1.0]);
+        thresholds.push(20.0); colors.push([0.3, 0.3, 0.3, 1.0]);
+        thresholds.push(30.0); colors.push([0.4, 0.4, 0.4, 1.0]);
+        thresholds.push(40.0); colors.push([0.5, 0.5, 0.5, 1.0]);
+        thresholds.push(50.0); colors.push([0.6, 0.6, 0.6, 1.0]);
+        thresholds.push(60.0); colors.push([0.7, 0.7, 0.7, 1.0]);
+        thresholds.push(70.0); colors.push([0.8, 0.8, 0.8, 1.0]);
+        thresholds.push(80.0); colors.push([0.9, 0.9, 0.9, 1.0]);
+        thresholds.push(90.0); colors.push([1.0, 1.0, 1.0, 1.0]);
         colormaps['percentage'] = { thresholds, colors };
     }
 
     {
         // cloud
-        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        const colors = [];
+        const thresholds = [];
         let i = 0;
-        thresholds[i] = 0.0; colors.set([0.0, 0.0, 0.0, 0.0], i * 4); i++;
-        thresholds[i] = 10.0; colors.set([0.2, 0.2, 0.2, 1.0], i * 4); i++;
-        thresholds[i] = 20.0; colors.set([0.3, 0.3, 0.3, 1.0], i * 4); i++;
-        thresholds[i] = 30.0; colors.set([0.4, 0.4, 0.4, 1.0], i * 4); i++;
-        thresholds[i] = 40.0; colors.set([0.5, 0.5, 0.5, 1.0], i * 4); i++;
-        thresholds[i] = 50.0; colors.set([0.6, 0.6, 0.6, 1.0], i * 4); i++;
-        thresholds[i] = 60.0; colors.set([0.7, 0.7, 0.7, 1.0], i * 4); i++;
-        thresholds[i] = 70.0; colors.set([0.8, 0.8, 0.8, 1.0], i * 4); i++;
-        thresholds[i] = 80.0; colors.set([0.9, 0.9, 0.9, 1.0], i * 4); i++;
-        thresholds[i] = 90.0; colors.set([1.0, 1.0, 1.0, 1.0], i * 4); i++;
-        for (; i < MAX_COLORMAP_STEP; i++) {
-            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
-        }
+        thresholds.push(0.0); colors.push([0.0, 0.0, 0.0, 0.0]);
+        thresholds.push(10.0); colors.push([0.2, 0.2, 0.2, 1.0]);
+        thresholds.push(20.0); colors.push([0.3, 0.3, 0.3, 1.0]);
+        thresholds.push(30.0); colors.push([0.4, 0.4, 0.4, 1.0]);
+        thresholds.push(40.0); colors.push([0.5, 0.5, 0.5, 1.0]);
+        thresholds.push(50.0); colors.push([0.6, 0.6, 0.6, 1.0]);
+        thresholds.push(60.0); colors.push([0.7, 0.7, 0.7, 1.0]);
+        thresholds.push(70.0); colors.push([0.8, 0.8, 0.8, 1.0]);
+        thresholds.push(80.0); colors.push([0.9, 0.9, 0.9, 1.0]);
+        thresholds.push(90.0); colors.push([1.0, 1.0, 1.0, 1.0]);
         colormaps['cloud'] = { thresholds, colors };
     }
 
     {
         // precipitation
-        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        const colors = [];
+        const thresholds = [];
         let i = 0;
-        thresholds[i] = 0.0; colors.set([0.0, 0.0, 0.0, 0.0], i * 4); i++;    // No echo
-        thresholds[i] = 0.1; colors.set([240 / 255, 240 / 255, 254 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 1.0; colors.set([153 / 255, 204 / 255, 253 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 5.0; colors.set([44 / 255, 131 / 255, 251 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 10.0; colors.set([27 / 255, 65 / 255, 250 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 20.0; colors.set([253 / 255, 241 / 255, 49 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 30.0; colors.set([251 / 255, 143 / 255, 36 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 50.0; colors.set([250 / 255, 46 / 255, 28 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 80.0; colors.set([168 / 255, 23 / 255, 93 / 255, 1.0], i * 4); i++;
-        for (; i < MAX_COLORMAP_STEP; i++) {
-            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
-        }
+        thresholds.push(0.0); colors.push([0.0, 0.0, 0.0, 0.0]);    // No echo
+        thresholds.push(0.1); colors.push([240 / 255, 240 / 255, 254 / 255, 1.0]);
+        thresholds.push(1.0); colors.push([153 / 255, 204 / 255, 253 / 255, 1.0]);
+        thresholds.push(5.0); colors.push([44 / 255, 131 / 255, 251 / 255, 1.0]);
+        thresholds.push(10.0); colors.push([27 / 255, 65 / 255, 250 / 255, 1.0]);
+        thresholds.push(20.0); colors.push([253 / 255, 241 / 255, 49 / 255, 1.0]);
+        thresholds.push(30.0); colors.push([251 / 255, 143 / 255, 36 / 255, 1.0]);
+        thresholds.push(50.0); colors.push([250 / 255, 46 / 255, 28 / 255, 1.0]);
+        thresholds.push(80.0); colors.push([168 / 255, 23 / 255, 93 / 255, 1.0]);
         colormaps['precipitation'] = { thresholds, colors };
     }
 
     {
         // 10分間降水強度
-        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        const colors = [];
+        const thresholds = [];
         let i = 0;
-        thresholds[i] = 0.0 / 6.0; colors.set([0.0, 0.0, 0.0, 0.0], i * 4); i++;    // No echo
-        thresholds[i] = 0.1 / 6.0; colors.set([240 / 255, 240 / 255, 254 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 1.0 / 6.0; colors.set([153 / 255, 204 / 255, 253 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 5.0 / 6.0; colors.set([44 / 255, 131 / 255, 251 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 10.0 / 6.0; colors.set([27 / 255, 65 / 255, 250 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 20.0 / 6.0; colors.set([253 / 255, 241 / 255, 49 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 30.0 / 6.0; colors.set([251 / 255, 143 / 255, 36 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 50.0 / 6.0; colors.set([250 / 255, 46 / 255, 28 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 80.0 / 6.0; colors.set([168 / 255, 23 / 255, 93 / 255, 1.0], i * 4); i++;
-        for (; i < MAX_COLORMAP_STEP; i++) {
-            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
-        }
+        thresholds.push(0.0 / 6.0); colors.push([0.0, 0.0, 0.0, 0.0]);    // No echo
+        thresholds.push(0.1 / 6.0); colors.push([240 / 255, 240 / 255, 254 / 255, 1.0]);
+        thresholds.push(1.0 / 6.0); colors.push([153 / 255, 204 / 255, 253 / 255, 1.0]);
+        thresholds.push(5.0 / 6.0); colors.push([44 / 255, 131 / 255, 251 / 255, 1.0]);
+        thresholds.push(10.0 / 6.0); colors.push([27 / 255, 65 / 255, 250 / 255, 1.0]);
+        thresholds.push(20.0 / 6.0); colors.push([253 / 255, 241 / 255, 49 / 255, 1.0]);
+        thresholds.push(30.0 / 6.0); colors.push([251 / 255, 143 / 255, 36 / 255, 1.0]);
+        thresholds.push(50.0 / 6.0); colors.push([250 / 255, 46 / 255, 28 / 255, 1.0]);
+        thresholds.push(80.0 / 6.0); colors.push([168 / 255, 23 / 255, 93 / 255, 1.0]);
         colormaps['precipitation-10min'] = { thresholds, colors };
     }
 
     {
         // total precipitation
-        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        const colors = [];
+        const thresholds = [];
         let i = 0;
-        thresholds[i] = 0.0; colors.set([0.0, 0.0, 0.0, 0.0], i * 4); i++;
-        thresholds[i] = 0.1; colors.set([240 / 255, 240 / 255, 254 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 50.0; colors.set([153 / 255, 204 / 255, 253 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 80.0; colors.set([44 / 255, 131 / 255, 251 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 100.0; colors.set([27 / 255, 65 / 255, 250 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 150.0; colors.set([253 / 255, 241 / 255, 49 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 200.0; colors.set([251 / 255, 143 / 255, 36 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 250.0; colors.set([250 / 255, 46 / 255, 28 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 300.0; colors.set([168 / 255, 23 / 255, 93 / 255, 1.0], i * 4); i++;
-        for (; i < MAX_COLORMAP_STEP; i++) {
-            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
-        }
+        thresholds.push(0.0); colors.push([0.0, 0.0, 0.0, 0.0]);
+        thresholds.push(0.1); colors.push([240 / 255, 240 / 255, 254 / 255, 1.0]);
+        thresholds.push(50.0); colors.push([153 / 255, 204 / 255, 253 / 255, 1.0]);
+        thresholds.push(80.0); colors.push([44 / 255, 131 / 255, 251 / 255, 1.0]);
+        thresholds.push(100.0); colors.push([27 / 255, 65 / 255, 250 / 255, 1.0]);
+        thresholds.push(150.0); colors.push([253 / 255, 241 / 255, 49 / 255, 1.0]);
+        thresholds.push(200.0); colors.push([251 / 255, 143 / 255, 36 / 255, 1.0]);
+        thresholds.push(250.0); colors.push([250 / 255, 46 / 255, 28 / 255, 1.0]);
+        thresholds.push(300.0); colors.push([168 / 255, 23 / 255, 93 / 255, 1.0]);
         colormaps['total-precipitation'] = { thresholds, colors };
     }
 
     {
         // precipitation level
-        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        const colors = [];
+        const thresholds = [];
         let i = 0;
-        thresholds[i] = 0.0; colors.set([240 / 255, 240 / 255, 254 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 1.0; colors.set([153 / 255, 204 / 255, 253 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 5.0; colors.set([44 / 255, 131 / 255, 251 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 10.0; colors.set([27 / 255, 65 / 255, 250 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 20.0; colors.set([253 / 255, 241 / 255, 49 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 30.0; colors.set([251 / 255, 143 / 255, 36 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 50.0; colors.set([250 / 255, 46 / 255, 28 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 80.0; colors.set([168 / 255, 23 / 255, 93 / 255, 1.0], i * 4); i++;
-        for (; i < MAX_COLORMAP_STEP; i++) {
-            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
-        }
+        thresholds.push(0.0); colors.push([240 / 255, 240 / 255, 254 / 255, 1.0]);
+        thresholds.push(1.0); colors.push([153 / 255, 204 / 255, 253 / 255, 1.0]);
+        thresholds.push(5.0); colors.push([44 / 255, 131 / 255, 251 / 255, 1.0]);
+        thresholds.push(10.0); colors.push([27 / 255, 65 / 255, 250 / 255, 1.0]);
+        thresholds.push(20.0); colors.push([253 / 255, 241 / 255, 49 / 255, 1.0]);
+        thresholds.push(30.0); colors.push([251 / 255, 143 / 255, 36 / 255, 1.0]);
+        thresholds.push(50.0); colors.push([250 / 255, 46 / 255, 28 / 255, 1.0]);
+        thresholds.push(80.0); colors.push([168 / 255, 23 / 255, 93 / 255, 1.0]);
         colormaps['precipitation-level'] = { thresholds, colors };
     }
 
     {
         // wind
-        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        const colors = [];
+        const thresholds = [];
         let i = 0;
-        thresholds[i] = 0.0; colors.set([240 / 255, 240 / 255, 254 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 5.0; colors.set([0 / 255, 57 / 255, 248 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 10.0; colors.set([252 / 255, 243 / 255, 55 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 15.0; colors.set([255 / 255, 143 / 255, 39 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 20.0; colors.set([255 / 255, 38 / 255, 27 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 25.0; colors.set([180 / 255, 8 / 255, 92 / 255, 1.0], i * 4); i++;
-        for (; i < MAX_COLORMAP_STEP; i++) {
-            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
-        }
+        thresholds.push(0.0); colors.push([240 / 255, 240 / 255, 254 / 255, 1.0]);
+        thresholds.push(5.0); colors.push([0 / 255, 57 / 255, 248 / 255, 1.0]);
+        thresholds.push(10.0); colors.push([252 / 255, 243 / 255, 55 / 255, 1.0]);
+        thresholds.push(15.0); colors.push([255 / 255, 143 / 255, 39 / 255, 1.0]);
+        thresholds.push(20.0); colors.push([255 / 255, 38 / 255, 27 / 255, 1.0]);
+        thresholds.push(25.0); colors.push([180 / 255, 8 / 255, 92 / 255, 1.0]);
         colormaps['wind'] = { thresholds, colors };
     }
 
     {
         // weather
-        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        const colors = [];
+        const thresholds = [];
         let i = 0;
-        thresholds[i] = 0.0; colors.set([0 / 255, 0 / 255, 0 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 1.0; colors.set([255 / 255, 208 / 255, 148 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 2.0; colors.set([208 / 255, 208 / 255, 208 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 3.0; colors.set([128 / 255, 156 / 255, 252 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 4.0; colors.set([198 / 255, 229 / 255, 254 / 255, 1.0], i * 4); i++;
-        thresholds[i] = 5.0; colors.set([247 / 255, 247 / 255, 255 / 255, 1.0], i * 4); i++;
-        for (; i < MAX_COLORMAP_STEP; i++) {
-            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
-        }
+        thresholds.push(0.0); colors.push([0 / 255, 0 / 255, 0 / 255, 1.0]);
+        thresholds.push(1.0); colors.push([255 / 255, 208 / 255, 148 / 255, 1.0]);
+        thresholds.push(2.0); colors.push([208 / 255, 208 / 255, 208 / 255, 1.0]);
+        thresholds.push(3.0); colors.push([128 / 255, 156 / 255, 252 / 255, 1.0]);
+        thresholds.push(4.0); colors.push([198 / 255, 229 / 255, 254 / 255, 1.0]);
+        thresholds.push(5.0); colors.push([247 / 255, 247 / 255, 255 / 255, 1.0]);
         colormaps['weather'] = { thresholds, colors };
     }
 
     {
         // 竜巻発生確度
-        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        const colors = [];
+        const thresholds = [];
         let i = 0;
-        thresholds[i] = 0.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;          // 計算領域外又は欠測
-        thresholds[i] = 1.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;          // なし
-        thresholds[i] = 2.0; colors.set([251 / 255, 248 / 255, 151 / 255, 1.0], i * 4); i++;    // 発生確度1
-        thresholds[i] = 3.0; colors.set([252 / 255, 150 / 255, 141 / 255, 1.0], i * 4); i++;    // 発生確度2
-        for (; i < MAX_COLORMAP_STEP; i++) {
-            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
-        }
+        thresholds.push(0.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);          // 計算領域外又は欠測
+        thresholds.push(1.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);          // なし
+        thresholds.push(2.0); colors.push([251 / 255, 248 / 255, 151 / 255, 1.0]);    // 発生確度1
+        thresholds.push(3.0); colors.push([252 / 255, 150 / 255, 141 / 255, 1.0]);    // 発生確度2
         colormaps['tornado'] = { thresholds, colors };
     }
 
     {
         // 雷活動度
-        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        const colors = [];
+        const thresholds = [];
         let i = 0;
-        thresholds[i] = 0.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;          // 計算領域外又は欠測
-        thresholds[i] = 1.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;          // なし
-        thresholds[i] = 2.0; colors.set([254 / 255, 248 / 255, 151 / 255, 1.0], i * 4); i++;    // 活動度1
-        thresholds[i] = 3.0; colors.set([253 / 255, 207 / 255, 146 / 255, 1.0], i * 4); i++;    // 活動度2
-        thresholds[i] = 4.0; colors.set([252 / 255, 150 / 255, 141 / 255, 1.0], i * 4); i++;    // 活動度3
-        thresholds[i] = 5.0; colors.set([223 / 255, 147 / 255, 252 / 255, 1.0], i * 4); i++;    // 活動度4
-        for (; i < MAX_COLORMAP_STEP; i++) {
-            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
-        }
+        thresholds.push(0.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);          // 計算領域外又は欠測
+        thresholds.push(1.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);          // なし
+        thresholds.push(2.0); colors.push([254 / 255, 248 / 255, 151 / 255, 1.0]);    // 活動度1
+        thresholds.push(3.0); colors.push([253 / 255, 207 / 255, 146 / 255, 1.0]);    // 活動度2
+        thresholds.push(4.0); colors.push([252 / 255, 150 / 255, 141 / 255, 1.0]);    // 活動度3
+        thresholds.push(5.0); colors.push([223 / 255, 147 / 255, 252 / 255, 1.0]);    // 活動度4
         colormaps['thunder'] = { thresholds, colors };
     }
 
     {
         // 土砂災害警戒判定値
-        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        const colors = [];
+        const thresholds = [];
         let i = 0;
-        thresholds[i] = 0.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 欠測値
-        thresholds[i] = 1.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 海等の格子
-        thresholds[i] = 2.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 警戒判定対象外格子
-        thresholds[i] = 3.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 土砂災害警戒判定値0
-        thresholds[i] = 4.0; colors.set([242 / 255, 231 / 255, 0 / 255, 1.0], i * 4); i++;  // 土砂災害警戒判定値1
-        thresholds[i] = 5.0; colors.set([255 / 255, 40 / 255, 0 / 255, 1.0], i * 4); i++;   // 土砂災害警戒判定値2
-        thresholds[i] = 6.0; colors.set([170 / 255, 0 / 255, 170 / 255, 1.0], i * 4); i++;  // 土砂災害警戒判定値3
-        thresholds[i] = 7.0; colors.set([12 / 255, 0 / 255, 12 / 255, 1.0], i * 4); i++;    // 土砂災害警戒判定値4
-        thresholds[i] = 8.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 予備 
-        thresholds[i] = 9.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 予備 
-        thresholds[i] = 10.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;     // 予備 
-        for (; i < MAX_COLORMAP_STEP; i++) {
-            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
-        }
+        thresholds.push(0.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);      // 欠測値
+        thresholds.push(1.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);      // 海等の格子
+        thresholds.push(2.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);      // 警戒判定対象外格子
+        thresholds.push(3.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);      // 土砂災害警戒判定値0
+        thresholds.push(4.0); colors.push([242 / 255, 231 / 255, 0 / 255, 1.0]);  // 土砂災害警戒判定値1
+        thresholds.push(5.0); colors.push([255 / 255, 40 / 255, 0 / 255, 1.0]);   // 土砂災害警戒判定値2
+        thresholds.push(6.0); colors.push([170 / 255, 0 / 255, 170 / 255, 1.0]);  // 土砂災害警戒判定値3
+        thresholds.push(7.0); colors.push([12 / 255, 0 / 255, 12 / 255, 1.0]);    // 土砂災害警戒判定値4
+        thresholds.push(8.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);      // 予備 
+        thresholds.push(9.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);      // 予備 
+        thresholds.push(10.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);     // 予備 
         colormaps['sediment-warning-index'] = { thresholds, colors };
     }
 
     {
         // 警戒判定値
-        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        const colors = [];
+        const thresholds = [];
         let i = 0;
-        thresholds[i] = 0.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 欠測値
-        thresholds[i] = 1.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 土砂災害警戒判定値0
-        thresholds[i] = 2.0; colors.set([242 / 255, 231 / 255, 0 / 255, 1.0], i * 4); i++;  // 土砂災害警戒判定値1
-        thresholds[i] = 3.0; colors.set([255 / 255, 40 / 255, 0 / 255, 1.0], i * 4); i++;   // 土砂災害警戒判定値2
-        thresholds[i] = 4.0; colors.set([170 / 255, 0 / 255, 170 / 255, 1.0], i * 4); i++;  // 土砂災害警戒判定値3
-        thresholds[i] = 5.0; colors.set([12 / 255, 0 / 255, 12 / 255, 1.0], i * 4); i++;    // 土砂災害警戒判定値4
-        thresholds[i] = 6.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 予備 
-        thresholds[i] = 7.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 予備 
-        thresholds[i] = 8.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 予備 
-        thresholds[i] = 9.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;      // 予備 
-        thresholds[i] = 10.0; colors.set([0 / 255, 0 / 255, 0 / 255, 0.0], i * 4); i++;     // 予備 
-        for (; i < MAX_COLORMAP_STEP; i++) {
-            thresholds[i] = Infinity; colors.set([1.0, 1.0, 1.0, 1.0], i * 4);
-        }
+        thresholds.push(0.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);      // 欠測値
+        thresholds.push(1.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);      // 土砂災害警戒判定値0
+        thresholds.push(2.0); colors.push([242 / 255, 231 / 255, 0 / 255, 1.0]);  // 土砂災害警戒判定値1
+        thresholds.push(3.0); colors.push([255 / 255, 40 / 255, 0 / 255, 1.0]);   // 土砂災害警戒判定値2
+        thresholds.push(4.0); colors.push([170 / 255, 0 / 255, 170 / 255, 1.0]);  // 土砂災害警戒判定値3
+        thresholds.push(5.0); colors.push([12 / 255, 0 / 255, 12 / 255, 1.0]);    // 土砂災害警戒判定値4
+        thresholds.push(6.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);      // 予備 
+        thresholds.push(7.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);      // 予備 
+        thresholds.push(8.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);      // 予備 
+        thresholds.push(9.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);      // 予備 
+        thresholds.push(10.0); colors.push([0 / 255, 0 / 255, 0 / 255, 0.0]);     // 予備 
         colormaps['warning-index'] = { thresholds, colors };
     }
 
@@ -443,10 +433,10 @@ const createColormaps = () => {
 
     {
         // sample
-        const colors = new Float32Array(MAX_COLORMAP_STEP * 4);
-        const thresholds = new Float32Array(MAX_COLORMAP_STEP);
+        const colors = [];
+        const thresholds = [];
         for (let i = 0; i < MAX_COLORMAP_STEP; i++) {
-            thresholds[i] = i; colors.set([i / (MAX_COLORMAP_STEP - 1), 0.0, i / (MAX_COLORMAP_STEP - 1, 1.0)], i * 4);
+            thresholds.push(i); colors.push([i / (MAX_COLORMAP_STEP - 1), 0.0, i / (MAX_COLORMAP_STEP - 1, 1.0)], i * 4);
         }
         colormaps['sample'] = { thresholds, colors };
     }

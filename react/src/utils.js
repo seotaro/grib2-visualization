@@ -46,3 +46,17 @@ export const latlonlineGeoJson = (() => {
 
     return geojson;
 })();
+
+// 角度を正規化する
+// 0.0 ≦ 正規化角度 ≦ 360.0
+export const normalizeAngle = (angle) => {
+    while (angle < 0.0) {
+        angle += 360.0;
+    }
+
+    while (360.0 <= angle) {
+        angle -= 360.0;
+    }
+
+    return angle;
+} 

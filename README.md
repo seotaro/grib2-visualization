@@ -9,7 +9,7 @@
 ## Install
 
 ```bash
-make Install
+make install
 ```
 
 ## Build

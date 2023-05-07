@@ -10,6 +10,7 @@ import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import Typography from '@mui/material/Typography';
+import Checkbox from '@mui/material/Checkbox';
 
 export const Settings = (props) => {
   const { initial,
@@ -17,22 +18,33 @@ export const Settings = (props) => {
     onChangeTextureFilter,
     onChangeViewMode,
     onChangeOpacity,
+    onChangeCoastLine,
   } = props;
 
   return (<>
     <Box sx={{ m: 1 }}>
-      <Box sx={{}}>
-        <Blend initial={initial.blend} onChange={onChangeBlend} />
-      </Box >
       {/* <Box sx={{}}>
         <TextureFilter initial={initial.textureFilter} onChange={onChangeTextureFilter} />
       </Box > */}
       <Box sx={{}}>
-        <ViewMode initial={initial.viewMode} onChange={onChangeViewMode} />
-      </Box >
+        <Grid container direction="row" justifyContent='space-between' alignItems="center" spacing={2}>
+          <Grid item>
+            <Blend initial={initial.blend} onChange={onChangeBlend} />
+          </Grid >
+
+          <Grid item>
+            <ViewMode initial={initial.viewMode} onChange={onChangeViewMode} />
+          </Grid >
+
+          <Grid item>
+            <CoastLine initial={initial.coastLine} onChange={(isShow) => onChangeCoastLine({ isShow })} />
+          </Grid >
+        </Grid >
+      </Box>
+
       <Box sx={{}}>
         <Opacity initial={initial.opacity} onChange={onChangeOpacity} />
-      </Box >
+      </Box>
     </Box>
   </>)
 }
@@ -198,5 +210,22 @@ const ViewMode = ({ initial, onChange }) => {
         </Grid >
       </Grid >
     </FormControl>
+  </>)
+}
+
+// 海岸線
+const CoastLine = ({ initial, onChange }) => {
+  const [isShow, show] = useState(initial.isShow);
+
+  const _onChange = (event) => {
+    const flg = event.target.checked;
+    show(flg);
+    onChange(flg);
+  };
+
+  return (<>
+    <FormControlLabel control={
+      <Checkbox checked={isShow} onChange={_onChange} />
+    } label="海岸線" />
   </>)
 }

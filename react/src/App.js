@@ -11,7 +11,7 @@ import Dropzone from 'react-dropzone'
 
 import { Grib2List } from './Components/Grib2List';
 import { Settings } from './Components/Settings';
-import { latlonlineGeoJson } from './utils'
+import { latlonlineGeoJson, normalizeAngle } from './utils'
 import { colormaps, createGrayscaleColormap, createRainbowColormap } from './colormap-utils'
 import SimplePackingBitmapLayer from './SimplePackingBitmapLayer'
 import RunLengthPackingBitmapLayer from './RunLengthPackingBitmapLayer'
@@ -35,6 +35,10 @@ const SETTINGS = {
   },
   latlonGridLayer: {
     color: [127, 255, 127]
+  },
+  coastlineLayer: {
+    color: [64, 64, 64],
+    url: 'https://storage.googleapis.com/himawari-map-dataset/ne_10m_coastline.geojson'
   },
   highlight: {
     color: [255, 127, 127, 127]
@@ -81,14 +85,38 @@ const createGrayscale8bppTexture = (gl, pixels, width, height, filter) => {
 }
 
 // Grayscale 16bpp のテクスチャを生成する
-const createGrayscale16bppTexture = (gl, pixels, width, height, filter) => {
-  // Uint16Array から Uint8Array にキャストする。
+const createGrayscale16bppTexture = (gl, pixels, width, height, filter, isWrap) => {
   const dataView = new DataView(pixels.buffer);
-  const dest = new Uint8Array(pixels.length * 2);
-  for (let i = 0; i < pixels.length; i++) {
-    const offset = i * 2;
-    dest[offset + 0] = dataView.getUint8(offset + 0);
-    dest[offset + 1] = dataView.getUint8(offset + 1);
+
+  // Uint16Array から Uint8Array にキャストする。
+  let dest = null;
+  if (isWrap) {
+    // 経度方向に一列分追加して経度方向にラップする
+    dest = new Uint8Array((width + 1) * height * 2);
+
+    for (let j = 0; j < height; j++) {
+      for (let i = 0; i < width; i++) {
+        const srcOffset = (width * j + i) * 2;
+        const destOffset = ((width + 1) * j + i) * 2;
+        dest[destOffset + 0] = dataView.getUint8(srcOffset + 0);
+        dest[destOffset + 1] = dataView.getUint8(srcOffset + 1);
+      }
+
+      const srcOffset = (width * j + 0) * 2;
+      const destOffset = ((width + 1) * j + width) * 2;
+      dest[destOffset + 0] = dataView.getUint8(srcOffset + 0);
+      dest[destOffset + 1] = dataView.getUint8(srcOffset + 1);
+    }
+
+    width++;
+
+  } else {
+    dest = new Uint8Array(pixels.length * 2);
+    for (let i = 0; i < pixels.length; i++) {
+      const offset = i * 2;
+      dest[offset + 0] = dataView.getUint8(offset + 0);
+      dest[offset + 1] = dataView.getUint8(offset + 1);
+    }
   }
 
   const texture = new Texture2D(gl, {
@@ -118,6 +146,7 @@ function App() {
   const [textureFilter, setTextureFilter] = useState('nearest');
   const [viewMode, setViewMode] = useState('globe');
   const [opacity, setOpacity] = useState(1.0);
+  const [isShowCoastLine, showCoastLine] = useState(true);
 
   const grib2ListRef = useRef();
 
@@ -155,6 +184,11 @@ function App() {
           case 'simple':
             {
               const attributes = image.simple_packing_attributes();
+
+              // 経度方向のラップ
+              const bounds = attributes.bounds();
+              const isWrap = normalizeAngle(bounds.right + attributes.di) === bounds.left;
+
               const min = (attributes.r + attributes.min * Math.pow(2.0, attributes.e)) / Math.pow(10.0, attributes.d);
               const max = (attributes.r + attributes.max * Math.pow(2.0, attributes.e)) / Math.pow(10.0, attributes.d);
               if (colormap == null) {
@@ -164,9 +198,10 @@ function App() {
                 , 'e:', attributes.e
                 , 'd:', attributes.d
                 , 'min:', attributes.min, '（', min, '）'
-                , 'max:', attributes.max, '（', max, '）');
+                , 'max:', attributes.max, '（', max, '）'
+                , 'wrap?:', isWrap);
 
-              setTexture(createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter));
+              setTexture(createGrayscale16bppTexture(gl, attributes.pixels(), attributes.width, attributes.height, textureFilter, isWrap));
             }
             break;
 
@@ -246,6 +281,10 @@ function App() {
     }
   }
 
+  const onChangeCoastLine = ({ isShow }) => {
+    if (isShow != null) showCoastLine(isShow);
+  };
+
   const layers = [];
   layers.push([
     new SolidPolygonLayer({
@@ -291,7 +330,13 @@ function App() {
       case 'simple':
         {
           const attributes = image.simple_packing_attributes();
-          const bounds = attributes.bounds();
+          let bounds = attributes.bounds();
+
+          // 経度方向のラップ
+          if (normalizeAngle(bounds.right + attributes.di) === bounds.left) {
+            bounds.right = bounds.right + attributes.di;
+          }
+
           layers.push(
             new SimplePackingBitmapLayer({
               id: "simple-packing-bitmap-layer",
@@ -338,6 +383,21 @@ function App() {
         }
         break;
     }
+  }
+
+  if (isShowCoastLine) {
+    layers.push(
+      new GeoJsonLayer({
+        id: "coastlineLayer-layer",
+        getPolygonOffset: ({ layerIndex }) => [0, -layerIndex * 1000],
+        data: SETTINGS.coastlineLayer.url,
+        stroked: true,
+        getLineColor: SETTINGS.coastlineLayer.color,
+        lineWidthUnits: 'pixels',
+        lineWidthScale: 1,
+        getLineWidth: 1,
+      }),
+    )
   }
 
   layers.push(
@@ -421,11 +481,13 @@ function App() {
                 textureFilter,
                 viewMode,
                 opacity,
+                coastLine: { isShow: isShowCoastLine },
               }}
               onChangeBlend={onChangeBlend}
               onChangeTextureFilter={onChangeTextureFilter}
               onChangeViewMode={onChangeViewMode}
               onChangeOpacity={onChangeOpacity}
+              onChangeCoastLine={onChangeCoastLine}
             />
 
             <Grib2List

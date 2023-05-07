@@ -127,12 +127,29 @@ pub(crate) fn time_span_be(src: &[u8]) -> usize {
     let unit = u8_be(&src[0..1]);
     let value = u32_be(&src[1..5]) as usize;
 
-    assert!(unit <= 2);
+    let span = match unit {
+        0 => Some(value * 60),           // Minute
+        1 => Some(value * 60 * 60),      // Hour
+        2 => Some(value * 24 * 60 * 60), // Day
+        // 3=> // Month
+        // 4=> // Year
+        // 5=> // Decade (10 years)
+        // 6=> // Normal (30 years)
+        // 7=> // Century (100 years)
+        // 8..=9=>   // Reserved
+        10 => Some(value * 3 * 60 * 60),  // 3 hours
+        11 => Some(value * 6 * 60 * 60),  // 6 hours
+        12 => Some(value * 12 * 60 * 60), // 12 hours
+        13 => Some(value),                // Second
+        // 14..=191=>    // Reserved
+        // 192..=254=>   // Reserved for local use
+        // 255=>   // Missing
+        _ => None,
+    };
 
-    match unit {
-        0 => value * 60,          // minutes
-        1 => value * 60 * 60,     // hours
-        2 => value * 24 * 60 * 6, // days
-        _ => 0,
+    assert!(span != None);
+    match span {
+        Some(x) => x,
+        None => 0,
     }
 }

@@ -68,8 +68,8 @@ pub(crate) fn parse(buf: &[u8]) -> SectionSets {
         let section_buf = &buf[pos..pos + length_of_section];
         match number_of_section {
             0 => {
-                grib2_length = u64_be(&buf[8..16]) as usize;
-                sectionset.genre = Some(u8_be(&buf[6..7]) as usize);
+                sectionset.genre = Some(u8_be(&buf[pos + 6..pos + 7]) as usize);
+                grib2_length = u64_be(&buf[pos + 8..pos + 16]) as usize;
             }
             1 => sectionset.section1 = Some(Section1::create(section_buf)),
             2 => sectionset.section2 = Some(Section2::create(section_buf)),
@@ -148,6 +148,8 @@ pub(crate) fn first_plane_name(
         100 => Some(format!("Isobaric Surface: {}[Pa]", v)),
         101 => Some(format!("Mean Sea Level: {}[m]", v)),
         103 => Some(format!("Specified Height Level Above Ground: {}[m]", v)),
+        160 => Some(format!("Depth below sea level: {}[m]",v)),
+        161 => Some(format!("Depth below water surface: {}[m]",v)),
         200 => Some(format!("タンクモデルの全タンク（土壌雨量指数）")),
         201 => Some(format!("タンクモデルのタンク番号: {}", v)),
         _ => None,

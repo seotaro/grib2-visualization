@@ -1086,6 +1086,28 @@
         "unit": "°"
       }
     },
+    "1": {
+      "0": {
+        "name": "Current direction",
+        "unit": "degree true"
+      },
+      "1": {
+        "name": "Current speed",
+        "unit": "m・s-1"
+      },
+      "2": {
+        "name": "u-component of current",
+        "unit": "m・s-1"
+      },
+      "3": {
+        "name": "v-component of current",
+        "unit": "m・s-1"
+      },
+      "4": {
+        "name": "Rip current occurrence probability",
+        "unit": "%"
+      }
+    },
     "2": {
       "0": {
         "name": "Ice cover Proportion",
@@ -1200,6 +1222,124 @@
       "12": {
         "name": "Sea salt flux",
         "unit": "kg・m-2・s-1"
+      },
+      "200": {
+        "name": "天文潮位",
+        "unit": "m"
+      },
+      "201": {
+        "name": "実際の潮位",
+        "unit": "m"
+      }
+    },
+    "4": {
+      "0": {
+        "name": "Main thermocline depth",
+        "unit": "m"
+      },
+      "1": {
+        "name": "Main thermocline anomaly",
+        "unit": "m"
+      },
+      "2": {
+        "name": "Transient thermocline depth",
+        "unit": "m"
+      },
+      "3": {
+        "name": "Salinity",
+        "unit": "kg・kg-1"
+      },
+      "4": {
+        "name": "Ocean vertical heat diffusivity",
+        "unit": "m2・s-1"
+      },
+      "5": {
+        "name": "Ocean vertical salt diffusivity",
+        "unit": "m2・s-1"
+      },
+      "6": {
+        "name": "Ocean vertical momentum diffusivity",
+        "unit": "m2・s-1"
+      },
+      "7": {
+        "name": "Bathymetry",
+        "unit": "m"
+      },
+      "11": {
+        "name": "Shape factor with respect to salinity profile",
+        "unit": ""
+      },
+      "12": {
+        "name": "Shape factor with respect to temperature profile in thermocline",
+        "unit": ""
+      },
+      "13": {
+        "name": "Attenuation coefficient of water with respect to solar radiation",
+        "unit": "m-1"
+      },
+      "14": {
+        "name": "Water depth",
+        "unit": "m"
+      },
+      "15": {
+        "name": "Water temperature",
+        "unit": "K"
+      },
+      "16": {
+        "name": "Water density (rho)",
+        "unit": "kg・m-3"
+      },
+      "17": {
+        "name": "Water density anomaly (sigma)",
+        "unit": "kg・m-3"
+      },
+      "18": {
+        "name": "Water potential temperature (theta)",
+        "unit": "K"
+      },
+      "19": {
+        "name": "Water potential density (rho theta)",
+        "unit": "kg・m-3"
+      },
+      "20": {
+        "name": "Water potential density anomaly (sigma theta)",
+        "unit": "kg・m-3"
+      },
+      "21": {
+        "name": "Practical salinity Numeric",
+        "unit": ""
+      },
+      "22": {
+        "name": "Water column-integrated heat content",
+        "unit": "J・m-2"
+      },
+      "23": {
+        "name": "Eastward water velocity",
+        "unit": "m・s-1"
+      },
+      "24": {
+        "name": "Northward water velocity",
+        "unit": "m・s-1"
+      },
+      "25": {
+        "name": "x-component water velocity",
+        "unit": "m・s-1"
+      },
+      "26": {
+        "name": "y-component water velocity",
+        "unit": "m・s-1"
+      },
+      "27": {
+        "name": "Upward water velocity",
+        "unit": "m・s-1"
+      },
+      "28": {
+        "name": "Vertical eddy diffusivity",
+        "unit": "m2・s-1"
+      },
+      "192": {
+        "name": "塩分（Practical Salinity Scale 1978）",
+        "unit": ""
       }
     }
   }

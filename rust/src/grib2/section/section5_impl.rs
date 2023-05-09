@@ -28,7 +28,7 @@ impl<'a> Section5<'a> {
 
     // Number of data points where one or more values are specified in Section 7
     // when a bit map is present, total number of data points when a bit map is absent 10-11
-    fn point_count(&self) -> usize {
+    pub(crate) fn point_count(&self) -> usize {
         u32_be(&self.buf[5..9]) as usize
     }
 

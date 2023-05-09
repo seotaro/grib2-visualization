@@ -7,17 +7,16 @@ use super::type_utils_impl::i16_be;
 use super::type_utils_impl::u16_be;
 use super::type_utils_impl::u32_be;
 
-pub(crate) fn unpack(buf: &[u8], bits: usize) -> Vec<u16> {
+pub(crate) fn unpack(buf: &[u8], bits: usize, total_bits: usize) -> Vec<u16> {
     assert!(bits <= mem::size_of::<u16>() * 8);
+    assert!(total_bits <= buf.len() * 8);
 
     const TEMP_BITS: usize = mem::size_of::<u32>() * 8; // 一時変数のビット数
     const TEMP_FULL_BIT: u32 = !0; // 一時変数で全ビットを立てた状態
 
-    let totol_bits = buf.len() * 8;
-
     let mut values: Vec<u16> = Vec::new();
     let mut bit_pos = 0; // バッファでのビット位置
-    while (bit_pos + bits) <= totol_bits {
+    while (bit_pos + bits) <= total_bits {
         let byte_pos = bit_pos / 8; // バッファでのバイト位置
 
         let value = if (byte_pos + 4) < buf.len() {
@@ -49,7 +48,8 @@ pub(crate) fn unpack(buf: &[u8], bits: usize) -> Vec<u16> {
 
         bit_pos += bits;
     }
-    assert!(bit_pos <= totol_bits);
+
+    assert!(bit_pos <= total_bits);
 
     return values;
 }
@@ -62,7 +62,7 @@ pub(crate) struct RunLength {
 
 // レベル値（8bpp）を返す。
 pub(crate) fn unpack_run_length_packing(buf: &[u8], bits: usize, max_level: usize) -> Vec<u8> {
-    let values = unpack(buf, bits);
+    let values = unpack(buf, bits, buf.len() * 8);
 
     // ランレングスの値と長さの組を取得する。
     let mut runlengths: Vec<RunLength> = Vec::new();
@@ -147,17 +147,17 @@ pub(crate) fn unpack_complex_packing_and_spatial_differencing(
     let gr_len_bits = section5_template3.group_length_bits();
     let last_gr_len = section5_template3.last_group_length();
 
-    let gr_ref_len = ((bits * ng) as f32 / 8.0).ceil() as usize;
-    let gr_ref = unpack(&buf[i..(i + gr_ref_len)], bits);
-    i += gr_ref_len;
+    assert!(bits * ng <= buf[i..].len() * 8);
+    let gr_ref = unpack(&buf[i..], bits, bits * ng);
+    i += ((bits * ng) as f32 / 8.0).ceil() as usize;
 
-    let gr_width_len = ((gr_width_bits * ng) as f32 / 8.0).ceil() as usize;
-    let gr_width = unpack(&buf[i..(i + gr_width_len)], gr_width_bits);
-    i += gr_width_len;
+    assert!(gr_width_bits * ng <= buf[i..].len() * 8);
+    let gr_width = unpack(&buf[i..], gr_width_bits, gr_width_bits * ng);
+    i += ((gr_width_bits * ng) as f32 / 8.0).ceil() as usize;
 
-    let gr_len_len = ((gr_len_bits * ng) as f32 / 8.0).ceil() as usize;
-    let gr_len = unpack(&buf[i..(i + gr_len_len)], gr_len_bits);
-    i += gr_len_len;
+    assert!(gr_len_bits * ng <= buf[i..].len() * 8);
+    let gr_len = unpack(&buf[i..], gr_len_bits, gr_len_bits * ng);
+    i += ((gr_len_bits * ng) as f32 / 8.0).ceil() as usize;
 
     let mut groups: Vec<Group> = Vec::new();
     for m in 1..=ng {
@@ -170,9 +170,9 @@ pub(crate) fn unpack_complex_packing_and_spatial_differencing(
 
         let values;
         if 0 < group_width {
-            let length = ((group_width * group_length) as f32 / 8.0).ceil() as usize;
-            values = unpack(&buf[i..(i + length)], group_width);
-            i += length;
+            assert!(group_width * group_length <= buf[i..].len() * 8);
+            values = unpack(&buf[i..], group_width, group_width * group_length);
+            i += ((group_width * group_length) as f32 / 8.0).ceil() as usize;
         } else {
             values = vec![0; group_length];
         }

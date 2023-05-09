@@ -149,14 +149,17 @@ pub(crate) fn unpack_complex_packing_and_spatial_differencing(
 
     assert!(bits * ng <= buf[i..].len() * 8);
     let gr_ref = unpack(&buf[i..], bits, bits * ng);
+    assert!(gr_ref.len() == ng);
     i += ((bits * ng) as f32 / 8.0).ceil() as usize;
 
     assert!(gr_width_bits * ng <= buf[i..].len() * 8);
     let gr_width = unpack(&buf[i..], gr_width_bits, gr_width_bits * ng);
+    assert!(gr_width.len() == ng);
     i += ((gr_width_bits * ng) as f32 / 8.0).ceil() as usize;
 
     assert!(gr_len_bits * ng <= buf[i..].len() * 8);
     let gr_len = unpack(&buf[i..], gr_len_bits, gr_len_bits * ng);
+    assert!(gr_len.len() == ng);
     i += ((gr_len_bits * ng) as f32 / 8.0).ceil() as usize;
 
     let mut groups: Vec<Group> = Vec::new();
@@ -182,6 +185,7 @@ pub(crate) fn unpack_complex_packing_and_spatial_differencing(
             group_ref: gr_ref[m - 1] as usize,
         })
     }
+    assert!(groups.len() == ng);
 
     let mut h: Vec<i16> = Vec::new();
     for n in 0..groups.len() {

@@ -103,6 +103,8 @@ impl<'a> SectionSet<'a> {
             Some(Section5TemplateNumber::T0(t)) => {
                 assert!(t.bits() * sec5?.point_count() <= sec7?.buf[5..].len() * 8);
                 let pixels = unpack(&sec7?.buf[5..], t.bits(), t.bits() * sec5?.point_count());
+                assert!(pixels.len() == sec5?.point_count());
+
                 match sec6?.bit_map_indicator() {
                     0 => Ok(RawSimplePackingImage {
                         width,
@@ -140,6 +142,8 @@ impl<'a> SectionSet<'a> {
         return match sec5?.template() {
             Some(Section5TemplateNumber::T200(t)) => {
                 let pixels = unpack_run_length_packing(&sec7?.buf[5..], t.bits(), t.v());
+                assert!(pixels.len() == sec5?.point_count());
+
                 match sec6?.bit_map_indicator() {
                     0 => Ok(RawRunLengthPackingImage {
                         width,
@@ -177,6 +181,8 @@ impl<'a> SectionSet<'a> {
         return match sec5?.template() {
             Some(Section5TemplateNumber::T3(t)) => {
                 let pixels = unpack_complex_packing_and_spatial_differencing(&sec7?.buf[5..], t);
+                assert!(pixels.len() == sec5?.point_count());
+
                 match sec6?.bit_map_indicator() {
                     0 => Ok(RawSimplePackingImage {
                         width,

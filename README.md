@@ -4,7 +4,7 @@
 
 [Live Demo](https://seotaro.github.io/grib2-visualization/)
 
-<img width="500" alt="image" src="https://user-images.githubusercontent.com/46148606/235341919-ed067400-c9c6-415c-b926-5534f29b75c3.png">
+<img width="500" alt="image" src="https://github.com/seotaro/grib2-visualization/assets/46148606/b08add6e-bf3a-4ee7-a1a8-5435e10370c0"/>
 
 ## Install
 

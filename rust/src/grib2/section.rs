@@ -1,5 +1,6 @@
 //! GRIB2 Section declaration
 
+pub mod section0_impl;
 pub mod section1_impl;
 pub mod section2_impl;
 pub mod section3_impl;
@@ -43,6 +44,11 @@ pub struct Bounds {
     pub bottom: isize,
     pub right: isize,
     pub top: isize,
+}
+
+#[derive(Copy, Clone)]
+pub(crate) struct Section0<'a> {
+    buf: &'a [u8],
 }
 
 #[derive(Copy, Clone)]
@@ -91,9 +97,7 @@ pub(crate) trait Section {
 
 #[derive(Copy, Clone)]
 pub struct SectionSet<'a> {
-    // Section0 Discipline – GRIB Master table number
-    pub(crate) genre: Option<usize>,
-
+    pub(crate) section0: Option<Section0<'a>>,
     pub(crate) section1: Option<Section1<'a>>,
     pub(crate) section2: Option<Section2<'a>>,
     pub(crate) section3: Option<Section3<'a>>,

@@ -50,10 +50,10 @@ const columns = [
     sortable: true,
     valueGetter: (params) => [
       params.row.parameter_description,
-      params.row.genre,
+      params.row.master_table_number,
       params.row.parameter_category,
       params.row.parameter_number],
-    renderCell: ({ value }) => (<Tooltip title={`${value[0]}, genre:${value[1]}, category:${value[2]}, number:${value[3]}`} ><span>{value[0] ? value[0] : '(unknown)'}</span></Tooltip>),
+    renderCell: ({ value }) => (<Tooltip title={`${value[0]}, master table number:${value[1]}, parameter category:${value[2]}, parameter number:${value[3]}`} ><span>{value[0] ? value[0] : '(unknown)'}</span></Tooltip>),
     sortComparator: (v1, v2) => v1[0].localeCompare(v2[0]),
   },
 ];

@@ -18,8 +18,8 @@ use super::SectionSetsIter;
 
 impl<'a> SectionSet<'a> {
     // Discipline – GRIB Master table number
-    pub fn gerne(&self) -> Option<usize> {
-        self.genre
+    pub(crate) fn master_table_number(&self) -> Option<usize> {
+        Some(self.section0?.master_table_number())
     }
 
     // 有効な1ピクセルあたりのビット数
@@ -239,8 +239,8 @@ impl fmt::Debug for SectionSet<'_> {
         write!(
             f,
             "{}{}{}{}{}{}{}{}",
-            match self.genre {
-                Some(genre) => format!("Section0\n\tgenre: {}\n", genre),
+            match self.section0 {
+                Some(sec) => format!("{:?}", sec),
                 _ => String::from(""),
             },
             match self.section1 {

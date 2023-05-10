@@ -1,5 +1,6 @@
 //! GRIB2 utility
 
+use super::section::Section0;
 use super::section::Section1;
 use super::section::Section2;
 use super::section::Section3;
@@ -36,7 +37,7 @@ pub(crate) fn is_end_indicator(buf: &[u8]) -> bool {
 pub(crate) fn parse(buf: &[u8]) -> SectionSets {
     // セクション1～セクション7までの入れ物を作っておく。
     let mut sectionset = SectionSet {
-        genre: None,
+        section0: None,
         section1: None,
         section2: None,
         section3: None,
@@ -48,7 +49,6 @@ pub(crate) fn parse(buf: &[u8]) -> SectionSets {
     let mut sectionsets = SectionSets::new();
 
     // 先頭から順番にセクションを切り分けていく。
-    let mut grib2_length = 0;
     let mut pos = 0;
     while pos < buf.len() {
         let number_of_section = if is_start_indicator(&buf[pos + 0..pos + 4]) {
@@ -67,10 +67,7 @@ pub(crate) fn parse(buf: &[u8]) -> SectionSets {
 
         let section_buf = &buf[pos..pos + length_of_section];
         match number_of_section {
-            0 => {
-                sectionset.genre = Some(u8_be(&buf[pos + 6..pos + 7]) as usize);
-                grib2_length = u64_be(&buf[pos + 8..pos + 16]) as usize;
-            }
+            0 => sectionset.section0 = Some(Section0::create(section_buf)),
             1 => sectionset.section1 = Some(Section1::create(section_buf)),
             2 => sectionset.section2 = Some(Section2::create(section_buf)),
             3 => sectionset.section3 = Some(Section3::create(section_buf)),

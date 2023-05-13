@@ -564,7 +564,7 @@ const Contour = ({ colormap, unit, isLevelValue }) => {
         {colormap.thresholds[isLevelValue ? 1 : 0]}
       </Box>
 
-      <Box sx={{ display: 'flex', flexDirection: 'row', border: 'solid 1px gray' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', border: 'solid thin darkgray' }}>
         {colormap.colors
           .filter((_, i) => !(isLevelValue && (i === 0)))
           .map((x, i) => {

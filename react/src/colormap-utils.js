@@ -60,7 +60,13 @@ export const colormaps = (master_table_number, category, number) => {
                         case 5: // High Cloud Cover [%]
                             return COLORMAPS['cloud'];
                     }
+                    break;
 
+                case 19:
+                    switch (number) {
+                        case 0: return COLORMAPS['visibility']; // Visibility
+                    }
+                    break;
 
                 // Miscellaneous
                 case 191:
@@ -245,7 +251,7 @@ const createColormaps = () => {
         const colors = [];
         const thresholds = [];
         let i = 0;
-        thresholds.push(0.0); colors.push([0.0, 0.0, 0.0, 0.0]);
+        thresholds.push(0.0); colors.push([0.0, 0.0, 0.0, 1.0]);
         thresholds.push(10.0); colors.push([0.2, 0.2, 0.2, 1.0]);
         thresholds.push(20.0); colors.push([0.3, 0.3, 0.3, 1.0]);
         thresholds.push(30.0); colors.push([0.4, 0.4, 0.4, 1.0]);
@@ -436,6 +442,9 @@ const createColormaps = () => {
 
     // Tide
     colormaps['tide'] = createRainbowColormap(0.6, 3, 24);
+
+    // Visibility
+    colormaps['visibility'] = createRainbowColormap(0.0, 10000.0, 20);
 
     {
         // sample

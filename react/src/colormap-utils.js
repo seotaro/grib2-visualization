@@ -97,6 +97,18 @@ export const colormaps = (master_table_number, category, number) => {
         // Oceanographic products
         case 10:
             switch (category) {
+                // ice
+                case 2:
+                    switch (number) {
+                        case 0: return COLORMAPS['ice-cover'];    // "Ice cover"
+                        case 1: return COLORMAPS['ice-thickness'];    // "Ice thickness"
+
+                        case 4:// "u-component of ice drift"
+                        case 5:// "v-component of ice drift"
+                            return COLORMAPS['ice-drift'];
+                    }
+                    break;
+
                 // surface properties
                 case 3:
                     switch (number) {
@@ -458,6 +470,15 @@ const createColormaps = () => {
 
     // ダスト気柱積算量
     colormaps['dust-air-pillar'] = createRainbowColormap(0.0, 2e-4, 20);
+
+    // Ice cover
+    colormaps['ice-cover'] = createRainbowColormap(0.0, 1.0, 20);
+
+    // Ice thickness
+    colormaps['ice-thickness'] = createRainbowColormap(0.05, 1.2, 23);
+
+    // Ice drift
+    colormaps['ice-drift'] = createRainbowColormap(0.0, 1.4, 14);
 
     {
         // sample

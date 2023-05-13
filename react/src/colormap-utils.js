@@ -88,9 +88,12 @@ export const colormaps = (master_table_number, category, number) => {
                 case 3:
                     switch (number) {
                         case 0: return COLORMAPS['temperature'];    // "Water temperature [K]"
+
+                        case 200:// 天文潮位
+                        case 201:// 実際の潮位
+                            return COLORMAPS['tide'];
                     }
                     break;
-
             }
             break;
     }
@@ -430,6 +433,9 @@ const createColormaps = () => {
 
     // Geopotential Height
     colormaps['geopotential-height'] = createGrayscaleColormap(0.0, 1000.0, 10);
+
+    // Tide
+    colormaps['tide'] = createRainbowColormap(0.6, 3, 24);
 
     {
         // sample

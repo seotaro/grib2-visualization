@@ -62,6 +62,15 @@ export const colormaps = (master_table_number, category, number) => {
                     }
                     break;
 
+                // Aerosols
+                case 13:
+                    switch (number) {
+                        case 192: return COLORMAPS['dust-lower-layer']; // ダスト下層濃度
+                        case 193: return COLORMAPS['dust-air-pillar']; // ダスト気柱積算量
+                    }
+                    break;
+
+                // Physical atmospheric properties
                 case 19:
                     switch (number) {
                         case 0: return COLORMAPS['visibility']; // Visibility
@@ -74,8 +83,6 @@ export const colormaps = (master_table_number, category, number) => {
                         case 192: return COLORMAPS['weather'];  // 天気
                     }
                     break;
-
-
 
                 // ナウキャスト
                 case 193:
@@ -445,6 +452,12 @@ const createColormaps = () => {
 
     // Visibility
     colormaps['visibility'] = createRainbowColormap(0.0, 10000.0, 20);
+
+    // ダスト下層濃度
+    colormaps['dust-lower-layer'] = createRainbowColormap(0.0, 2e-7, 20);
+
+    // ダスト気柱積算量
+    colormaps['dust-air-pillar'] = createRainbowColormap(0.0, 2e-4, 20);
 
     {
         // sample

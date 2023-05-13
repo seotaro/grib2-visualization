@@ -60,7 +60,22 @@ export const colormaps = (master_table_number, category, number) => {
                         case 5: // High Cloud Cover [%]
                             return COLORMAPS['cloud'];
                     }
+                    break;
 
+                // Aerosols
+                case 13:
+                    switch (number) {
+                        case 192: return COLORMAPS['dust-lower-layer']; // ダスト下層濃度
+                        case 193: return COLORMAPS['dust-air-pillar']; // ダスト気柱積算量
+                    }
+                    break;
+
+                // Physical atmospheric properties
+                case 19:
+                    switch (number) {
+                        case 0: return COLORMAPS['visibility']; // Visibility
+                    }
+                    break;
 
                 // Miscellaneous
                 case 191:
@@ -68,8 +83,6 @@ export const colormaps = (master_table_number, category, number) => {
                         case 192: return COLORMAPS['weather'];  // 天気
                     }
                     break;
-
-
 
                 // ナウキャスト
                 case 193:
@@ -84,13 +97,28 @@ export const colormaps = (master_table_number, category, number) => {
         // Oceanographic products
         case 10:
             switch (category) {
+                // ice
+                case 2:
+                    switch (number) {
+                        case 0: return COLORMAPS['ice-cover'];    // "Ice cover"
+                        case 1: return COLORMAPS['ice-thickness'];    // "Ice thickness"
+
+                        case 4:// "u-component of ice drift"
+                        case 5:// "v-component of ice drift"
+                            return COLORMAPS['ice-drift'];
+                    }
+                    break;
+
                 // surface properties
                 case 3:
                     switch (number) {
                         case 0: return COLORMAPS['temperature'];    // "Water temperature [K]"
+
+                        case 200:// 天文潮位
+                        case 201:// 実際の潮位
+                            return COLORMAPS['tide'];
                     }
                     break;
-
             }
             break;
     }
@@ -242,7 +270,7 @@ const createColormaps = () => {
         const colors = [];
         const thresholds = [];
         let i = 0;
-        thresholds.push(0.0); colors.push([0.0, 0.0, 0.0, 0.0]);
+        thresholds.push(0.0); colors.push([0.0, 0.0, 0.0, 1.0]);
         thresholds.push(10.0); colors.push([0.2, 0.2, 0.2, 1.0]);
         thresholds.push(20.0); colors.push([0.3, 0.3, 0.3, 1.0]);
         thresholds.push(30.0); colors.push([0.4, 0.4, 0.4, 1.0]);
@@ -430,6 +458,27 @@ const createColormaps = () => {
 
     // Geopotential Height
     colormaps['geopotential-height'] = createGrayscaleColormap(0.0, 1000.0, 10);
+
+    // Tide
+    colormaps['tide'] = createRainbowColormap(0.6, 3, 24);
+
+    // Visibility
+    colormaps['visibility'] = createRainbowColormap(0.0, 10000.0, 20);
+
+    // ダスト下層濃度
+    colormaps['dust-lower-layer'] = createRainbowColormap(0.0, 2e-7, 20);
+
+    // ダスト気柱積算量
+    colormaps['dust-air-pillar'] = createRainbowColormap(0.0, 2e-4, 20);
+
+    // Ice cover
+    colormaps['ice-cover'] = createRainbowColormap(0.0, 1.0, 20);
+
+    // Ice thickness
+    colormaps['ice-thickness'] = createRainbowColormap(0.05, 1.2, 23);
+
+    // Ice drift
+    colormaps['ice-drift'] = createRainbowColormap(0.0, 1.4, 14);
 
     {
         // sample

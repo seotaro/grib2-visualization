@@ -564,11 +564,13 @@ const Contour = ({ colormap, unit, isLevelValue }) => {
         {colormap.thresholds[isLevelValue ? 1 : 0]}
       </Box>
 
-      {colormap.colors
-        .filter((_, i) => !(isLevelValue && (i === 0)))
-        .map((x, i) => {
-          return <Box key={i} sx={{ width, height, bgcolor: `rgba(${normalizeColor(x)})`, }} />
-        })}
+      <Box sx={{ display: 'flex', flexDirection: 'row', border: 'solid thin darkgray' }}>
+        {colormap.colors
+          .filter((_, i) => !(isLevelValue && (i === 0)))
+          .map((x, i) => {
+            return <Box key={i} sx={{ width, height, bgcolor: `rgba(${normalizeColor(x)})` }} />
+          })}
+      </Box>
 
       <Box sx={{ height, ml: 1, color: 'darkgray', }} >
         {colormap.thresholds[colormap.thresholds.length - 1]}

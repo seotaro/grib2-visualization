@@ -112,7 +112,7 @@ pub struct Item {
     reference_datetime: Option<DateTime<Utc>>,
     packing_type: Option<PackingType>,
     point_count: Option<u32>,
-    master_table_number: Option<u32>,
+    discipline: Option<u32>,
     parameter_description: Option<String>,
     parameter_unit: Option<String>,
     parameter_category: Option<u32>,
@@ -163,16 +163,16 @@ impl Grib2Wrapper {
                 packing_type: sectionset.packing_type(),
                 point_count: Self::to_u32(sectionset.point_count()),
                 parameter_description: self.parameter_description(
-                    sectionset.master_table_number(),
+                    sectionset.discipline(),
                     sectionset.parameter_category(),
                     sectionset.parameter_number(),
                 ),
                 parameter_unit: self.parameter_unit(
-                    sectionset.master_table_number(),
+                    sectionset.discipline(),
                     sectionset.parameter_category(),
                     sectionset.parameter_number(),
                 ),
-                master_table_number: Self::to_u32(sectionset.master_table_number()),
+                discipline: Self::to_u32(sectionset.discipline()),
                 parameter_category: Self::to_u32(sectionset.parameter_category()),
                 parameter_number: Self::to_u32(sectionset.parameter_number()),
                 datetime: sectionset.datetime(),
@@ -197,7 +197,7 @@ impl Grib2Wrapper {
                 "No.{:03} {:?} {:?} {} ",
                 i,
                 self.parameter_description(
-                    sectionset.master_table_number(),
+                    sectionset.discipline(),
                     sectionset.parameter_category(),
                     sectionset.parameter_number(),
                 ),
@@ -213,15 +213,13 @@ impl Grib2Wrapper {
 
     pub fn parameter_description(
         &self,
-        master_table_number: Option<usize>,
+        discipline: Option<usize>,
         parameter_category: Option<usize>,
         parameter_number: Option<usize>,
     ) -> Option<String> {
-        let description = self.grib2.parameter_description(
-            master_table_number?,
-            parameter_category?,
-            parameter_number?,
-        );
+        let description =
+            self.grib2
+                .parameter_description(discipline?, parameter_category?, parameter_number?);
 
         if description?.unit.is_empty() {
             return Some(format!("{}", description?.name));
@@ -231,15 +229,13 @@ impl Grib2Wrapper {
 
     pub fn parameter_unit(
         &self,
-        master_table_number: Option<usize>,
+        discipline: Option<usize>,
         parameter_category: Option<usize>,
         parameter_number: Option<usize>,
     ) -> Option<String> {
-        let description = self.grib2.parameter_description(
-            master_table_number?,
-            parameter_category?,
-            parameter_number?,
-        );
+        let description =
+            self.grib2
+                .parameter_description(discipline?, parameter_category?, parameter_number?);
 
         return Some(format!("{}", description?.unit));
     }

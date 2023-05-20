@@ -184,7 +184,7 @@ function App() {
 
         const item = items[itemIndex];
 
-        let colormap = colormaps(item.master_table_number, item.parameter_category, item.parameter_number);
+        let colormap = colormaps(item.discipline, item.parameter_category, item.parameter_number);
         switch (image.packing_type()) {
           case 'simple':
             {

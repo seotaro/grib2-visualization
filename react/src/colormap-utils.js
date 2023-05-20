@@ -1,6 +1,6 @@
 
-export const colormaps = (master_table_number, category, number) => {
-    switch (master_table_number) {
+export const colormaps = (discipline, category, number) => {
+    switch (discipline) {
         // 0 Meteorological products
         case 0:
             switch (category) {

@@ -20,7 +20,7 @@ pub struct ParameterDescription {
 
 #[derive(Clone)]
 pub struct Grib2<'a> {
-    // key = master_table_number, parameter_category, parameter_number
+    // key = discipline, parameter_category, parameter_number
     parameter_descriptions:
         Option<BTreeMap<usize, BTreeMap<usize, BTreeMap<usize, ParameterDescription>>>>,
 
@@ -54,14 +54,14 @@ impl<'a> Grib2<'a> {
 
     pub fn parameter_description(
         &self,
-        master_table_number: usize,
+        discipline: usize,
         parameter_category: usize,
         parameter_number: usize,
     ) -> Option<&ParameterDescription> {
         return Some(
             self.parameter_descriptions
                 .as_ref()?
-                .get(&master_table_number)?
+                .get(&discipline)?
                 .get(&parameter_category)?
                 .get(&parameter_number)?,
         );

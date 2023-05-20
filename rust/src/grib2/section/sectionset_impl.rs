@@ -18,8 +18,8 @@ use super::SectionSetsIter;
 
 impl<'a> SectionSet<'a> {
     // Discipline – GRIB Master table number
-    pub(crate) fn master_table_number(&self) -> Option<usize> {
-        Some(self.section0?.master_table_number())
+    pub(crate) fn discipline(&self) -> Option<usize> {
+        Some(self.section0?.discipline())
     }
 
     // 有効な1ピクセルあたりのビット数

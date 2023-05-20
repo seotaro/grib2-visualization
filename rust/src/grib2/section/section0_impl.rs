@@ -13,7 +13,7 @@ impl<'a> Section0<'a> {
     }
 
     // Discipline – GRIB Master table number
-    pub(crate) fn master_table_number(&self) -> usize {
+    pub(crate) fn discipline(&self) -> usize {
         u8_be(&self.buf[6..7]) as usize
     }
 
@@ -37,11 +37,7 @@ impl<'a> Section for Section0<'a> {
 
 impl fmt::Display for Section0<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "--Section0\nmaster table number: {}\n",
-            self.master_table_number(),
-        )
+        write!(f, "--Section0\ndiscipline: {}\n", self.discipline(),)
     }
 }
 
@@ -51,10 +47,10 @@ impl fmt::Debug for Section0<'_> {
             f,
             "\
 Section0\n\
-\tmaster table number: {}\n\
+\tdiscipline: {}\n\
 \ttotal length: {}\n\
 ",
-            self.master_table_number(),
+            self.discipline(),
             self.total_length()
         )
     }
